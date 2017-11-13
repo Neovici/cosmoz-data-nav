@@ -143,7 +143,7 @@
 			isIncompleteFn: {
 				type: Function,
 				value: function () {
-					return function (item) {
+					return  item => {
 						return typeof item !== 'object';
 					};
 				}
@@ -353,7 +353,7 @@
 				return;
 			}
 
-			items.forEach(function (item, index) {
+			items.forEach((item, index) => {
 				if (this.isIncompleteFn(item) && this._cache[item]) {
 					this.set(['items', index], this._cache[item]);
 				}
@@ -498,7 +498,7 @@
 			let select = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
 
 			if (select && select.closest(this.is) === this) {
-				select = select.getAttribute(this.selectAttribute);
+				select = select.getAttribute(attr);
 				if (select === 'next') {
 					this.debounce('select', this.selectNext, 30);
 				} else if (select === 'previous') {
@@ -554,9 +554,9 @@
 			if (!this.isAttached) {
 				return;
 			}
-			const resizable = this._interestedResizables.find(resizable => {
-				return resizable.closest('.animatable') === element;
-			});
+			const resizable = this._interestedResizables.find(resizable =>
+				resizable.closest('.animatable') === element
+			);
 
 			if (!resizable) {
 				return;
