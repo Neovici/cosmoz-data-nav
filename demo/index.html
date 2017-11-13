@@ -70,7 +70,7 @@
 					console.log('on need data');
 					Polymer.Base.async(() => {
 						event.target.setItemById(detail.id, { id: detail.id });
-					}, 300);
+					}, 1000);
 					return { id: detail.id };
 				};
 				basic.set('items', items);
