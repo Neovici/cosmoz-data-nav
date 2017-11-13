@@ -492,8 +492,11 @@
 		 * @return {void}
 		 */
 		_onTap: function (event) {
-			var target = Polymer.dom(event).rootTarget,
-				select = target.closest('[' + this.selectAttribute + ']');
+			const path = Polymer.dom(event).path,
+				attr = this.selectAttribute;
+
+			let select = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
+
 			if (select && select.closest(this.is) === this) {
 				select = select.getAttribute(this.selectAttribute);
 				if (select === 'next') {
