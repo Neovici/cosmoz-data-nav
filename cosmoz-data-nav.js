@@ -507,18 +507,6 @@
 			}
 		},
 
-		selectById: function (id) {
-			var index,
-				item;
-			for (index = 0; index < this.items.length; index++) {
-				item = this.items[index];
-				if (typeof item === 'object' && item.id === id || item === id) {
-					this.selected = index;
-					return;
-				}
-			}
-		},
-
 		/**
 		* True if the current element is visible.
 		*/
@@ -563,6 +551,25 @@
 			}
 
 			this._notifyDescendant(resizable);
-		}
+		},
+
+		/**
+		 * Select item by id.
+		 *
+		 * @deprecated
+		 * @param  {String|Number} id The item's id
+		 * @return {void}
+		 */
+		selectById: function (id) {
+			var index,
+				item;
+			for (index = 0; index < this.items.length; index++) {
+				item = this.items[index];
+				if (typeof item === 'object' && item.id === id || item === id) {
+					this.selected = index;
+					return;
+				}
+			}
+		},
 	});
 }());
