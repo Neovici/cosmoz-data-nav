@@ -233,6 +233,7 @@
 			element.classList.add('animatable');
 			element.__instance = instance;
 
+			this._templateInstances.push(instance);
 			this._elements.push(element);
 
 			Polymer.dom(element).appendChild(instance.root);
@@ -315,21 +316,29 @@
 
 
 		_forwardParentProp: function (prop, value) {
-			if (this._templateInstances) {
-				this._templateInstances.forEach(function (inst) {
-					inst[prop] = value;
-				}, this);
+			const instances = this._templateInstances;
+			if (!instances || !instances.length) {
+				return;
 			}
+			instances.forEach(inst => inst[prop] = value);
+
 		},
 
 		_forwardParentPath: function (path, value) {
-			if (this._templateInstances) {
-				this._templateInstances.forEach(function (inst) {
-					inst.notifyPath(path, value, true);
-				});
+			const instances = this._templateInstances;
+			if (!instances || !instances.length) {
+				return;
 			}
+			instances.forEach(inst => inst.notifyPath(path, value, true));
 		},
 
+		_forwardHostPropV2: function (prop, value) {
+			const instances = this._templateInstances;
+			if (!instances || !instances.length) {
+				return;
+			}
+			instances.forEach(inst => inst.forwardHostProp(prop, value));
+		},
 
 		/**
 		 * Observes full changes to `items` properties
@@ -375,10 +384,13 @@
 			if (!element) {
 				return;
 			}
+			let classes = element.classList,
+				prev = this._previousElement = this._selectedElement;
 
-			element.classList.add('selected', this.animating ? 'in' : null);
-
-			let prev = this._previousElement = this._selectedElement;
+			if (this.animating) {
+				classes.add('in');
+			}
+			classes.add('selected');
 
 			this._forwardItem((this._selectedElement = element).__instance, this.items[selected]);
 			this._notifyElementResize(element);
@@ -391,7 +403,7 @@
 				if (prev) {
 					prev.classList.add('out');
 				}
-				element.classList.remove('in');
+				classes.remove('in');
 			}, 3);
 		},
 
