@@ -60,17 +60,18 @@ Example:
 				backface-visibility: hidden;
 			}
 
-			:host([reverse]) #items > ::slotted(.in),
-			#items > ::slotted(.out){
+			:host([animating][reverse]) #items > ::slotted(.in),
+			:host([animating]) #items > ::slotted(.out){
 				transform: translateX(-100%);
 			}
 
-			:host([reverse]) #items > ::slotted(.out),
-			#items > ::slotted(.in){
+			:host([animating][reverse]) #items > ::slotted(.out),
+			:host([animating]) #items > ::slotted(.in){
 				transform: translateX(100%);
 			}
 
-			#items > ::slotted(:not(.selected)) {
+			:host([animating]) #items > ::slotted(:not(.selected):not(.out)),
+			:host(:not([animating])) #items > ::slotted(:not(.selected)) {
 				display: none;
 			}
 

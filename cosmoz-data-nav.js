@@ -47,19 +47,21 @@
 			/**
 			 * True if first item is selected.
 			 */
-			atFirstItem: {
+			nextDisabled: {
 				type: Boolean,
 				notify: true,
-				readOnly: true
+				readOnly: true,
+				value: true
 			},
 
 			/**
 			 *  True if last item is selected.
 			 */
-			atLastItem: {
+			prevDisabled: {
 				type: Boolean,
 				notify: true,
-				readOnly: true
+				readOnly: true,
+				value: true
 			},
 
 			/**
@@ -246,8 +248,8 @@
 				return;
 			}
 			const props =  {
-				isFirstItem: true,
-				isLastItem: true
+				prevDisabled: true,
+				nextDisabled: true
 			};
 			props[this.as] = true;
 			props[this.indexAs] = true;
@@ -258,37 +260,13 @@
 			this.templatize(this._userTemplate);
 		},
 
-		/**
-		 * Select next item in the list.
-		 *
-		 * @return {void}
-		 */
-		selectNext: function () {
-			if (this.animating) {
+		select(index) {
+			const length = this.items && this.items.length;
+			if (!length || index < 0 || index >= length) {
 				return;
 			}
-			var nextIndex = this.selected + 1;
-			if (nextIndex  < this.queueLength) {
-				this.animating = true;
-				this.reverse =  false;
-				this.selected = nextIndex;
-			}
-		},
-
-		/**
-		 * Select previous item in the list.
-		 *
-		 * @return {void}
-		 */
-		selectPrevious: function () {
-			if (this.animating) {
-				return;
-			}
-			if (this.selected > 0) {
-				this.animating = true;
-				this.reverse = true;
-				this.selected = this.selected - 1;
-			}
+			this.reverse = this.selected < index;
+			this.selected = index;
 		},
 
 		/**
@@ -299,7 +277,7 @@
 		 * @return {void}
 		 */
 		setItemById: function (id, item) {
-			var index = this.items.indexOf(id);
+			const index = this.items.indexOf(id);
 			if (index < 0) {
 				console.warn('trying to replace an item that is not in the list', id, item);
 				return;
@@ -309,8 +287,10 @@
 			this._preload();
 
 			if (index !== this.selected) {
+				this._updateSelection(true);
 				return;
 			}
+
 			this._updateSelected();
 		},
 
@@ -366,17 +346,27 @@
 			this._preload();
 		},
 
+		_updateSelection(forward = false) {
+			const items = this.items;
+			this._setSelectedNext((this.selected || 0) + 1);
+			this._setPrevDisabled(this.selected === 0);
+			this._setNextDisabled(this.selectedNext >= items.length || this.isIncompleteFn(items[this.selectedNext]));
+
+			if (!forward || !this._selectedElement) {
+				return;
+			}
+			this._forwardItem(this._selectedElement, items[this.selected]);
+		},
+
 		/**
 		 * Observes changed to `selected` property and
 		 * updates related properties and the `selected` page.
 		 *
-		 * @param  {Number} selected The new selected
+		 * @param  {Number} selected The selected property
 		 * @return {void}
 		 */
 		_updateSelected: function (selected = this.selected) {
-			this._setAtFirstItem(selected === 0);
-			this._setAtLastItem(selected === this.items.length - 1);
-			this._setSelectedNext((selected || 0) + 1);
+			this._updateSelection();
 
 			const elements = this._elements,
 				element = elements.length && elements[selected % elements.length];
@@ -384,15 +374,14 @@
 			if (!element) {
 				return;
 			}
-			let classes = element.classList,
-				prev = this._previousElement = this._selectedElement;
 
-			if (this.animating) {
-				classes.add('in');
-			}
+			let classes = element.classList,
+				prev = this._selectedElement;
+
+			classes.toggle('in', this.animating);
 			classes.add('selected');
 
-			this._forwardItem((this._selectedElement = element).__instance, this.items[selected]);
+			this._forwardItem(this._selectedElement = element, this.items[selected]);
 			this._notifyElementResize(element);
 
 			if (!this.animating) {
@@ -402,9 +391,10 @@
 			_asyncAnimation(() => {
 				if (prev) {
 					prev.classList.add('out');
+					prev.classList.remove('selected');
 				}
 				classes.remove('in');
-			}, 3);
+			}, 10);
 		},
 
 		_onTransitionEnd(e) {
@@ -415,18 +405,11 @@
 			}
 
 			this.animating = false;
+			this._elements.forEach(el => {
+				const classes = el.classList;
+				classes.remove('in', 'out');
+			});
 
-			let prev	= this._previousElement,
-				prevClass = prev && prev.classList;
-
-			if (!prev) {
-				return;
-			}
-
-			prevClass.remove('out');
-			prevClass.remove('selected');
-
-			this._previousElement = null;
 			this._preload();
 		},
 
@@ -463,24 +446,22 @@
 		/**
 		 * Forwards an item from `items` property to a template instance.
 		 *
-		 * @param  {TemplateInstance} instance The template instance
-		 * @param  {Object}           item     The Item to forward
+		 * @param  {HTMLElement} element The element
+		 * @param  {Object}      item     The item to forward
 		 * @return {void}
 		 */
-		_forwardItem: function (instance, item) {
-			var index = this.items.indexOf(item);
+		_forwardItem: function (element, item) {
+			const items = this.items,
+				index = items.indexOf(item),
+				instance = element.__instance;
+
 			if (!instance || index < 0) {
 				return;
 			}
 
 			instance[this.indexAs] = index;
-			instance['isLastItem'] = index === this.items.length - 1;
-			instance['isFirstItem'] = index === 0;
-
-			if (this.isIncompleteFn(item)) {
-				return;
-			}
-
+			instance['prevDisabled'] = index < 1;
+			instance['nextDisabled'] = index + 1  >= items.length || this.isIncompleteFn(items[index + 1]);
 			instance[this.as] = item;
 		},
 
@@ -492,19 +473,24 @@
 		 * @return {void}
 		 */
 		_onTap: function (event) {
+			if (this.animating) {
+				return;
+			}
 			const path = Polymer.dom(event).path,
 				attr = this.selectAttribute;
 
 			let select = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
-
-			if (select && select.closest(this.is) === this) {
-				select = select.getAttribute(attr);
-				if (select === 'next') {
-					this.debounce('select', this.selectNext, 30);
-				} else if (select === 'previous') {
-					this.debounce('select', this.selectPrevious, 30);
-				}
+			if (!select || select.closest(this.is) !== this) {
+				return;
 			}
+			select = parseInt(select.getAttribute(attr), 10);
+			if (isNaN(select)) {
+				return;
+			}
+			this.debounce('select', () => {
+				this.animating = true;
+				this.select(this.selected + select);
+			}, 0);
 		},
 
 		/**

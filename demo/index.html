@@ -45,8 +45,8 @@
 									<div class="fit layout vertical" style$="background-color: {{ computeColor(index) }}">
 										<div class="flex text">{{ item.id }}</div>
 										<div>
-											<paper-icon-button slot="actions" disabled$="[[ isFirstItem ]]" icon="chevron-left" cosmoz-data-nav-select="previous"></paper-icon-button>
-											<paper-icon-button slot="actions" disabled$="[[ isLastItem ]]" icon="chevron-right" cosmoz-data-nav-select="next"></paper-icon-button>
+											<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+											<paper-icon-button slot="actions" disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
 										</div>
 									</div>
 								</template>
@@ -70,7 +70,7 @@
 					console.log('on need data');
 					Polymer.Base.async(() => {
 						event.target.setItemById(detail.id, { id: detail.id });
-					}, 1000);
+					}, 2000);
 					return { id: detail.id };
 				};
 				basic.set('items', items);
