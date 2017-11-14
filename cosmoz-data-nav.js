@@ -82,7 +82,7 @@
 			queueLength: {
 				type: Number,
 				notify: true,
-				readOnly: true,
+				readOnly: true
 			},
 
 			/**
@@ -123,25 +123,35 @@
 
 			/**
 			 * The attribute that elements which control the `selected` of this element
-			 * should have. The value of the attribute can be `next` or `previous`.
+			 * should have. The value of the attribute can be `-1` or `+1`.
 			 */
 			selectAttribute: {
 				type: String,
 				value: 'cosmoz-data-nav-select'
 			},
 
+			/**
+			 *  True if the element is currently animating.
+			 */
 			animating: {
 				type: Boolean,
 				value: false,
 				reflectToAttribute: true,
 			},
 
+			/**
+			 * True if selecting a element with a index smaller than the current one.
+			 */
 			reverse: {
 				type: Boolean,
 				value: false,
 				reflectToAttribute: true,
 			},
 
+			/**
+			 * Function used to determine if a item is incomplete and needs to be preloaded.
+			 * The default values is a function that requires item to be a `Object`.
+			 */
 			isIncompleteFn: {
 				type: Function,
 				value: function () {
@@ -260,6 +270,12 @@
 			this.templatize(this._userTemplate);
 		},
 
+		/**
+		 * Selects an item by index.
+		 *
+		 * @param  {Number} index The index
+		 * @return {void}
+		 */
 		select(index) {
 			const length = this.items && this.items.length;
 			if (!length || index < 0 || index >= length) {
@@ -345,6 +361,14 @@
 			this._preload();
 		},
 
+
+		/**
+		 * Updates selection related properties `selectedNext`, `prevDisabled` and `nextDisabled`.
+		 * If `forward` is true it will update the currently selected item's TemplateInstance.
+		 *
+		 * @param  {Boolean} forward = false True if TemplateInstance should be updated.
+		 * @return {void}
+		 */
 		_updateSelection(forward = false) {
 			const items = this.items;
 			this._setSelectedNext((this.selected || 0) + 1);
@@ -396,6 +420,12 @@
 			}, 8);
 		},
 
+		/**
+		 * Handles `transitionend` event and cleans up animation classe and properties
+		 *
+		 * @param  {TransitionEvent} e The event
+		 * @return {void}
+		 */
 		_onTransitionEnd(e) {
 			const elements = this._elements;
 
@@ -504,10 +534,23 @@
 			return Boolean(this.offsetWidth || this.offsetHeight);
 		},
 
+		/**
+		 * Check if a element is a descendant of the currently selected element.
+		 *
+		 * @param  {HTMLElement} element A descendant resizable element
+		 * @return {Boolean} True if the element should be notified
+		 */
 		resizerShouldBeNotified(element) {
 			return element.closest('.animatable')  === this._selectedElement;
 		},
 
+
+		/**
+		 * Handles resize notifications from descendants.
+		 *
+		 * @param  {Event} event The resize event
+		 * @return {void}
+		 */
 		_onDescendantIronResize(event) {
 			if (this._notifyingDescendant || !this._isVisible || !this.resizerShouldBeNotified(event.target)) {
 				event.stopPropagation();
@@ -528,6 +571,13 @@
 			Polymer.IronResizableBehavior.notifyResize.call(this);
 		},
 
+
+		/**
+		 * Notifies a descendant resizable of the element.
+		 *
+		 * @param  {HTMLElement} element The element to search within for a resizable
+		 * @return {void}
+		 */
 		_notifyElementResize(element) {
 			if (!this.isAttached) {
 				return;

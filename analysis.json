@@ -272,7 +272,7 @@
         {
           "name": "selectAttribute",
           "type": "string",
-          "description": "The attribute that elements which control the `selected` of this element\nshould have. The value of the attribute can be `next` or `previous`.",
+          "description": "The attribute that elements which control the `selected` of this element\nshould have. The value of the attribute can be `-1` or `+1`.",
           "privacy": "public",
           "sourceRange": {
             "start": {
@@ -292,15 +292,15 @@
         {
           "name": "animating",
           "type": "boolean",
-          "description": "",
+          "description": "True if the element is currently animating.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 132,
+              "line": 135,
               "column": 3
             },
             "end": {
-              "line": 136,
+              "line": 139,
               "column": 4
             }
           },
@@ -312,15 +312,15 @@
         {
           "name": "reverse",
           "type": "boolean",
-          "description": "",
+          "description": "True if selecting a element with a index smaller than the current one.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 144,
               "column": 3
             },
             "end": {
-              "line": 142,
+              "line": 148,
               "column": 4
             }
           },
@@ -332,15 +332,15 @@
         {
           "name": "isIncompleteFn",
           "type": "Function",
-          "description": "",
+          "description": "Function used to determine if a item is incomplete and needs to be preloaded.\nThe default values is a function that requires item to be a `Object`.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 144,
+              "line": 154,
               "column": 3
             },
             "end": {
-              "line": 151,
+              "line": 161,
               "column": 4
             }
           },
@@ -355,11 +355,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 498,
+              "line": 532,
               "column": 2
             },
             "end": {
-              "line": 500,
+              "line": 534,
               "column": 3
             }
           },
@@ -465,11 +465,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 169,
+              "line": 179,
               "column": 2
             },
             "end": {
-              "line": 174,
+              "line": 184,
               "column": 3
             }
           },
@@ -485,11 +485,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 181,
+              "line": 191,
               "column": 2
             },
             "end": {
-              "line": 183,
+              "line": 193,
               "column": 3
             }
           },
@@ -505,11 +505,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 190,
+              "line": 200,
               "column": 2
             },
             "end": {
-              "line": 196,
+              "line": 206,
               "column": 3
             }
           },
@@ -525,11 +525,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 519,
+              "line": 566,
               "column": 2
             },
             "end": {
-              "line": 524,
+              "line": 571,
               "column": 3
             }
           },
@@ -613,24 +613,29 @@
         },
         {
           "name": "_onDescendantIronResize",
-          "description": "",
+          "description": "Handles resize notifications from descendants.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 506,
+              "line": 553,
               "column": 2
             },
             "end": {
-              "line": 517,
+              "line": 564,
               "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "event"
+              "name": "event",
+              "type": "Event",
+              "description": "The resize event"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_fireResize",
@@ -745,11 +750,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 198,
+              "line": 208,
               "column": 2
             },
             "end": {
-              "line": 213,
+              "line": 223,
               "column": 3
             }
           },
@@ -762,11 +767,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 215,
+              "line": 225,
               "column": 2
             },
             "end": {
-              "line": 228,
+              "line": 238,
               "column": 3
             }
           },
@@ -779,11 +784,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 230,
+              "line": 240,
               "column": 2
             },
             "end": {
-              "line": 243,
+              "line": 253,
               "column": 3
             }
           },
@@ -796,11 +801,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 245,
+              "line": 255,
               "column": 2
             },
             "end": {
-              "line": 260,
+              "line": 270,
               "column": 3
             }
           },
@@ -809,28 +814,7 @@
         },
         {
           "name": "select",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 262,
-              "column": 2
-            },
-            "end": {
-              "line": 269,
-              "column": 3
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "index"
-            }
-          ]
-        },
-        {
-          "name": "setItemById",
-          "description": "Replace an id in the `items` element list with the full data of the item.",
+          "description": "Selects an item by index.",
           "privacy": "public",
           "sourceRange": {
             "start": {
@@ -838,7 +822,33 @@
               "column": 2
             },
             "end": {
+              "line": 285,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "index",
+              "type": "Number",
+              "description": "The index"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "setItemById",
+          "description": "Replace an id in the `items` element list with the full data of the item.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
               "line": 294,
+              "column": 2
+            },
+            "end": {
+              "line": 310,
               "column": 3
             }
           },
@@ -865,11 +875,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 297,
+              "line": 313,
               "column": 2
             },
             "end": {
-              "line": 304,
+              "line": 319,
               "column": 3
             }
           },
@@ -889,11 +899,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 306,
+              "line": 321,
               "column": 2
             },
             "end": {
-              "line": 312,
+              "line": 327,
               "column": 3
             }
           },
@@ -913,11 +923,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 314,
+              "line": 329,
               "column": 2
             },
             "end": {
-              "line": 320,
+              "line": 335,
               "column": 3
             }
           },
@@ -937,11 +947,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 329,
+              "line": 344,
               "column": 2
             },
             "end": {
-              "line": 346,
+              "line": 361,
               "column": 3
             }
           },
@@ -960,15 +970,15 @@
         },
         {
           "name": "_updateSelection",
-          "description": "",
+          "description": "Updates selection related properties `selectedNext`, `prevDisabled` and `nextDisabled`.\nIf `forward` is true it will update the currently selected item's TemplateInstance.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 348,
+              "line": 371,
               "column": 2
             },
             "end": {
-              "line": 358,
+              "line": 381,
               "column": 3
             }
           },
@@ -976,9 +986,14 @@
           "params": [
             {
               "name": "forward",
-              "defaultValue": "false"
+              "type": "Boolean",
+              "defaultValue": "false",
+              "description": "= false True if TemplateInstance should be updated."
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_updateSelected",
@@ -986,11 +1001,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 367,
+              "line": 390,
               "column": 2
             },
             "end": {
-              "line": 397,
+              "line": 420,
               "column": 3
             }
           },
@@ -1006,24 +1021,29 @@
         },
         {
           "name": "_onTransitionEnd",
-          "description": "",
+          "description": "Handles `transitionend` event and cleans up animation classe and properties",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 399,
+              "line": 428,
               "column": 2
             },
             "end": {
-              "line": 413,
+              "line": 442,
               "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "e"
+              "name": "e",
+              "type": "TransitionEvent",
+              "description": "The event"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_preload",
@@ -1031,11 +1051,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 422,
+              "line": 451,
               "column": 2
             },
             "end": {
-              "line": 443,
+              "line": 472,
               "column": 3
             }
           },
@@ -1051,11 +1071,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 452,
+              "line": 481,
               "column": 2
             },
             "end": {
-              "line": 465,
+              "line": 499,
               "column": 3
             }
           },
@@ -1082,11 +1102,11 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 474,
+              "line": 508,
               "column": 2
             },
             "end": {
-              "line": 493,
+              "line": 527,
               "column": 3
             }
           },
@@ -1104,45 +1124,56 @@
         },
         {
           "name": "resizerShouldBeNotified",
-          "description": "",
+          "description": "Check if a element is a descendant of the currently selected element.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 502,
+              "line": 542,
               "column": 2
             },
             "end": {
-              "line": 504,
+              "line": 544,
               "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "element"
+              "name": "element",
+              "type": "HTMLElement",
+              "description": "A descendant resizable element"
             }
-          ]
+          ],
+          "return": {
+            "type": "Boolean",
+            "desc": "True if the element should be notified"
+          }
         },
         {
           "name": "_notifyElementResize",
-          "description": "",
+          "description": "Notifies a descendant resizable of the element.",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 526,
+              "line": 580,
               "column": 2
             },
             "end": {
-              "line": 539,
+              "line": 593,
               "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "element"
+              "name": "element",
+              "type": "HTMLElement",
+              "description": "The element to search within for a resizable"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "selectById",
@@ -1150,11 +1181,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 548,
+              "line": 602,
               "column": 2
             },
             "end": {
-              "line": 558,
+              "line": 612,
               "column": 3
             }
           },
@@ -1185,7 +1216,7 @@
           "column": 9
         },
         "end": {
-          "line": 559,
+          "line": 613,
           "column": 2
         }
       },
@@ -1354,7 +1385,7 @@
         },
         {
           "name": "select-attribute",
-          "description": "The attribute that elements which control the `selected` of this element\nshould have. The value of the attribute can be `next` or `previous`.",
+          "description": "The attribute that elements which control the `selected` of this element\nshould have. The value of the attribute can be `-1` or `+1`.",
           "sourceRange": {
             "start": {
               "line": 127,
@@ -1370,14 +1401,14 @@
         },
         {
           "name": "animating",
-          "description": "",
+          "description": "True if the element is currently animating.",
           "sourceRange": {
             "start": {
-              "line": 132,
+              "line": 135,
               "column": 3
             },
             "end": {
-              "line": 136,
+              "line": 139,
               "column": 4
             }
           },
@@ -1386,14 +1417,14 @@
         },
         {
           "name": "reverse",
-          "description": "",
+          "description": "True if selecting a element with a index smaller than the current one.",
           "sourceRange": {
             "start": {
-              "line": 138,
+              "line": 144,
               "column": 3
             },
             "end": {
-              "line": 142,
+              "line": 148,
               "column": 4
             }
           },
@@ -1402,14 +1433,14 @@
         },
         {
           "name": "is-incomplete-fn",
-          "description": "",
+          "description": "Function used to determine if a item is incomplete and needs to be preloaded.\nThe default values is a function that requires item to be a `Object`.",
           "sourceRange": {
             "start": {
-              "line": 144,
+              "line": 154,
               "column": 3
             },
             "end": {
-              "line": 151,
+              "line": 161,
               "column": 4
             }
           },
