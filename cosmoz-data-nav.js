@@ -394,7 +394,7 @@
 					prev.classList.remove('selected');
 				}
 				classes.remove('in');
-			}, 10);
+			}, 8);
 		},
 
 		_onTransitionEnd(e) {
@@ -490,7 +490,7 @@
 			this.debounce('select', () => {
 				this.animating = true;
 				this.select(this.selected + select);
-			}, 0);
+			}, 15);
 		},
 
 		/**
