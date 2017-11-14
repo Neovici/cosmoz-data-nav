@@ -265,7 +265,7 @@
 			if (!length || index < 0 || index >= length) {
 				return;
 			}
-			this.reverse = this.selected < index;
+			this.reverse = index < this.selected;
 			this.selected = index;
 		},
 
@@ -301,7 +301,6 @@
 				return;
 			}
 			instances.forEach(inst => inst[prop] = value);
-
 		},
 
 		_forwardParentPath: function (path, value) {
