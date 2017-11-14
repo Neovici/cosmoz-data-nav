@@ -461,6 +461,11 @@
 			instance[this.indexAs] = index;
 			instance['prevDisabled'] = index < 1;
 			instance['nextDisabled'] = index + 1  >= items.length || this.isIncompleteFn(items[index + 1]);
+
+			if (this.isIncompleteFn(item)) {
+				return;
+			}
+
 			instance[this.as] = item;
 		},
 
