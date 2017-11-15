@@ -611,9 +611,9 @@
 				max = Math.max,
 				min = Math.min,
 				length = this.items.length,
-				end = max(min(this.selected + offset, length - 1), buffer - 1);
+				end = max(min(this.selected + offset, length ? length - 1 : 0), buffer - 1);
 
-			let index = min(max(this.selected - offset, 0), length - buffer);
+			let index = min(max(this.selected - offset, 0), length ? length - buffer : 0);
 
 			for (; index <= end; index++) {
 				let element = elements[ index % buffer],
