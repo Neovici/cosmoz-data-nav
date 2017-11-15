@@ -605,19 +605,25 @@
 		* @return {type}  description
 		*/
 		_synchronize: function () {
-			var elements = this._elements,
-				length = this._elementsBuffer,
-				index = Math.max(this.selected - (length / 2 >> 0), 0);
+			const elements = this._elements,
+				buffer = this._elementsBuffer,
+				offset = buffer / 2 >> 0,
+				max = Math.max,
+				min = Math.min,
+				length = this.items.length,
+				end = max(min(this.selected + offset, length - 1), buffer - 1);
 
-			Array.apply(null, Array(length)).forEach((o, i) => {
-				var idx =  index + i,
-					item =  this.items[idx],
-					element = elements[ idx % length];
+			let index = min(max(this.selected - offset, 0), length - buffer);
+
+			for (; index <= end; index++) {
+				let element = elements[ index % buffer],
+					item =  this.items[index];
 				if (!element) {
-					return;
+					continue;
 				}
 				this._forwardItem(element, item);
-			});
+				console.log('forwarding', index);
+			}
 		}
 	});
 }());
