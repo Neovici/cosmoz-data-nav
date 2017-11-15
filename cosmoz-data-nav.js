@@ -417,8 +417,8 @@
 				const classes = el.classList;
 				classes.remove('in', 'out');
 			});
-			this._synchronize();
 			this._notifyElementResize(this._selectedElement);
+			this._synchronize();
 			this._preload();
 
 		},
