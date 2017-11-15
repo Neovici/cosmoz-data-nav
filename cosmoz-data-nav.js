@@ -148,7 +148,7 @@
 				type: Function,
 				value: function () {
 					return  item => {
-						return typeof item !== 'object';
+						return item == null || typeof item !== 'object';
 					};
 				}
 			}
