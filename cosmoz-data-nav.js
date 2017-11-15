@@ -552,7 +552,7 @@
 		 * @return {void}
 		 */
 		_onDescendantIronResize(event) {
-			if (this._notifyingDescendant || !this._isVisible || !this.resizerShouldBeNotified(event.target)) {
+			if (this._notifyingDescendant || this.animating || !this._isVisible || !this.resizerShouldBeNotified(event.target)) {
 				event.stopPropagation();
 				return;
 			}
@@ -565,7 +565,7 @@
 		},
 
 		notifyResize() {
-			if (!this.isAttached || !this._isVisible) {
+			if (!this.isAttached || this.animating || !this._isVisible) {
 				return;
 			}
 			Polymer.IronResizableBehavior.notifyResize.call(this);
