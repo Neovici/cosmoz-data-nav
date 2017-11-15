@@ -172,8 +172,9 @@
 		created: function () {
 			this._cache = {};
 			this._elements = [];
+			this._elementsBuffer = 3;
 			this._spawn = this._spawn.bind(this);
-			this._spawnSteps = Array(2).fill(this._createInstance);
+			this._spawnSteps = Array(this._elementsBuffer).fill(this._createInstance);
 		},
 
 		/**
@@ -243,6 +244,7 @@
 			Polymer.dom(this).appendChild(element);
 
 			if (this.selected != null && index === this.selected) {
+				this.animating = false;
 				this._updateSelected();
 				return;
 			}
@@ -289,8 +291,7 @@
 		 * @return {void}
 		 */
 		setItemById: function (id, item) {
-			const index = this.items.indexOf(id),
-				elements = this._elements;
+			const index = this.items.indexOf(id);
 
 			if (index < 0) {
 				console.warn('trying to replace an item that is not in the list', id, item);
@@ -304,14 +305,7 @@
 			if (index === this.selected) {
 				return this._updateSelected();
 			}
-			if (index >= elements.length) {
-				return;
-			}
-			let element = elements[index];
-			if (element.__instance[this.as] === item) {
-				return;
-			}
-			this._forwardItem(element, item);
+			this._synchronize();
 		},
 
 		_forwardParentProp: function (prop, value) {
@@ -376,8 +370,7 @@
 			this._setPrevDisabled(this.selected === 0);
 			this._setNextDisabled(this.selectedNext >= this.items.length);
 
-			const elements = this._elements,
-				element = elements.length && elements[selected % elements.length];
+			const element =  this._elements[selected % this._elementsBuffer];
 
 			if (!element) {
 				return;
@@ -392,13 +385,13 @@
 			this._selectedElement = element;
 
 			if (!this.animating) {
-				this._forwardItem(this._selectedElement, this.items[this.selected]);
+				this._synchronize();
 				this._notifyElementResize(this._selectedElement);
 				return;
 			}
 
 			requestAnimationFrame(() => {
-				if (prev) {
+				if (prev && prev !== this._selectedElement) {
 					prev.classList.add('out');
 					prev.classList.remove('selected');
 				}
@@ -424,7 +417,7 @@
 				const classes = el.classList;
 				classes.remove('in', 'out');
 			});
-			this._forwardItem(this._selectedElement, this.items[this.selected]);
+			this._synchronize();
 			this._notifyElementResize(this._selectedElement);
 			this._preload();
 
@@ -482,7 +475,8 @@
 			instance['nextDisabled'] = index + 1  >= items.length;
 
 			element.classList.toggle('incomplete', incomplete);
-			if (incomplete) {
+
+			if (incomplete || instance[this.as] === item) {
 				return;
 			}
 			instance[this.as] = item;
@@ -600,5 +594,27 @@
 				}
 			}
 		},
+
+		/**
+		* Syncronizes the `items` data with the created template instances
+		* depending on the currently selected item.
+		*
+		* @return {type}  description
+		*/
+		_synchronize: function () {
+			var elements = this._elements,
+				length = this._elementsBuffer,
+				index = Math.max(this.selected - (length / 2 >> 0), 0);
+
+			Array.apply(null, Array(length)).forEach((o, i) => {
+				var idx =  index + i,
+					item =  this.items[idx],
+					element = elements[ idx % length];
+				if (!element) {
+					return;
+				}
+				this._forwardItem(element, item);
+			});
+		}
 	});
 }());
