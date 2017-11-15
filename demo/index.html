@@ -47,6 +47,7 @@
 										<div class="flex text">{{ item.id }}</div>
 										<div>
 											<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+											<span>[[index]]</span>
 											<paper-icon-button slot="actions" disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
 										</div>
 									</div>
@@ -57,8 +58,9 @@
 												<h3>Data is updating</h3>
 											</div>
 										</div>
-										<div class="layout horizontal center-justified">
+										<div class="layout horizontal center-justified center">
 											<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+											<span>[[index]]</span>
 											<paper-icon-button slot="actions" disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1">></paper-icon-button>
 										</div>
 									</div>

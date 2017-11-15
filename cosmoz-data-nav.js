@@ -391,7 +391,7 @@
 			}
 
 			requestAnimationFrame(() => {
-				if (prev && prev !== this._selectedElement) {
+				if (prev && prev !== this._selectedElement && element.offsetWidth) {
 					prev.classList.add('out');
 					prev.classList.remove('selected');
 				}
