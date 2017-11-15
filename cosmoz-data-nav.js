@@ -466,11 +466,11 @@
 				instance = element.__instance,
 				incomplete = this.isIncompleteFn(item);
 
-			if (!instance || index < 0) {
+			if (!instance) {
 				return;
 			}
 
-			instance[this.indexAs] = index;
+			instance[this.indexAs] = Math.max(index, 0);
 			instance['prevDisabled'] = index < 1;
 			instance['nextDisabled'] = index + 1  >= items.length;
 
