@@ -302,6 +302,9 @@
 			this._isPreloading = false;
 			this._preload();
 
+			if (this.animating) {
+				return;
+			}
 			if (index === this.selected) {
 				return this._updateSelected();
 			}
