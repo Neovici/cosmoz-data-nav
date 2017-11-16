@@ -622,7 +622,6 @@
 					continue;
 				}
 				this._forwardItem(element, item);
-				console.log('forwarding', index);
 			}
 		}
 	});
