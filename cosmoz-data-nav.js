@@ -136,7 +136,7 @@
 			 */
 			isIncompleteFn: {
 				type: Function,
-				value: function () {
+				value() {
 					return  item => {
 						return item == null || typeof item !== 'object';
 					};
@@ -159,7 +159,7 @@
 		 *
 		 * @return {void}
 		 */
-		created: function () {
+		created() {
 			this._cache = {};
 			this._elements = [];
 			this._elementsBuffer = 3;
@@ -170,7 +170,7 @@
 		 *
 		 * @return {void}
 		 */
-		attached: function () {
+		attached() {
 			this._observer = Polymer.dom(this).observeNodes(this._onNodesChange);
 		},
 
@@ -179,7 +179,7 @@
 		 *
 		 * @return {void}
 		 */
-		detached: function () {
+		detached() {
 			if (this._observer) {
 				Polymer.dom(this).unobserveNodes(this._observer);
 				this._observer = null;
@@ -223,7 +223,7 @@
 			this._forwardItem(element, this.items[index]);
 		},
 
-		_ensureTemplatized: function () {
+		_ensureTemplatized() {
 			if (this.ctor || !this._userTemplate) {
 				return;
 			}
@@ -262,7 +262,7 @@
 		 * @param  {Object} item The full data of object
 		 * @return {void}
 		 */
-		setItemById: function (id, item) {
+		setItemById(id, item) {
 			const index = this.items.indexOf(id);
 
 			if (index < 0) {
@@ -283,7 +283,7 @@
 			this._synchronize();
 		},
 
-		_forwardParentProp: function (prop, value) {
+		_forwardParentProp(prop, value) {
 			const instances = this._templateInstances;
 			if (!instances || !instances.length) {
 				return;
@@ -291,7 +291,7 @@
 			instances.forEach(inst => inst[prop] = value);
 		},
 
-		_forwardParentPath: function (path, value) {
+		_forwardParentPath(path, value) {
 			const instances = this._templateInstances;
 			if (!instances || !instances.length) {
 				return;
@@ -299,7 +299,7 @@
 			instances.forEach(inst => inst.notifyPath(path, value, true));
 		},
 
-		_forwardHostPropV2: function (prop, value) {
+		_forwardHostPropV2(prop, value) {
 			const instances = this._templateInstances;
 			if (!instances || !instances.length) {
 				return;
@@ -340,7 +340,7 @@
 		 * @param  {Number} selected The selected property
 		 * @return {void}
 		 */
-		_updateSelected: function (selected = this.selected) {
+		_updateSelected(selected = this.selected) {
 			this._setSelectedNext((this.selected || 0) + 1);
 			this._setPrevDisabled(this.selected === 0);
 			this._setNextDisabled(this.selectedNext >= this.items.length);
@@ -433,7 +433,7 @@
 		 * @param  {Object}      item     The item to forward
 		 * @return {void}
 		 */
-		_forwardItem: function (element, item) {
+		_forwardItem(element, item) {
 			const items = this.items,
 				index = items.indexOf(item),
 				incomplete = this.isIncompleteFn(item);
@@ -480,7 +480,7 @@
 		 * @param  {Event} event The tap event
 		 * @return {void}
 		 */
-		_onTap: function (event) {
+		_onTap(event) {
 			if (this.animating) {
 				return;
 			}
@@ -574,7 +574,7 @@
 		 * @param  {String|Number} id The item's id
 		 * @return {void}
 		 */
-		selectById: function (id) {
+		selectById(id) {
 			var index,
 				item;
 			for (index = 0; index < this.items.length; index++) {
@@ -592,7 +592,7 @@
 		*
 		* @return {type}  description
 		*/
-		_synchronize: function () {
+		_synchronize() {
 			const elements = this._elements,
 				buffer = this._elementsBuffer,
 				offset = buffer / 2 >> 0,
