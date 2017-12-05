@@ -3,17 +3,7 @@
 
 (function () {
 	'use strict';
-
-	const _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
-		_asyncPeriod = function (cb, minimum = 5) {
-			return _async(function (deadline) {
-				if (deadline && 'IdleDeadline' in window && deadline instanceof window.IdleDeadline && deadline.timeRemaining() < minimum) {
-					_asyncPeriod(cb, minimum);
-					return;
-				}
-				cb();
-			});
-		};
+	const IS_V2 = Polymer.flush != null;
 
 	Polymer({
 		is: 'cosmoz-data-nav',
@@ -173,8 +163,6 @@
 			this._cache = {};
 			this._elements = [];
 			this._elementsBuffer = 3;
-			this._spawn = this._spawn.bind(this);
-			this._spawnSteps = Array(this._elementsBuffer).fill(this._createInstance);
 		},
 
 		/**
@@ -212,35 +200,19 @@
 
 			this._userTemplate = template;
 			this._ensureTemplatized();
-			_asyncPeriod(this._spawn, 10);
+
+			Array(this._elementsBuffer).fill(null).forEach(this._createElement, this);
 
 		},
 
-		_spawn() {
-			if (!this.isAttached) {
-				return;
-			}
-			const step = this._spawnSteps.shift();
-			if (!step) {
-				return;
-			}
-			step.call(this);
-			_asyncPeriod(this._spawn, 10);
-		},
-
-		_createInstance() {
-			const instance = this.stamp({}),
-				elements = this._elements,
+		_createElement() {
+			const elements = this._elements,
 				index = elements.length,
 				element = document.createElement('div');
 
-			element.classList.add('animatable');
-			element.__instance = instance;
-
-			this._templateInstances.push(instance);
+			element.classList.add('animatable', 'incomplete');
 			elements.push(element);
 
-			Polymer.dom(element).appendChild(instance.root);
 			Polymer.dom(this).appendChild(element);
 
 			if (this.selected != null && index === this.selected) {
@@ -464,23 +436,41 @@
 		_forwardItem: function (element, item) {
 			const items = this.items,
 				index = items.indexOf(item),
-				instance = element.__instance,
 				incomplete = this.isIncompleteFn(item);
 
-			if (!instance) {
+			element.classList.toggle('incomplete', incomplete);
+
+			if (incomplete || element.item === item) {
 				return;
 			}
+
+			this._removeInstance(element.__instance);
+
+			let instance = this.stamp({});
+
 
 			instance[this.indexAs] = Math.max(index, 0);
 			instance['prevDisabled'] = index < 1;
 			instance['nextDisabled'] = index + 1  >= items.length;
 
-			element.classList.toggle('incomplete', incomplete);
+			instance[this.as] = item;
+			element.__instance = instance;
+			element.item = item;
 
-			if (incomplete || instance[this.as] === item) {
+			Polymer.dom(element).appendChild(instance.root);
+		},
+
+		_removeInstance(instance) {
+			if (!instance) {
 				return;
 			}
-			instance[this.as] = item;
+			const children = IS_V2 ? instance.children : instance._children;
+
+			for (let i = 0; i < children.length; i++) {
+				const child = children[i],
+					parent = child.parentNode;
+				Polymer.dom(parent).removeChild(child);
+			}
 		},
 
 		/**
