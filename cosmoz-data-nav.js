@@ -313,7 +313,23 @@
 			if (prop !== this.as || value === items[index]) {
 				return;
 			}
+			this.removeFromCache(items[index]);
 			this.set(['items', index], value);
+		},
+
+		clearCache() {
+			this._cache = {};
+		},
+
+		removeFromCache(item) {
+			if (item == null) {
+				return;
+			}
+			const cache = this._cache,
+				key = Object.keys(cache).find(k => cache[k] === item);
+			if (key != null) {
+				delete cache[key];
+			}
 		},
 
 		/**
