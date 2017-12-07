@@ -307,6 +307,15 @@
 			instances.forEach(inst => inst.forwardHostProp(prop, value));
 		},
 
+		_forwardInstanceProp: function (inst, prop, value) {
+			const items = this.items,
+				index = inst.index;
+			if (prop !== this.as || value === items[index]) {
+				return;
+			}
+			this.set(['items', index], value);
+		},
+
 		/**
 		 * Observes full changes to `items` properties
 		 * and replaces cached items with full data if available.
