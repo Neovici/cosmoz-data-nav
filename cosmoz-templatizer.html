@@ -7,10 +7,12 @@
 		behaviors: [
 			Polymer.Templatizer
 		],
-		templatize(template, options = {}) {
+		templatize(template, owner, options = {}) {
+			const stamp = this.stamp.bind(this);
 			if (this.ctor) {
-				return this.stamp;
+				return stamp;
 			}
+			this.__forwardOwner = owner;
 			this._instanceProps = options.instanceProps;
 			this.__forwardParentProp = options.forwardParentProp;
 			this.__forwardParentPath = options.forwardParentPath;
@@ -20,35 +22,35 @@
 			Polymer.Templatizer.templatize.call(this, template);
 			template.__czTemplatizer__ = this;
 
-			return this.stamp;
+			return stamp;
 		},
 		_forwardParentProp: function (prop, value) {
 			const method =  this.__forwardParentProp;
 			if (!method) {
 				return;
 			}
-			return method(prop, value);
+			return method.call(this.__forwardOwner, prop, value);
 		},
 		_forwardParentPath(path, value) {
 			const method =  this.__forwardParentPath;
 			if (!method) {
 				return;
 			}
-			return method(path, value);
+			return method.call(this.__forwardOwner, path, value);
 		},
 		_forwardInstanceProp(inst, prop, value) {
 			const method =  this.__forwardInstanceProp;
 			if (!method) {
 				return;
 			}
-			return method(inst, prop, value);
+			return method.call(this.__forwardOwner, inst, prop, value);
 		},
 		_forwardInstancePath(inst, path, value) {
 			const method =  this.__forwardInstancePath;
 			if (!method) {
 				return;
 			}
-			return method(inst, path, value);
+			return method.call(this.__forwardOwner, inst, path, value);
 		}
 
 	}

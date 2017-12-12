@@ -145,7 +145,6 @@
 		},
 
 		behaviors: [
-			Polymer.Templatizer,
 			Polymer.IronResizableBehavior
 		],
 
@@ -224,7 +223,7 @@
 		},
 
 		_ensureTemplatized() {
-			if (this.ctor || !this._userTemplate) {
+			if (this._elementCtor || !this._userTemplate) {
 				return;
 			}
 			const props =  {
@@ -234,10 +233,18 @@
 			props[this.as] = true;
 			props[this.indexAs] = true;
 
-			this._instanceProps = props;
-			this._parentModel = true;
-			this._templateInstances = [];
-			this.templatize(this._userTemplate);
+			this._elementCtor = Cosmoz.Templatize.templatize(this._userTemplate, this, {
+				instanceProps: props,
+				parentModel: true,
+				forwardParentProp: this._forwardParentProp,
+				forwardParentPath: this._forwardParentPath,
+				forwardInstanceProp: this._forwardInstanceProp,
+				forwardHostProp: this._forwardHostPropV2,
+			});
+			// this._instanceProps = props;
+			// this._parentModel = true;
+			// this._templateInstances = [];
+			// this.templatize(this._userTemplate);
 		},
 
 		/**
@@ -477,7 +484,7 @@
 
 			this._removeInstance(currentInstance);
 
-			let instance = this.stamp({});
+			let instance = this._elementCtor({});
 
 			instance[this.indexAs] = Math.max(index, 0);
 			instance['prevDisabled'] = index < 1;
