@@ -17,7 +17,7 @@
 						notifyInstanceProp: options.notifyInstanceProp
 					});
 				}
-				let templatizer = document.createElement('cosmoz-templatizer');
+				let templatizer  = template.__czTemplatizer__  || document.createElement('cosmoz-templatizer');
 				return templatizer.templatize(template, {
 					instanceProps: options.instanceProps,
 					forwardParentProp: options.forwardParentProp,

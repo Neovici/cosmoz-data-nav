@@ -16,8 +16,10 @@
 			this.__forwardParentPath = options.forwardParentPath;
 			this.__forwardInstanceProp = options.forwardInstanceProp;
 			this.__forwardInstancePath = options.forwardInstancePath;
+
 			Polymer.Templatizer.templatize.call(this, template);
 			template.__czTemplatizer__ = this;
+
 			return this.stamp;
 		},
 		_forwardParentProp: function (prop, value) {
