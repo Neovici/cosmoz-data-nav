@@ -1,0 +1,55 @@
+<link rel="import" href="../polymer/polymer.html">
+<script>
+(function () {
+	'use strict';
+	Polymer({
+		is: 'cosmoz-templatizer',
+		behaviors: [
+			Polymer.Templatizer
+		],
+		templatize(template, options = {}) {
+			if (this.ctor) {
+				return this.stamp;
+			}
+			this._instanceProps = options.instanceProps;
+			this.__forwardParentProp = options.forwardParentProp;
+			this.__forwardParentPath = options.forwardParentPath;
+			this.__forwardInstanceProp = options.forwardInstanceProp;
+			this.__forwardInstancePath = options.forwardInstancePath;
+			Polymer.Templatizer.templatize.call(this, template);
+			template.__czTemplatizer__ = this;
+			return this.stamp;
+		},
+		_forwardParentProp: function (prop, value) {
+			const method =  this.__forwardParentProp;
+			if (!method) {
+				return;
+			}
+			return method(prop, value);
+		},
+		_forwardParentPath(path, value) {
+			const method =  this.__forwardParentPath;
+			if (!method) {
+				return;
+			}
+			return method(path, value);
+		},
+		_forwardInstanceProp(inst, prop, value) {
+			const method =  this.__forwardInstanceProp;
+			if (!method) {
+				return;
+			}
+			return method(inst, prop, value);
+		},
+		_forwardInstancePath(inst, path, value) {
+			const method =  this.__forwardInstancePath;
+			if (!method) {
+				return;
+			}
+			return method(inst, path, value);
+		}
+
+	}
+	);
+})();
+</script>
