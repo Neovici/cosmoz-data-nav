@@ -7,53 +7,60 @@
 		behaviors: [
 			Polymer.Templatizer
 		],
-		templatize(template, owner, options = {}) {
-			const stamp = this.stamp.bind(this);
+		templatize(template, owner, opts = {}) {
 			if (this.ctor) {
-				return stamp;
+				return this.ctor;
 			}
-			this.__forwardOwner = owner;
-			this._instanceProps = options.instanceProps;
-			this.__forwardParentProp = options.forwardParentProp;
-			this.__forwardParentPath = options.forwardParentPath;
-			this.__forwardInstanceProp = options.forwardInstanceProp;
-			this.__forwardInstancePath = options.forwardInstancePath;
+			this.__owner = owner;
+			this._instanceProps = opts.instanceProps;
 
+			let { forwardParentProp, forwardParentPath, forwardInstanceProp, forwardInstancePath } = opts;
+
+			if (forwardParentProp) {
+				this._forwardParentProp = forwardParentProp.bind(owner);
+			}
+
+			if (forwardParentPath) {
+				this._forwardParentPath = forwardParentPath.bind(owner);
+			}
+
+			if (forwardInstanceProp) {
+				this._forwardInstanceProp = forwardInstanceProp.bind(owner);
+			}
+
+			if (forwardInstancePath) {
+				this._forwardInstancePath = forwardInstancePath.bind(owner);
+			}
+
+			this.dataHost = owner;
+			this._patchConstructorImpl();
 			Polymer.Templatizer.templatize.call(this, template);
-			template.__czTemplatizer__ = this;
+			template.__templatizer = this;
 
-			return stamp;
+			return this.ctor;
 		},
-		_forwardParentProp: function (prop, value) {
-			const method =  this.__forwardParentProp;
-			if (!method) {
-				return;
-			}
-			return method.call(this.__forwardOwner, prop, value);
-		},
-		_forwardParentPath(path, value) {
-			const method =  this.__forwardParentPath;
-			if (!method) {
-				return;
-			}
-			return method.call(this.__forwardOwner, path, value);
-		},
-		_forwardInstanceProp(inst, prop, value) {
-			const method =  this.__forwardInstanceProp;
-			if (!method) {
-				return;
-			}
-			return method.call(this.__forwardOwner, inst, prop, value);
-		},
-		_forwardInstancePath(inst, path, value) {
-			const method =  this.__forwardInstancePath;
-			if (!method) {
-				return;
-			}
-			return method.call(this.__forwardOwner, inst, path, value);
-		}
 
-	}
-	);
+		_patchConstructorImpl() {
+			let _ctor  = this._constructorImpl,
+				self = this;
+
+			this._constructorImpl = function (model = {}, host = self) {
+				if (self._parentProps) {
+					var templatized = self._templatized;
+					for (let prop in self._parentProps) {
+						if (model[prop] === undefined) {
+							model[prop] = templatized[self._parentPropPrefix + prop];
+						}
+					}
+				}
+				return _ctor.call(this, model, host);
+			};
+		},
+
+		_getRootDataHost() {
+			const host = this.dataHost;
+			return host && host._rootDataHost || host.dataHost || host;
+		},
+	});
 })();
 </script>

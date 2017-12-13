@@ -9,26 +9,24 @@
 		Cosmoz.Templatize = {
 			templatize(template, owner, options = {}) {
 				if (IS_V2) {
-					let ctor = Polymer.Templatize.templatize(template, owner, {
+					return Polymer.Templatize.templatize(template, owner, {
 						mutableData: Boolean(options.mutableData),
 						parentModel: options.parentModel,
 						instanceProps: options.instanceProps,
 						forwardHostProp: options.forwardHostProp,
 						notifyInstanceProp: options.notifyInstanceProp
 					});
-					return function (opt) {
-						return new ctor(opt);
-					};
 				}
-				let templatizer  = template.__czTemplatizer__  || document.createElement('cosmoz-templatizer');
-				return templatizer.templatize(template, owner, {
-					instanceProps: options.instanceProps,
-					forwardParentProp: options.forwardParentProp,
-					forwardParentPath: options.forwardParentPath,
-					forwardInstanceProp: options.forwardInstanceProp,
-					forwardInstancePath: options.forwardInstancePath
-				});
+				return (template.__templatizer  || document.createElement('cosmoz-templatizer'))
+					.templatize(template, owner, {
+						instanceProps: options.instanceProps,
+						forwardParentProp: options.forwardParentProp,
+						forwardParentPath: options.forwardParentPath,
+						forwardInstanceProp: options.forwardInstanceProp,
+						forwardInstancePath: options.forwardInstancePath
+					});
 			},
+
 			modelForElement(template, el) {
 				if (IS_V2) {
 					return Polymer.Templatize.modelForElement(template, el);

@@ -241,10 +241,6 @@
 				forwardInstanceProp: this._forwardInstanceProp,
 				forwardHostProp: this._forwardHostPropV2,
 			});
-			// this._instanceProps = props;
-			// this._parentModel = true;
-			// this._templateInstances = [];
-			// this.templatize(this._userTemplate);
 		},
 
 		/**
@@ -484,7 +480,7 @@
 
 			this._removeInstance(currentInstance);
 
-			let instance = this._elementCtor({});
+			let instance = new this._elementCtor({});
 
 			instance[this.indexAs] = Math.max(index, 0);
 			instance['prevDisabled'] = index < 1;
