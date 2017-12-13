@@ -204,8 +204,8 @@
 				forwardParentProp: this._forwardHostProp,
 				forwardParentPath: this._forwardParentPath,
 				forwardHostProp: this._forwardHostProp,
-				forwardInstanceProp: this._forwardInstanceProp,
-				notifyInstanceProp: this.__notifyInstanceProp
+				forwardInstanceProp: this._notifyInstanceProp,
+				notifyInstanceProp: this._notifyInstanceProp
 			});
 			this._incompleteCtor = Cosmoz.Templatize.templatize(this._incompleteTemplate, this, {
 				instanceProps: baseProps,
