@@ -190,9 +190,14 @@
 				console.warn('cosmoz-data-nav requires a template');
 				return;
 			}
+			this._templatize(elementTemplate, incompleteTemplate);
+			_asyncPeriod(this._spawn, 10);
+		},
 
+		_templatize(elementTemplate, incompleteTemplate) {
 			this._elementTemplate = elementTemplate;
 			this._incompleteTemplate = incompleteTemplate;
+
 			let baseProps = {
 				prevDisabled: true,
 				nextDisabled: true,
@@ -214,8 +219,6 @@
 				forwardParentPath: this._forwardParentPath,
 				forwardHostProp: this._forwardHostProp,
 			});
-
-			_asyncPeriod(this._spawn, 10);
 		},
 
 		get _allInstances() {
