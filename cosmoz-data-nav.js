@@ -170,7 +170,7 @@
 		 * @return {void}
 		 */
 		attached() {
-			this._observer = Polymer.dom(this).observeNodes(this._onNodesChange);
+			this._templatesObserver = Polymer.dom(this.$.templatesSlot).observeNodes(this._onTemplatesChange.bind(this));
 		},
 
 		/**
@@ -179,26 +179,52 @@
 		 * @return {void}
 		 */
 		detached() {
-			if (this._observer) {
-				Polymer.dom(this).unobserveNodes(this._observer);
-				this._observer = null;
+			if (this._templatesObserver) {
+				Polymer.dom(this).unobserveNodes(this._templatesObserver);
+				this._templatesObserver = null;
 			}
 			this._cache = {};
 		},
 
-		_onNodesChange() {
-			if (this._userTemplate) {
+		_onTemplatesChange(change) {
+			if (this._elementTemplate) {
 				return;
 			}
-			const template = this.queryEffectiveChildren('template');
+			const templates = change.addedNodes.filter(n => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE'),
+				elementTemplate = templates.find(n => n.matches(':not(incomplete)')),
+				incompleteTemplate = templates.find(n => n.matches('[incomplete]')) || this.$.incompleteTemplate;
 
-			if (!template) {
+			if (!elementTemplate) {
 				console.warn('cosmoz-data-nav requires a template');
 				return;
 			}
 
-			this._userTemplate = template;
-			this._ensureTemplatized();
+			this._elementTemplate = elementTemplate;
+			this._incompleteTemplate = incompleteTemplate;
+
+			this._elementCtor = Cosmoz.Templatize.templatize(this._elementTemplate, this, {
+				instanceProps: {
+					prevDisabled: true,
+					nextDisabled: true,
+					[this.as]: true,
+					[this.indexAs]: true
+				},
+				parentModel: true,
+				forwardParentProp: this._forwardParentProp,
+				forwardParentPath: this._forwardParentPath,
+				forwardInstanceProp: this._forwardInstanceProp,
+				forwardHostProp: this._forwardHostPropV2,
+			});
+			this._incompleteCtor = Cosmoz.Templatize.templatize(this._incompleteTemplate, this, {
+				instanceProps: {
+					prevDisabled: false,
+					nextDisabled: false,
+					[this.indexAs]: true
+				},
+				parentModel: true,
+				forwardParentProp: this._forwardParentProp,
+				forwardHostProp: this._forwardHostPropV2,
+			});
 
 			Array(this._elementsBuffer).fill(null).forEach(this._createElement, this);
 
@@ -207,11 +233,15 @@
 		_createElement() {
 			const elements = this._elements,
 				index = elements.length,
-				element = document.createElement('div');
+				element = document.createElement('div'),
+				incomplete = new this._incompleteCtor({});
 
+			element.setAttribute('slot', 'items');
 			element.classList.add('animatable', 'incomplete');
+			element.__incomplete = incomplete;
 			elements.push(element);
 
+			Polymer.dom(element).appendChild(incomplete.root);
 			Polymer.dom(this).appendChild(element);
 
 			if (this.selected != null && index === this.selected) {
@@ -220,27 +250,6 @@
 				return;
 			}
 			this._forwardItem(element, this.items[index]);
-		},
-
-		_ensureTemplatized() {
-			if (this._elementCtor || !this._userTemplate) {
-				return;
-			}
-			const props =  {
-				prevDisabled: true,
-				nextDisabled: true
-			};
-			props[this.as] = true;
-			props[this.indexAs] = true;
-
-			this._elementCtor = Cosmoz.Templatize.templatize(this._userTemplate, this, {
-				instanceProps: props,
-				parentModel: true,
-				forwardParentProp: this._forwardParentProp,
-				forwardParentPath: this._forwardParentPath,
-				forwardInstanceProp: this._forwardInstanceProp,
-				forwardHostProp: this._forwardHostPropV2,
-			});
 		},
 
 		/**
@@ -467,11 +476,14 @@
 			const items = this.items,
 				index = items.indexOf(item),
 				incomplete = this.isIncompleteFn(item),
+				incompleteInstance = element.__incomplete,
 				currentInstance = element.__instance;
 
-			element.classList.toggle('incomplete', incomplete);
+			incompleteInstance._showHideChildren(!incomplete);
 
 			if (currentInstance && (incomplete || element.item === item)) {
+				console.log('incomplete', incomplete);
+				currentInstance._showHideChildren(incomplete);
 				currentInstance[this.indexAs] = Math.max(index, 0);
 				currentInstance['prevDisabled'] = index < 1;
 				currentInstance['nextDisabled'] = index + 1  >= items.length;
@@ -491,6 +503,7 @@
 			element.item = item;
 
 			Polymer.dom(element).appendChild(instance.root);
+			instance._showHideChildren(incomplete);
 		},
 
 		_removeInstance(instance) {
