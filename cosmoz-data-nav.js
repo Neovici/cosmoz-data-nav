@@ -201,33 +201,62 @@
 
 			this._elementTemplate = elementTemplate;
 			this._incompleteTemplate = incompleteTemplate;
-
+			let baseProps = {
+				prevDisabled: true,
+				nextDisabled: true,
+				[this.indexAs]: true
+			};
 			this._elementCtor = Cosmoz.Templatize.templatize(this._elementTemplate, this, {
-				instanceProps: {
-					prevDisabled: true,
-					nextDisabled: true,
-					[this.as]: true,
-					[this.indexAs]: true
-				},
+				instanceProps: Object.assign({[this.indexAs]: true}, baseProps),
 				parentModel: true,
-				forwardParentProp: this._forwardParentProp,
+				forwardParentProp: this._forwardHostProp,
 				forwardParentPath: this._forwardParentPath,
+				forwardHostProp: this._forwardHostProp,
 				forwardInstanceProp: this._forwardInstanceProp,
-				forwardHostProp: this._forwardHostPropV2,
+				notifyInstanceProp: this.__notifyInstanceProp
 			});
 			this._incompleteCtor = Cosmoz.Templatize.templatize(this._incompleteTemplate, this, {
-				instanceProps: {
-					prevDisabled: false,
-					nextDisabled: false,
-					[this.indexAs]: true
-				},
+				instanceProps: baseProps,
 				parentModel: true,
-				forwardParentProp: this._forwardParentProp,
-				forwardHostProp: this._forwardHostPropV2,
+				forwardParentProp: this._forwardHostProp,
+				forwardParentPath: this._forwardParentPath,
+				forwardHostProp: this._forwardHostProp,
 			});
 
 			Array(this._elementsBuffer).fill(null).forEach(this._createElement, this);
+		},
 
+		get _allInstances() {
+			return this._elements.reduce((p, n) => p.concat([n.__instance, n.__incomplete]), []).filter(i => i != null);
+		},
+		get _allElementInstances() {
+			return this._elements.map(e => e.__instance).filter(i => i != null);
+		},
+
+		_forwardParentPath(path, value) {
+			const instances = this._allInstances;
+			if (!instances || !instances.length) {
+				return;
+			}
+			instances.forEach(inst => inst.notifyPath(path, value, true));
+		},
+
+		_forwardHostProp(prop, value) {
+			const instances = this._allInstances;
+			if (!instances || !instances.length) {
+				return;
+			}
+			instances.forEach(inst => IS_V2 ? inst.forwardHostProp(prop, value) : inst[prop] = value);
+		},
+
+		_notifyInstanceProp: function (inst, prop, value) {
+			const items = this.items,
+				index = inst.index;
+			if (prop !== this.as || value === items[index] || this._allElementInstances.indexOf(inst) < 0) {
+				return;
+			}
+			this.removeFromCache(items[index]);
+			this.set(['items', index], value);
 		},
 
 		_createElement() {
@@ -293,40 +322,6 @@
 				return this._updateSelected();
 			}
 			this._synchronize();
-		},
-
-		_forwardParentProp(prop, value) {
-			const instances = this._templateInstances;
-			if (!instances || !instances.length) {
-				return;
-			}
-			instances.forEach(inst => inst[prop] = value);
-		},
-
-		_forwardParentPath(path, value) {
-			const instances = this._templateInstances;
-			if (!instances || !instances.length) {
-				return;
-			}
-			instances.forEach(inst => inst.notifyPath(path, value, true));
-		},
-
-		_forwardHostPropV2(prop, value) {
-			const instances = this._templateInstances;
-			if (!instances || !instances.length) {
-				return;
-			}
-			instances.forEach(inst => inst.forwardHostProp(prop, value));
-		},
-
-		_forwardInstanceProp: function (inst, prop, value) {
-			const items = this.items,
-				index = inst.index;
-			if (prop !== this.as || value === items[index]) {
-				return;
-			}
-			this.removeFromCache(items[index]);
-			this.set(['items', index], value);
 		},
 
 		clearCache() {
@@ -477,28 +472,26 @@
 				index = items.indexOf(item),
 				incomplete = this.isIncompleteFn(item),
 				incompleteInstance = element.__incomplete,
-				currentInstance = element.__instance;
+				currentInstance = element.__instance,
+				baseProps = {
+					prevDisabled: index < 1,
+					nextDisabled: index + 1  >= items.length,
+					[this.indexAs]: Math.max(index, 0)
+				};
 
 			incompleteInstance._showHideChildren(!incomplete);
-
+			Object.assign(incompleteInstance, baseProps);
 			if (currentInstance && (incomplete || element.item === item)) {
-				console.log('incomplete', incomplete);
 				currentInstance._showHideChildren(incomplete);
-				currentInstance[this.indexAs] = Math.max(index, 0);
-				currentInstance['prevDisabled'] = index < 1;
-				currentInstance['nextDisabled'] = index + 1  >= items.length;
+				Object.assign(currentInstance, baseProps);
 				return;
 			}
 
 			this._removeInstance(currentInstance);
 
 			let instance = new this._elementCtor({});
+			Object.assign(instance, { [this.as]: item }, baseProps);
 
-			instance[this.indexAs] = Math.max(index, 0);
-			instance['prevDisabled'] = index < 1;
-			instance['nextDisabled'] = index + 1  >= items.length;
-
-			instance[this.as] = item;
 			element.__instance = instance;
 			element.item = item;
 
