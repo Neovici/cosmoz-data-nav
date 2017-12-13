@@ -3,7 +3,7 @@
 
 (function () {
 	'use strict';
-	const  _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
+	const _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
 		_asyncPeriod = function (cb, minimum = 5) {
 			return _async(function (deadline) {
 				if (deadline && 'IdleDeadline' in window && deadline instanceof window.IdleDeadline && deadline.timeRemaining() < minimum) {
@@ -37,31 +37,11 @@
 			},
 
 			/**
-			 * True if first item is selected.
-			 */
-			nextDisabled: {
-				type: Boolean,
-				notify: true,
-				readOnly: true,
-				value: true
-			},
-
-			/**
-			 *  True if last item is selected.
-			 */
-			prevDisabled: {
-				type: Boolean,
-				notify: true,
-				readOnly: true,
-				value: true
-			},
-
-			/**
 			 * An array containing items from which a selection can be made.
 			 */
 			items: {
 				type: Array,
-				value: function () {
+				value() {
 					return [];
 				},
 				notify: true,
@@ -404,8 +384,6 @@
 		 */
 		_updateSelected(selected = this.selected) {
 			this._setSelectedNext((this.selected || 0) + 1);
-			this._setPrevDisabled(this.selected === 0);
-			this._setNextDisabled(this.selectedNext >= this.items.length);
 
 			const element =  this._elements[selected % this._elementsBuffer];
 
