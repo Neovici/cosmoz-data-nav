@@ -533,13 +533,13 @@
 				return;
 			}
 			const path = Polymer.dom(event).path,
-				attr = this.selectAttribute;
+				attr = this.selectAttribute,
+				selectEl = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
 
-			let select = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
-			if (!select || select.closest(this.is) !== this) {
+			if (!selectEl || path.slice(path.indexOf(selectEl)).find(e => e.is && e.is === this.is) !== this) {
 				return;
 			}
-			select = parseInt(select.getAttribute(attr), 10);
+			let select = parseInt(selectEl.getAttribute(attr), 10);
 			if (isNaN(select)) {
 				return;
 			}
