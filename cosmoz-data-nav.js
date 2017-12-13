@@ -3,7 +3,17 @@
 
 (function () {
 	'use strict';
-	const IS_V2 = Polymer.flush != null;
+	const  _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
+		_asyncPeriod = function (cb, minimum = 5) {
+			return _async(function (deadline) {
+				if (deadline && 'IdleDeadline' in window && deadline instanceof window.IdleDeadline && deadline.timeRemaining() < minimum) {
+					_asyncPeriod(cb, minimum);
+					return;
+				}
+				cb();
+			});
+		},
+		IS_V2 = Polymer.flush != null;
 
 	Polymer({
 		is: 'cosmoz-data-nav',
@@ -162,6 +172,8 @@
 			this._cache = {};
 			this._elements = [];
 			this._elementsBuffer = 3;
+			this._spawn = this._spawn.bind(this);
+			this._spawnSteps = Array(this._elementsBuffer).fill(this._createElement);
 		},
 
 		/**
@@ -191,7 +203,7 @@
 				return;
 			}
 			const templates = change.addedNodes.filter(n => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE'),
-				elementTemplate = templates.find(n => n.matches(':not(incomplete)')),
+				elementTemplate = templates.find(n => n.matches(':not([incomplete])')),
 				incompleteTemplate = templates.find(n => n.matches('[incomplete]')) || this.$.incompleteTemplate;
 
 			if (!elementTemplate) {
@@ -207,7 +219,7 @@
 				[this.indexAs]: true
 			};
 			this._elementCtor = Cosmoz.Templatize.templatize(this._elementTemplate, this, {
-				instanceProps: Object.assign({[this.indexAs]: true}, baseProps),
+				instanceProps: Object.assign({[this.as]: true}, baseProps),
 				parentModel: true,
 				forwardParentProp: this._forwardHostProp,
 				forwardParentPath: this._forwardParentPath,
@@ -223,14 +235,18 @@
 				forwardHostProp: this._forwardHostProp,
 			});
 
-			Array(this._elementsBuffer).fill(null).forEach(this._createElement, this);
+			_asyncPeriod(this._spawn, 10);
 		},
 
 		get _allInstances() {
-			return this._elements.reduce((p, n) => p.concat([n.__instance, n.__incomplete]), []).filter(i => i != null);
+			return this._elements
+				.reduce((p, n) => p.concat([n.__instance, n.__incomplete]), [])
+				.filter(i => i != null);
 		},
 		get _allElementInstances() {
-			return this._elements.map(e => e.__instance).filter(i => i != null);
+			return this._elements
+				.map(e => e.__instance)
+				.filter(i => i != null);
 		},
 
 		_forwardParentPath(path, value) {
@@ -249,7 +265,7 @@
 			instances.forEach(inst => IS_V2 ? inst.forwardHostProp(prop, value) : inst[prop] = value);
 		},
 
-		_notifyInstanceProp: function (inst, prop, value) {
+		_notifyInstanceProp(inst, prop, value) {
 			const items = this.items,
 				index = inst.index;
 			if (prop !== this.as || value === items[index] || this._allElementInstances.indexOf(inst) < 0) {
@@ -257,6 +273,18 @@
 			}
 			this.removeFromCache(items[index]);
 			this.set(['items', index], value);
+		},
+
+		_spawn() {
+			if (!this.isAttached) {
+				return;
+			}
+			const step = this._spawnSteps.shift();
+			if (!step) {
+				return;
+			}
+			step.call(this);
+			_asyncPeriod(this._spawn, 10);
 		},
 
 		_createElement() {
