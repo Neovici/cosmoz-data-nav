@@ -435,8 +435,8 @@
 				const classes = el.classList;
 				classes.remove('in', 'out');
 			});
-			this._notifyElementResize(this._selectedElement);
 			this._synchronize();
+			this._notifyElementResize(this._selectedElement);
 			this._preload();
 		},
 
@@ -593,7 +593,6 @@
 			Polymer.IronResizableBehavior.notifyResize.call(this);
 		},
 
-
 		/**
 		 * Notifies a descendant resizable of the element.
 		 *
@@ -604,9 +603,20 @@
 			if (!this.isAttached) {
 				return;
 			}
-			const resizable = this._interestedResizables.find(resizable =>
-				resizable.closest('.animatable') === element
-			);
+			const	resizable = this._interestedResizables.find(resizable => {
+				const instance = element.__instance,
+					children = IS_V2 ? instance.children : instance._children;
+				return Array.prototype.some.call(children, child => {
+					let parent = resizable;
+					while (parent && parent !== this) {
+						if (parent === child) {
+							return true;
+						}
+						parent = parent.parentNode;
+					}
+					return false;
+				});
+			});
 
 			if (!resizable) {
 				return;
