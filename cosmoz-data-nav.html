@@ -3,7 +3,8 @@
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="./cosmoz-templatize.html">
-
+<link rel="import" href="../cosmoz-bottom-bar/cosmoz-bottom-bar-view.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <!--
 `cosmoz-data-nav` provides a way to show each individual item of a list in a queue-style behavior
 to the user.
@@ -89,6 +90,20 @@ Example:
 		<div id="items">
 			<slot></slot>
 		</div>
+		<template id="incomplete">
+			<div incomplete visible$="[[ incomplete ]]">
+				<cosmoz-bottom-bar-view active>
+					<div slot="scroller-content" class="layout horizontal center-justified center">
+						<paper-spinner-lite active></paper-spinner-lite>
+						<div style="margin-left: 10px">
+							<h3>[[ _('Data is updating', t) ]]</h3>
+						</div>
+					</div>
+					<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+					<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1">></paper-icon-button>
+				</cosmoz-bottom-bar-view>
+			</div>
+		</template>
 	</template>
 	<script type="text/javascript" src="cosmoz-data-nav.js"></script>
 </dom-module>
