@@ -499,7 +499,7 @@
 			this._removeInstance(currentInstance);
 
 			let instance = new this._elementCtor({});
-			Object.assign(instance, { [this.as]: item }, baseProps);
+			Object.assign(instance, incomplete ? {} : { [this.as]: item }, baseProps);
 
 			element.__instance = instance;
 			element.item = item;
