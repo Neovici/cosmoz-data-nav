@@ -3,12 +3,14 @@
 
 (function () {
 	'use strict';
-	const _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
-		_asyncPeriod = function (cb, minimum = 5) {
+	const _idle = window.requestIdleCallback,
+		_hasDeadline = 'IdleDeadline' in window,
+		_async = _idle || window.requestAnimationFrame || Polymer.Base.async,
+		_asyncPeriod = !_idle || !_hasDeadline ? _async : function (cb, minimum) {
 			return _async(function (deadline) {
-				if (deadline && 'IdleDeadline' in window && deadline instanceof window.IdleDeadline && deadline.timeRemaining() < minimum) {
-					_asyncPeriod(cb, minimum);
-					return;
+				if (deadline.timeRemaining() < minimum) {
+					//Not enough time to perform action.
+					return _asyncPeriod(cb, minimum);
 				}
 				cb();
 			});
