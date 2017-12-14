@@ -3,18 +3,18 @@
 
 (function () {
 	'use strict';
-	const _idle = window.requestIdleCallback,
+	const _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
 		_hasDeadline = 'IdleDeadline' in window,
-		_async = _idle || window.requestAnimationFrame || Polymer.Base.async,
-		_asyncPeriod = !_idle || !_hasDeadline ? _async : function (cb, minimum) {
-			return _async(function (deadline) {
-				if (deadline.timeRemaining() < minimum) {
-					//Not enough time to perform action.
-					return _asyncPeriod(cb, minimum);
+		_asyncPeriod = (cb, minimum = 5) =>
+			_async(deadline => {
+				if (_hasDeadline && deadline != null) {
+					const _isDeadline = deadline instanceof window.IdleDeadline;
+					if (_isDeadline && deadline.timeRemaining() < minimum) {
+						return _asyncPeriod(cb, minimum);
+					}
 				}
 				cb();
-			});
-		},
+			}),
 		IS_V2 = Polymer.flush != null;
 
 	Polymer({
@@ -538,10 +538,19 @@
 				attr = this.selectAttribute,
 				selectEl = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
 
-			if (!selectEl || path.slice(path.indexOf(selectEl)).find(e => e.is && e.is === this.is) !== this) {
+			if (!selectEl) {
 				return;
 			}
-			let select = parseInt(selectEl.getAttribute(attr), 10);
+			let inBetween = path.slice(path.indexOf(selectEl)),
+				ancestorNav = inBetween.find(e => e.is && e.is === this.is),
+				select;
+
+			if (ancestorNav !== this) {
+				return;
+			}
+
+			select = parseInt(selectEl.getAttribute(attr), 10);
+
 			if (isNaN(select)) {
 				return;
 			}
