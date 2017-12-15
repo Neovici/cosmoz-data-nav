@@ -15,7 +15,17 @@
 				}
 				cb();
 			}),
-		IS_V2 = Polymer.flush != null;
+		IS_V2 = Polymer.flush != null,
+		_doAsyncSteps = (steps, minDeadline) => {
+			if (!Array.isArray(steps) || steps.length < 1) {
+				return;
+			}
+			const step = steps.shift();
+			_asyncPeriod(() => {
+				step();
+				_doAsyncSteps(steps, minDeadline);
+			}, minDeadline);
+		};
 
 	Polymer({
 		is: 'cosmoz-data-nav',
@@ -59,12 +69,17 @@
 				readOnly: true
 			},
 
+			elementsBuffer: {
+				type: Number,
+				value: 3
+			},
+
 			/**
 			 * Number of items after the currently selected one to preload.
 			 */
 			preload: {
 				type: Number,
-				value: 2
+				value: 1
 			},
 
 			/**
@@ -153,9 +168,6 @@
 		created() {
 			this._cache = {};
 			this._elements = [];
-			this._elementsBuffer = 3;
-			this._spawn = this._spawn.bind(this);
-			this._spawnSteps = Array(this._elementsBuffer).fill(this._createElement);
 		},
 
 		/**
@@ -193,7 +205,9 @@
 				return;
 			}
 			this._templatize(elementTemplate, incompleteTemplate);
-			_asyncPeriod(this._spawn, 10);
+
+			const steps = Array(this.elementsBuffer).fill(this._createElement.bind(this));
+			_doAsyncSteps(steps, 10);
 		},
 
 		_templatize(elementTemplate, incompleteTemplate) {
@@ -260,19 +274,11 @@
 			this.set(['items', index], value);
 		},
 
-		_spawn() {
-			if (!this.isAttached) {
-				return;
-			}
-			const step = this._spawnSteps.shift();
-			if (!step) {
-				return;
-			}
-			step.call(this);
-			_asyncPeriod(this._spawn, 10);
-		},
-
 		_createElement() {
+			if (this._elements.length >= this.elementsBuffer) {
+				return;
+			}
+
 			const elements = this._elements,
 				index = elements.length,
 				element = document.createElement('div'),
@@ -334,7 +340,7 @@
 			if (index === this.selected) {
 				return this._updateSelected();
 			}
-			this._synchronize();
+			this._synchronizeIndex(index);
 		},
 
 		clearCache() {
@@ -390,7 +396,7 @@
 		_updateSelected(selected = this.selected) {
 			this._setSelectedNext((this.selected || 0) + 1);
 
-			const element =  this._elements[selected % this._elementsBuffer];
+			const element =  this._elements[selected % this.elementsBuffer];
 
 			if (!element) {
 				return;
@@ -614,20 +620,26 @@
 			if (!this.isAttached) {
 				return;
 			}
-			const	resizable = this._interestedResizables.find(resizable => {
-				const instance = element.__instance,
-					children = IS_V2 ? instance.children : instance._children;
-				return Array.prototype.some.call(children, child => {
-					let parent = resizable;
-					while (parent && parent !== this) {
-						if (parent === child) {
-							return true;
+
+			const instance = element.__instance;
+
+			if (instance == null) {
+				return;
+			}
+
+			const children = IS_V2 ? instance.children : instance._children,
+				resizable = this._interestedResizables.find(resizable => {
+					return Array.prototype.some.call(children, child => {
+						let parent = resizable;
+						while (parent && parent !== this) {
+							if (parent === child) {
+								return true;
+							}
+							parent = parent.parentNode;
 						}
-						parent = parent.parentNode;
-					}
-					return false;
+						return false;
+					});
 				});
-			});
 
 			if (!resizable) {
 				return;
@@ -662,24 +674,32 @@
 		* @return {type}  description
 		*/
 		_synchronize() {
-			const elements = this._elements,
-				buffer = this._elementsBuffer,
+			if (this._elements == null || this.elementsBuffer == null) {
+				return;
+			}
+			const buffer = this.elementsBuffer,
 				offset = buffer / 2 >> 0,
 				max = Math.max,
 				min = Math.min,
 				length = this.items.length,
-				end = max(min(this.selected + offset, length ? length - 1 : 0), buffer - 1);
+				end = max(min(this.selected + offset, length ? length - 1 : 0), buffer - 1),
+				index = min(max(this.selected - offset, 0), length ? length - buffer : 0),
+				numSteps = end - index;
 
-			let index = min(max(this.selected - offset, 0), length ? length - buffer : 0);
+			Array(numSteps).fill().map((u, idx) => this._synchronizeIndex(idx));
+		},
 
-			for (; index <= end; index++) {
-				let element = elements[ index % buffer],
-					item =  this.items[index];
-				if (!element) {
-					continue;
-				}
-				this._forwardItem(element, item);
+		_synchronizeIndex(index) {
+			const element = this._elements[index % this.elementsBuffer],
+				item = this.items[index];
+			if (!element) {
+				return;
 			}
+			if (element.__instance && element.__instance[this.as] === item) {
+				// already rendered
+				return;
+			}
+			_asyncPeriod(() => this._forwardItem(element, item), 10);
 		}
 	});
 }());
