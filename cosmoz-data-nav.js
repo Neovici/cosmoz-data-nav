@@ -5,7 +5,7 @@
 	'use strict';
 	const _async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
 		_hasDeadline = 'IdleDeadline' in window,
-		_asyncPeriod = (cb, minimum = 5) =>
+		_asyncPeriod = (cb, minimum = 16) =>
 			_async(deadline => {
 				if (_hasDeadline && deadline != null) {
 					const _isDeadline = deadline instanceof window.IdleDeadline;
@@ -16,7 +16,7 @@
 				cb();
 			}),
 		IS_V2 = Polymer.flush != null,
-		_doAsyncSteps = (steps, minDeadline) => {
+		_doAsyncSteps = (steps, minDeadline = 16) => {
 			if (!Array.isArray(steps) || steps.length < 1) {
 				return;
 			}
@@ -144,9 +144,7 @@
 			isIncompleteFn: {
 				type: Function,
 				value() {
-					return  item => {
-						return item == null || typeof item !== 'object';
-					};
+					return item => item == null || typeof item !== 'object';
 				}
 			}
 		},
@@ -207,7 +205,7 @@
 			this._templatize(elementTemplate, incompleteTemplate);
 
 			const steps = Array(this.elementsBuffer).fill(this._createElement.bind(this));
-			_doAsyncSteps(steps, 10);
+			_doAsyncSteps(steps);
 		},
 
 		_templatize(elementTemplate, incompleteTemplate) {
@@ -297,7 +295,7 @@
 				this._updateSelected();
 				return;
 			}
-			this._forwardItem(element, this.items[index]);
+			this._synchronize();
 		},
 
 		/**
@@ -340,7 +338,7 @@
 			if (index === this.selected) {
 				return this._updateSelected();
 			}
-			this._synchronizeIndex(index);
+			this._synchronize();
 		},
 
 		clearCache() {
@@ -396,7 +394,7 @@
 		_updateSelected(selected = this.selected) {
 			this._setSelectedNext((this.selected || 0) + 1);
 
-			const element =  this._elements[selected % this.elementsBuffer];
+			const element = this._elements[selected % this.elementsBuffer];
 
 			if (!element) {
 				return;
@@ -477,6 +475,34 @@
 			this._preload();
 		},
 
+		_getBaseProps(index) {
+			return {
+				prevDisabled: index < 1,
+				nextDisabled: index + 1  >= this.items.length,
+				[this.indexAs]: Math.max(index, 0)
+			};
+		},
+
+		_toggleInstance(element, index, incomplete) {
+			if (element.__instanceActive === !incomplete) {
+				return;
+			}
+
+			const baseProps = this._getBaseProps(index);
+
+			element.__instanceActive = !incomplete;
+
+			if (element.__incomplete) {
+				element.__incomplete._showHideChildren(!incomplete);
+				Object.assign(element.__incomplete, baseProps);
+			}
+
+			if (element.__instance) {
+				element.__instance._showHideChildren(incomplete);
+				Object.assign(element.__instance, baseProps);
+			}
+		},
+
 		/**
 		 * Forwards an item from `items` property to a template instance.
 		 *
@@ -485,35 +511,24 @@
 		 * @return {void}
 		 */
 		_forwardItem(element, item) {
-			const items = this.items,
-				index = items.indexOf(item),
-				incomplete = this.isIncompleteFn(item),
-				incompleteInstance = element.__incomplete,
-				currentInstance = element.__instance,
-				baseProps = {
-					prevDisabled: index < 1,
-					nextDisabled: index + 1  >= items.length,
-					[this.indexAs]: Math.max(index, 0)
-				};
-
-			incompleteInstance._showHideChildren(!incomplete);
-			Object.assign(incompleteInstance, baseProps);
-			if (currentInstance && (incomplete || element.item === item)) {
-				currentInstance._showHideChildren(incomplete);
-				Object.assign(currentInstance, baseProps);
+			if (element.item === item) {
+				// already rendered
 				return;
 			}
 
-			this._removeInstance(currentInstance);
+			this._removeInstance(element.__instance);
 
-			let instance = new this._elementCtor({});
-			Object.assign(instance, incomplete ? {} : { [this.as]: item }, baseProps);
+			const items = this.items,
+				index = items.indexOf(item),
+				instance = new this._elementCtor({});
+
+			Object.assign(instance, { [this.as]: item }, this._getBaseProps(index));
 
 			element.__instance = instance;
 			element.item = item;
 
 			Polymer.dom(element).appendChild(instance.root);
-			instance._showHideChildren(incomplete);
+			instance._showHideChildren(false);
 		},
 
 		_removeInstance(instance) {
@@ -684,22 +699,82 @@
 				length = this.items.length,
 				end = max(min(this.selected + offset, length ? length - 1 : 0), buffer - 1),
 				index = min(max(this.selected - offset, 0), length ? length - buffer : 0),
-				numSteps = end - index;
+				numSteps = end - index + 1;
 
-			Array(numSteps).fill().map((u, idx) => this._synchronizeIndex(idx));
+			this._indexRenderQueue = Array(numSteps).fill().map((u, idx) => index + idx);
+			this._renderQueue();
 		},
 
-		_synchronizeIndex(index) {
-			const element = this._elements[index % this.elementsBuffer],
-				item = this.items[index];
-			if (!element) {
+		_renderQueue() {
+
+			const queue = this._indexRenderQueue;
+
+			if (!Array.isArray(queue) || queue.length < 1) {
+				// no tasks in queue
 				return;
 			}
-			if (element.__instance && element.__instance[this.as] === item) {
-				// already rendered
+
+			if (!Array.isArray(this._elements) || this._elements.length < 1) {
+				// no elements to render to
+				// will be re-run when elements are created
 				return;
 			}
-			_asyncPeriod(() => this._forwardItem(element, item), 10);
+
+			if (this.animating) {
+				// will be re-run on transition end
+				return;
+			}
+
+			let renderRun = false,
+				reRun = true;
+
+			this._indexRenderQueue = queue
+				.sort((a, b) => a === this.selected ? -1 : b === this.selected ? 1 : 0)
+				.map(idx => {
+
+					const elementIndex = idx % this.elementsBuffer,
+						element = this._elements[elementIndex],
+						item = this.items[idx];
+
+					if (!element) {
+						// don't re-run _renderQueue()
+						// will be re-run when elements are created
+						reRun = false;
+						// maintain task in queue
+						return idx;
+					}
+
+					const incomplete = this.isIncompleteFn(item);
+					this._toggleInstance(element, idx, incomplete);
+
+					if (incomplete) {
+						// no data for item, instance has been toggled
+						// drop task from queue
+						return;
+					}
+
+					if (element.item === item) {
+						// already rendered
+						// drop task from queue
+						return;
+					}
+
+					if (renderRun) {
+						// one render per run
+						// maintain task in queue
+						return idx;
+					}
+
+					this._forwardItem(element, item);
+					renderRun = true;
+				})
+				.filter(idx => idx != null);
+
+			if (!reRun) {
+				return;
+			}
+
+			_asyncPeriod(this._renderQueue.bind(this));
 		}
 	});
 }());
