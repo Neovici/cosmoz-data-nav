@@ -626,11 +626,11 @@
 		/**
 		 * Check if a element is a descendant of the currently selected element.
 		 *
-		 * @param  {HTMLElement} element A descendant resizable element
+		 * @param  {HTMLElement} resizable A descendant resizable element
 		 * @return {Boolean} True if the element should be notified
 		 */
-		resizerShouldBeNotified(element) {
-			return element.closest('.animatable')  === this._selectedElement;
+		resizerShouldBeNotified(resizable) {
+			return this._isDescendantOfElementInstance(resizable, this._selectedElement);
 		},
 
 
