@@ -594,6 +594,35 @@
 			return Boolean(this.offsetWidth || this.offsetHeight);
 		},
 
+		_isDescendantOf(descendant, ancestor, limit = this) {
+			let parent = descendant;
+			while (parent && parent !== limit) {
+				if (parent === ancestor) {
+					return true;
+				}
+				parent = parent.parentNode;
+				if (parent == null) {
+					parent = parent instanceof ShadowRoot && parent.host;
+				}
+			}
+			return false;
+		},
+
+		_isDescendantOfElementInstance(descendant, element) {
+			if (!element) {
+				return;
+			}
+			const instance = element.__instance;
+
+			if (!instance) {
+				return;
+			}
+
+			return Array.from(IS_V2 ? instance.children : instance._children)
+				.filter(c => c.nodeType === Node.ELEMENT_NODE)
+				.some(child => this._isDescendantOf(descendant, child));
+		},
+
 		/**
 		 * Check if a element is a descendant of the currently selected element.
 		 *
