@@ -723,6 +723,15 @@
 				}
 			}
 		},
+		_forwardItem(element, item, idx) {
+			this._removeInstance(element.__instance);
+			const instance = new this._elementCtor({});
+			Object.assign(instance, { [this.as]: item }, this._getBaseProps(idx));
+
+			element.__instance = instance;
+			element.item = item;
+			Polymer.dom(element).appendChild(instance.root);
+		},
 
 		_renderQueue() {
 			const queue = this._indexRenderQueue;
@@ -789,20 +798,15 @@
 						return;
 					}
 
-					console.warn('stamping', idx);
-					this._removeInstance(element.__instance);
-					const instance = new this._elementCtor({});
-					Object.assign(instance, { [this.as]: item }, this._getBaseProps(idx));
-
-					element.__instance = instance;
-					element.item = item;
-					Polymer.dom(element).appendChild(instance.root);
+					this._forwardItem(element, item, idx);
 
 					renderRun = idx !== this.selected;
+
 					if (!renderRun) {
 						// needs resizing
 						return idx;
 					}
+
 					element._reset = false;
 				})
 				.filter(idx => idx != null);
