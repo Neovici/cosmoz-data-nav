@@ -649,7 +649,6 @@
 			if (Polymer.Settings.useShadow && event.target.domHost === this) {
 				return;
 			}
-
 			this._fireResize();
 		},
 
@@ -668,38 +667,28 @@
 		 * Notifies a descendant resizable of the element.
 		 *
 		 * @param  {HTMLElement} element The element to search within for a resizable
-		 * @return {void}
+		 * @return {Boolean|void} True if descendant has been notified.
 		 */
-		_notifyElementResize(element) {
-			if (!this.isAttached) {
+		_notifyElementResize(element = this._selectedElement) {
+			if (!this.isAttached || !element) {
 				return;
 			}
 
 			const instance = element.__instance;
 
-			if (instance == null) {
+			if (instance == null || instance.__resized) {
 				return;
 			}
 
-			const children = IS_V2 ? instance.children : instance._children,
-				resizable = this._interestedResizables.find(resizable => {
-					return Array.prototype.some.call(children, child => {
-						let parent = resizable;
-						while (parent && parent !== this) {
-							if (parent === child) {
-								return true;
-							}
-							parent = parent.parentNode;
-						}
-						return false;
-					});
-				});
+			const resizable = this._interestedResizables
+				.find(resizable => this._isDescendantOfElementInstance(resizable, element));
 
 			if (!resizable) {
 				return;
 			}
 
 			this._notifyDescendant(resizable);
+			return instance.__resized = true;
 		},
 
 		/**
