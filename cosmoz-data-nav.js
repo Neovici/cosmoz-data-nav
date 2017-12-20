@@ -631,6 +631,10 @@
 			Polymer.IronResizableBehavior.notifyResize.call(this);
 		},
 
+		resizerShouldNotify() {
+			return false; //handle resize manually
+		},
+
 		/**
 		 * Notifies a descendant resizable of the element.
 		 *
