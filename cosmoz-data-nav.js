@@ -673,24 +673,24 @@
 		 * Notifies a descendant resizable of the element.
 		 *
 		 * @param  {HTMLElement} element The element to search within for a resizable
-		 * @return {Boolean|void} True if descendant has been notified.
+		 * @return {Boolean} True if descendant has been notified.
 		 */
 		_notifyElementResize(element = this._selectedElement) {
 			if (!this.isAttached || !element) {
-				return;
+				return false;
 			}
 
 			const instance = element.__instance;
 
 			if (instance == null || instance.__resized) {
-				return;
+				return false;
 			}
 
 			const resizable = this._interestedResizables
 				.find(resizable => this._isDescendantOfElementInstance(resizable, element));
 
 			if (!resizable) {
-				return;
+				return false;
 			}
 
 			this._notifyDescendant(resizable);
