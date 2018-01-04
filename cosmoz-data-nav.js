@@ -608,14 +608,20 @@
 			return false;
 		},
 
+		/**
+		 * Check if a element is a descendant of another element
+		 * @param {HTMLElement} descendant Element to test
+		 * @param {HTMLElement} element Ancestor element
+		 * @returns {Boolean} True if  element is a descendant
+		 */
 		_isDescendantOfElementInstance(descendant, element) {
 			if (!element) {
-				return;
+				return false;
 			}
 			const instance = element.__instance;
 
 			if (!instance) {
-				return;
+				return false;
 			}
 
 			return Array.from(IS_V2 ? instance.children : instance._children)
