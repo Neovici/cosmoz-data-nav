@@ -501,7 +501,6 @@
 				return;
 			}
 			element._reset = true;
-			console.log('resetting item', index);
 
 			const baseProps = this._getBaseProps(index),
 				incomplete = element.__incomplete,
