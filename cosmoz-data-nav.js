@@ -753,17 +753,12 @@
 			}
 
 			const selected = this.selected;
-			if (selected) {
-				const selectedIndex = queue.indexOf(selected);
-				if (selectedIndex > 0) {
-					queue.unshift(...queue.splice(selectedIndex, 1));
-				}
-			}
 
 			let renderRun = false,
 				reRun = true;
 
 			this._indexRenderQueue = queue
+				.sort((a, b) => a === selected ? -1 : b === selected ? 1 : 0)
 				.map(idx => {
 
 					const elementIndex = idx % this.elementsBuffer,
