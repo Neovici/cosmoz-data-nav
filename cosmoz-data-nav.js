@@ -722,6 +722,7 @@
 				}
 			}
 		},
+
 		_forwardItem(element, item, idx) {
 			this._removeInstance(element.__instance);
 			const instance = new this._elementCtor({});
@@ -729,6 +730,7 @@
 
 			element.__instance = instance;
 			element.item = item;
+			element._reset = false;
 			Polymer.dom(element).appendChild(instance.root);
 		},
 
@@ -764,11 +766,6 @@
 						element = this._elements[elementIndex],
 						item = this.items[idx];
 
-					if (renderRun) {
-						// one render per run
-						// maintain task in queue
-						return idx;
-					}
 					if (!element) {
 						// don't re-run _renderQueue()
 						// will be re-run when elements are created
@@ -783,25 +780,27 @@
 						return;
 					}
 
+					if (renderRun) {
+						// one render per run
+						// maintain task in queue
+						return idx;
+					}
+
 					element.__incomplete._showHideChildren(true);
 
 					if (element.item === item) {
-						renderRun = idx === this.selected && this._notifyElementResize();
-						// try to resize
-						// drop task from queue
+						if (idx === selected) {
+							renderRun = this._notifyElementResize();
+						}
 						return;
 					}
 
 					this._forwardItem(element, item, idx);
-
-					renderRun = idx !== this.selected;
-
-					if (!renderRun) {
-						// needs resizing
+					renderRun = true;
+					if (idx === selected) {
+						// keep in queue to resize
 						return idx;
 					}
-
-					element._reset = false;
 				})
 				.filter(idx => idx != null);
 
