@@ -795,19 +795,16 @@
 
 			element.__incomplete._showHideChildren(true);
 
-			if (element.item === item) {
-				if (idx === this.selected) {
-					this._renderRan = this._notifyElementResize();
+			const isSelected = idx === this.selected,
+				needsRender  = element.item !== item;
+
+			this._renderRan = needsRender || isSelected && this._notifyElementResize();
+
+			if (needsRender) {
+				this._forwardItem(element, item, idx);
+				if (isSelected) {
+					return idx;
 				}
-				return;
-			}
-
-			this._forwardItem(element, item, idx);
-			this._renderRan = true;
-
-			if (idx === this.selected) {
-				// keep in queue to resize
-				return idx;
 			}
 		}
 	});
