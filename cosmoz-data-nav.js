@@ -761,7 +761,7 @@
 				.map(this._renderQueueProcess, this)
 				.filter(idx => idx != null);
 
-			if (this._renderAbort || this._indexRenderQueue.length > 0) {
+			if (this._renderAbort || this._indexRenderQueue.length === 0) {
 				return;
 			}
 
@@ -769,10 +769,6 @@
 		},
 
 		_renderQueueProcess(idx) {
-			if (this._renderAbort) {
-				return;
-			}
-
 			const element = this._getElement(idx),
 				item = this.items[idx];
 
