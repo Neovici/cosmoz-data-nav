@@ -246,6 +246,7 @@
 				.reduce((p, n) => p.concat([n.__instance, n.__incomplete]), [])
 				.filter(i => i != null);
 		},
+
 		get _allElementInstances() {
 			return this._elements
 				.map(e => e.__instance)
@@ -753,58 +754,60 @@
 				return;
 			}
 
-			let renderRun = false,
-				reRun = true;
-			const selected = this.selected;
+			this._renderRan = this._renderAbort = false;
 
 			this._indexRenderQueue = queue
-				.sort((a, b) => a === selected ? -1 : b === selected ? 1 : 0)
-				.map(idx => {
-
-					const elementIndex = idx % this.elementsBuffer,
-						element = this._elements[elementIndex],
-						item = this.items[idx];
-
-					if (!element) {
-						// don't re-run _renderQueue()
-						// will be re-run when elements are created
-						reRun = false;
-						// maintain task in queue
-						return idx;
-					}
-
-					if (this.isIncompleteFn(item)) {
-						element.item = false;
-						// no data for item drop task from queue
-						return;
-					}
-
-					if (renderRun) {
-						// one render per run
-						// maintain task in queue
-						return idx;
-					}
-
-					element.__incomplete._showHideChildren(true);
-
-					if (element.item === item) {
-						if (idx === selected) {
-							renderRun = this._notifyElementResize();
-						}
-						return;
-					}
-
-					this._forwardItem(element, item, idx);
-					renderRun = true;
-					if (idx === selected) {
-						// keep in queue to resize
-						return idx;
-					}
-				})
+				.sort((a, b) => a === this.selected ? -1 : b === this.selected ? 1 : 0)
+				.map(this._renderQueueProcess, this)
 				.filter(idx => idx != null);
 
-			if (reRun) {
-				_asyncPeriod(this._renderQueue.bind(this));
+			if (this._renderAbort || this._indexRenderQueue.length > 0) {
+				return;
+			}
+
+			_asyncPeriod(this._renderQueue.bind(this));
+		},
+
+		_renderQueueProcess(idx) {
+			if (this._renderAbort) {
+				return;
+			}
+
+			const element = this._getElement(idx),
+				item = this.items[idx];
+
+			if (!element) {
+				this._renderAbort = true;
+				return;
+			}
+
+			if (this.isIncompleteFn(item)) {
+				element.item = false;
+				// no data for item drop task from queue
+				return;
+			}
+
+			if (this._renderRan) {
+				// one render per run
+				// maintain task in queue
+				return idx;
+			}
+
+			element.__incomplete._showHideChildren(true);
+
+			if (element.item === item) {
+				if (idx === this.selected) {
+					this._renderRan = this._notifyElementResize();
+				}
+				return;
+			}
+
+			this._forwardItem(element, item, idx);
+			this._renderRan = true;
+
+			if (idx === this.selected) {
+				// keep in queue to resize
+				return idx;
 			}
 		}
 	});
