@@ -342,7 +342,7 @@
 				return;
 			}
 			if (this.selected !== index) {
-				this._synchronize();
+				return this._synchronize();
 			}
 
 			this._updateSelected();
@@ -753,10 +753,9 @@
 				return;
 			}
 
-			const selected = this.selected;
-
 			let renderRun = false,
 				reRun = true;
+			const selected = this.selected;
 
 			this._indexRenderQueue = queue
 				.sort((a, b) => a === selected ? -1 : b === selected ? 1 : 0)
@@ -804,11 +803,9 @@
 				})
 				.filter(idx => idx != null);
 
-			if (!reRun) {
-				return;
+			if (reRun) {
+				_asyncPeriod(this._renderQueue.bind(this));
 			}
-
-			_asyncPeriod(this._renderQueue.bind(this));
 		}
 	});
 }());
