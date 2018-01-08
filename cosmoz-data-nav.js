@@ -189,6 +189,7 @@
 				this._templatesObserver = null;
 			}
 			this._cache = {};
+			this._indexRenderQueue.splice(0);
 		},
 
 		_onTemplatesChange(change) {
