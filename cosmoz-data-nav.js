@@ -189,7 +189,7 @@
 				this._templatesObserver = null;
 			}
 			this._cache = {};
-			this._indexRenderQueue.splice(0);
+			this._indexRenderQueue = [];
 		},
 
 		_onTemplatesChange(change) {
