@@ -206,13 +206,13 @@
 			}
 			this._templatize(elementTemplate, incompleteTemplate);
 
-			const steps = Array(this.elementsBuffer).fill(this._createElement.bind(this));
+			const steps = Array(this.elementsBuffer).fill(this._createElement.bind(this)),
+				first = steps.shift();
 
-			if (this._isVisible) {
-				steps.shift().call();
-			}
-
-			_doAsyncSteps(steps);
+			_asyncPeriod(() => {
+				first.call();
+				_doAsyncSteps(steps);
+			}, 16, 200);
 		},
 
 		_templatize(elementTemplate, incompleteTemplate) {
