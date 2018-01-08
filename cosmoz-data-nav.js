@@ -794,13 +794,16 @@
 			const isSelected = idx === this.selected,
 				needsRender  = element.item !== item;
 
-			this._renderRan = needsRender || isSelected && this._notifyElementResize();
+			this._renderRan = needsRender;
 
 			if (needsRender) {
 				this._forwardItem(element, item, idx);
 				if (isSelected) {
 					return idx;
 				}
+			} else if (isSelected) {
+				// resize is a expensive operation
+				this._renderRan = this._notifyElementResize();
 			}
 		}
 	});
