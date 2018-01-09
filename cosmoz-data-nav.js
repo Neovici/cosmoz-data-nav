@@ -6,20 +6,19 @@
 	const IS_V2 = Polymer.flush != null,
 		_async = window.requestIdleCallback || window.requestAnimationFrame || Polymer.Base.async,
 		_hasDeadline = 'IdleDeadline' in window,
-		_asyncPeriod = (cb, minimum = 16, timeout = 1500) => {
-			const start =  window.performance.now();
+		_asyncPeriod = (cb, timeout = 1500) => {
 			_async(() => cb(), _hasDeadline && { timeout });
 		},
-		_doAsyncSteps = (steps, minDeadline = 16, timeout) => {
+		_doAsyncSteps = (steps, timeout) => {
 			const callStep = () => {
 				if (!Array.isArray(steps) || steps.length < 1) {
 					return;
 				}
 				const step = steps.shift();
 				step();
-				_asyncPeriod(callStep, minDeadline, timeout);
+				_asyncPeriod(callStep, timeout);
 			};
-			return _asyncPeriod(callStep, minDeadline, timeout);
+			return _asyncPeriod(callStep, timeout);
 		};
 
 	Polymer({
@@ -206,7 +205,7 @@
 			_asyncPeriod(() => {
 				first.call();
 				_doAsyncSteps(steps);
-			}, 16, 200);
+			}, 200);
 		},
 
 		_templatize(elementTemplate, incompleteTemplate) {
