@@ -1,44 +1,89 @@
 <!doctype html>
 <html>
-	<head>
-		<title>cosmoz-data-nav-basic</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<head>
+	<title>cosmoz-data-nav-basic</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-		<script src="../../web-component-tester/browser.js"></script>
-		<script src="../../test-fixture/test-fixture-mocha.js"></script>
+	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../web-component-tester/browser.js"></script>
+	<script src="../../test-fixture/test-fixture-mocha.js"></script>
 
-		<link rel="import" href="../../test-fixture/test-fixture.html">
-		<link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
-		<link rel="import" href="../cosmoz-data-nav.html">
-		<link rel="import" href="./helpers/cosmoz-data-nav-test-view.html">
-	</head>
-	<body>
-		<test-fixture id="defaults">
-			<template>
-				<cosmoz-data-nav>
-					<template>
-						<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
-					</template>
-				</cosmoz-data-nav>
-			</template>
-		</test-fixture>
+	<link rel="import" href="../../test-fixture/test-fixture.html">
+	<link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
+	<link rel="import" href="../cosmoz-data-nav.html">
+	<link rel="import" href="./helpers/cosmoz-data-nav-test-view.html">
 
-		<script>
-			suite('defaults', function () {
-				var nav;
+	<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+	<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 
-				setup(function (done) {
-					nav = fixture('defaults');
-					done();
-				});
+	<custom-style>
+		<style is="custom-style" include="iron-flex iron-positioning">
+			cosmoz-data-nav {
+				display: block;
+				width: 455px;
+				height: 400px;
+				position: relative;
+			}
+		</style>
+	</custom-style>
+</head><body>
+	<test-fixture id="defaults">
+		<template>
+			<cosmoz-data-nav>
+				<template>
+					<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
+				</template>
+			</cosmoz-data-nav>
+		</template>
+	</test-fixture>
 
-				test('instantiates a cosmoz-data-nav element', function (done) {
-					assert.equal(nav.is, 'cosmoz-data-nav');
-					done();
-				});
+	<script>
+		suite('defaults', function () {
+			var nav;
+
+			this.timeout(9e1000);
+
+			setup(function (done) {
+				nav = fixture('defaults');
+				nav.items = Array(20).fill('').map((e, i) => i.toString());
+				nav._templatesObserver.flush ? nav._templatesObserver.flush() : Polymer.dom.flush();
+				nav._initSteps.splice(0).forEach((s)=>s.call());
+				done();
 			});
-		</script>
-	</body>
-</html>
+
+			test('instantiates a cosmoz-data-nav element', function () {
+				assert.equal(nav.is, 'cosmoz-data-nav');
+			});
+
+
+			test('creates buffer elements', function(){
+				assert.lengthOf(nav._elements, nav.elementsBuffer);
+			});
+
+			test('has template for elements', function(){
+				const template = nav.$.templatesSlot.querySelector('template');
+				assert.equal(template, nav._elementsTemplate);
+			});
+
+			test('has template for incomplete elements', function(){
+
+			});
+
+			test('buffer elements have incomplete content', function () {
+				nav._elements.forEach( element => assert.isNotNull(element.__incomplete));
+			});
+
+			test('buffer elements are not templatized without complete data', function(){
+				nav._elements.forEach( element => assert.isUndefined(element.__instance));
+			});
+
+			test('selects first element', function () {
+				assert.equal(nav.selected, 0);
+				const selectedEl = nav._getElement(nav.selected);
+				assert.include(nav._elements, selectedEl);
+			});
+
+		});
+	</script>
+</body></html>
