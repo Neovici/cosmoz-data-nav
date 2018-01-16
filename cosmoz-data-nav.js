@@ -330,14 +330,10 @@
 			}
 
 			this.set(['items', index], this._cache[id] = item);
-			this._isPreloading = false;
 			this._preload();
 
 			if (this.animating || this.selected == null) {
 				return;
-			}
-			if (this.selected !== index) {
-				return this._synchronize();
 			}
 
 			this._updateSelected();
@@ -381,8 +377,11 @@
 				});
 			}
 
-			this.selected = this._preloadIdx = 0;
-			this._preload();
+			if (this.selected === 0) {
+				return this._updateSelected();
+			}
+			this.selected = 0;
+
 		},
 
 		/**
@@ -397,11 +396,13 @@
 
 			const element = this._getElement(selected);
 
+			this._preload(selected);
+
 			if (!element) {
 				return;
 			}
 
-			let classes = element.classList,
+			const classes = element.classList,
 				prev = this._selectedElement;
 
 			if (!this.animating) {
@@ -414,8 +415,7 @@
 			this._selectedElement = element;
 
 			if (!this.animating) {
-				this._synchronize();
-				return;
+				return this._synchronize();
 			}
 
 			requestAnimationFrame(() => {
@@ -443,7 +443,6 @@
 			this.animating = false;
 			this._elements.forEach(el => el.classList.remove('in', 'out'));
 			this._synchronize();
-			this._preload();
 		},
 
 		/**
@@ -451,28 +450,28 @@
 		 * selected item and the `preload` property.
 		 *
 		 * @fires need-data
+		 * @param  {Number} index The index to preload from
 		 * @return {void}
 		 */
-		_preload() {
-			if (!Array.isArray(this.items) || this.items.length === 0 || this._isPreloading) {
+		_preload(index = this._preloadIdx) {
+			const items = this.items;
+
+			if (!Array.isArray(items) || items.length === 0) {
 				return;
 			}
 
-			const index = this._preloadIdx,
-				item = this.items[index];
+			const item = items[index];
 
 			if (this.isIncompleteFn(item)) {
-				this._isPreloading = true;
 				this.fire('need-data', { id: item, render: true });
 				return;
 			}
 
-			if (index >= Math.min(this.selected + this.preload, this.items.length - 1)) {
+			if (index >= Math.min(this.selected + this.preload, items.length - 1)) {
 				return;
 			}
 
-			this._synchronize();
-			this._preloadIdx++;
+			this._preloadIdx = index + 1;
 			this._preload();
 		},
 
