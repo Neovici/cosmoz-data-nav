@@ -263,7 +263,7 @@
 						content = view.$$('div.flex');
 					assert.equal(content.innerText, 77);
 					done();
-				}, 600);
+				}, 700);
 			});
 
 			test('selectById updates selected property', function () {
@@ -372,7 +372,23 @@
 					assert.deepEqual(elements[1].__instance.item, { id: 1 });
 					assert.deepEqual(elements[2].__instance.item, { id: 2 });
 					done();
-				}, 700);
+				}, 1000);
+			});
+
+			test('renderQueue five items', function (done) {
+				nav._elements.forEach(element => assert.isUndefined(element.__instance));
+				const ids = [0, 1, 2, 3, 4];
+				ids.forEach(function (id) {
+					nav.setItemById(id.toString(), { id: id });
+				});
+				Polymer.Base.async(function () {
+					const elements = nav._elements;
+					assert.equal(elements.length, 5);
+					elements.forEach(function (el, id) {
+						assert.deepEqual(el.__instance.item, { id: id });
+					});
+					done();
+				}, 1000);
 			});
 		});
 	}());
