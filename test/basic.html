@@ -37,6 +37,24 @@
 			</cosmoz-data-nav>
 		</template>
 	</test-fixture>
+	<test-fixture id="elementsBuffer">
+		<template>
+			<cosmoz-data-nav elements-buffer=4>
+				<template>
+					<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
+				</template>
+			</cosmoz-data-nav>
+		</template>
+	</test-fixture>
+	<test-fixture id="renderQueue">
+		<template>
+			<cosmoz-data-nav elements-buffer=5>
+				<template>
+					<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
+				</template>
+			</cosmoz-data-nav>
+		</template>
+	</test-fixture>
 
 	<script>
 	(function () {
@@ -245,7 +263,7 @@
 						content = view.$$('div.flex');
 					assert.equal(content.innerText, 77);
 					done();
-				}, 300);
+				}, 600);
 			});
 
 			test('selectById updates selected property', function () {
@@ -276,7 +294,85 @@
 					assert.deepEqual(nav.items[0], data);
 					done();
 				}, 400);
+			});
+		});
 
+		suite('elements buffer', function () {
+			var nav;
+
+			setup(function (done) {
+				nav = fixture('elementsBuffer');
+				nav.items = Array(10).fill('').map((e, i) => i.toString());
+				if (nav._templatesObserver.flush) {
+					nav._templatesObserver.flush();
+				} else {
+					Polymer.dom.flush();
+				}
+				nav._initSteps.splice(0).forEach(s => s.call());
+				done();
+			});
+
+			test('instantiates a cosmoz-data-nav element', function () {
+				assert.equal(nav.is, 'cosmoz-data-nav');
+			});
+
+			test('elementsBuffer property updates _elements', function () {
+				assert.equal(nav.elementsBuffer, 4);
+				assert.equal(nav._elements.length, 4);
+			});
+
+			test('_createElement does not create element if length is equal to elementsBuffer', function (done) {
+				assert.equal(nav.elementsBuffer, 4);
+				assert.equal(nav._elements.length, 4);
+
+				nav._createElement();
+				assert.equal(nav._elements.length, 4);
+				done();
+			});
+
+			test('_createElement adds new element', function (done) {
+				assert.equal(nav.elementsBuffer, 4);
+				assert.equal(nav._elements.length, 4);
+
+				nav.elementsBuffer = 5;
+				nav._createElement();
+				assert.equal(nav._elements.length, 5);
+				assert.equal(nav._elements[4].classList[0], 'animatable');
+				done();
+			});
+		});
+
+		suite('renderQueue', function () {
+			var nav;
+
+			setup(function (done) {
+				nav = fixture('renderQueue');
+				nav.items = Array(10).fill('').map((e, i) => i.toString());
+				if (nav._templatesObserver.flush) {
+					nav._templatesObserver.flush();
+				} else {
+					Polymer.dom.flush();
+				}
+				nav._initSteps.splice(0).forEach(s => s.call());
+				done();
+			});
+
+			test('instantiates a cosmoz-data-nav element', function () {
+				assert.equal(nav.is, 'cosmoz-data-nav');
+			});
+
+			test('renderQueue three items', function (done) {
+				nav._elements.forEach(element => assert.isUndefined(element.__instance));
+				nav.setItemById('0', { id: 0 });
+				nav.setItemById('1', { id: 1 });
+				nav.setItemById('2', { id: 2 });
+				Polymer.Base.async(function () {
+					const elements = nav._elements;
+					assert.deepEqual(elements[0].__instance.item, { id: 0 });
+					assert.deepEqual(elements[1].__instance.item, { id: 1 });
+					assert.deepEqual(elements[2].__instance.item, { id: 2 });
+					done();
+				}, 700);
 			});
 		});
 	}());
