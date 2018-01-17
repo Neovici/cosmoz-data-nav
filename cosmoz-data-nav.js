@@ -389,6 +389,7 @@
 		 * updates related properties and the `selected` page.
 		 *
 		 * @param  {Number} selected The selected property
+		 * @param  {Number} previous The previous value of selected property
 		 * @return {void}
 		 */
 		_updateSelected(selected = this.selected, previous) {
