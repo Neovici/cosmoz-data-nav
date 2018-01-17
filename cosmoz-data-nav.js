@@ -391,35 +391,33 @@
 		 * @param  {Number} selected The selected property
 		 * @return {void}
 		 */
-		_updateSelected(selected = this.selected) {
+		_updateSelected(selected = this.selected, previous) {
 			this._setSelectedNext((selected || 0) + 1);
+			this._preload(selected);
 
 			const element = this._getElement(selected);
-
-			this._preload(selected);
 
 			if (!element) {
 				return;
 			}
 
 			const classes = element.classList,
-				prev = this._selectedElement;
+				animating = this.animating && previous != null && previous !== selected,
+				prev = animating && this._getElement(previous);
 
-			if (!this.animating) {
+			if (!animating) {
 				this._elements.forEach(el => el.classList.remove('selected'));
 			}
 
 			classes.toggle('in', this.animating);
 			classes.add('selected');
 
-			this._selectedElement = element;
-
-			if (!this.animating) {
+			if (!animating) {
 				return this._synchronize();
 			}
 
 			requestAnimationFrame(() => {
-				if (prev && prev !== this._selectedElement && element.offsetWidth) {
+				if (prev && element.offsetWidth) {
 					prev.classList.add('out');
 					prev.classList.remove('selected');
 				}
@@ -645,7 +643,6 @@
 			return this._isDescendantOfElementInstance(resizable, this._getElement(this.selected));
 		},
 
-
 		/**
 		 * Handles resize notifications from descendants.
 		 *
@@ -677,7 +674,7 @@
 		 * @param  {HTMLElement} element The element to search within for a resizable
 		 * @return {Boolean} True if descendant has been notified.
 		 */
-		_notifyElementResize(element = this._selectedElement) {
+		_notifyElementResize(element = this._getElement(this.selected)) {
 			if (!this.isAttached || !element) {
 				return false;
 			}
