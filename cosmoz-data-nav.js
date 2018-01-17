@@ -641,8 +641,8 @@
 		 * @param  {HTMLElement} resizable A descendant resizable element
 		 * @return {Boolean} True if the element should be notified
 		 */
-		resizerShouldBeNotified(resizable) {
-			return this._isDescendantOfElementInstance(resizable, this._selectedElement);
+		resizerShouldNotify(resizable) {
+			return this._isDescendantOfElementInstance(resizable, this._getElement(this.selected));
 		},
 
 
@@ -653,7 +653,7 @@
 		 * @return {void}
 		 */
 		_onDescendantIronResize(event) {
-			if (this._notifyingDescendant || this.animating || !this._isVisible || !this.resizerShouldBeNotified(event.target)) {
+			if (this._notifyingDescendant || this.animating || !this._isVisible || !this.resizerShouldNotify(event.target)) {
 				event.stopPropagation();
 				return;
 			}
@@ -669,10 +669,6 @@
 				return;
 			}
 			Polymer.IronResizableBehavior.notifyResize.call(this);
-		},
-
-		resizerShouldNotify(resizable) {
-			return this._isDescendantOfElementInstance(resizable, this._selectedElement);
 		},
 
 		/**
