@@ -263,7 +263,7 @@
 						content = view.$$('div.flex');
 					assert.equal(content.innerText, 77);
 					done();
-				}, 700);
+				}, 900);
 			});
 
 			test('selectById updates selected property', function () {
@@ -285,7 +285,7 @@
 			test('preloads data', function (done) {
 				const data = {id: '0'};
 				assert.isTrue(nav.isIncompleteFn(nav.items[0]));
-				assert.equal(nav._preloadIdx, 0);
+				assert.isUndefined(nav._preloadIdx);
 
 				nav.setItemById('0', data);
 				Polymer.Base.async(function () {
@@ -372,7 +372,7 @@
 					assert.deepEqual(elements[1].__instance.item, { id: 1 });
 					assert.deepEqual(elements[2].__instance.item, { id: 2 });
 					done();
-				}, 1000);
+				}, 1200);
 			});
 
 			test('renderQueue five items', function (done) {
