@@ -103,7 +103,7 @@
 				type: Object,
 				notify: true,
 				readOnly: true,
-				computed: '_getElement(selected, _elements)'
+				computed: '_getElement(selected)'
 			},
 
 			/**
@@ -190,7 +190,8 @@
 		 * @return {void}
 		 */
 		attached() {
-			this._templatesObserver = Polymer.dom(this.$.templatesSlot).observeNodes(this._onTemplatesChange.bind(this));
+			this._templatesObserver = Polymer.dom(this.$.templatesSlot)
+				.observeNodes(this._onTemplatesChange.bind(this));
 			this.listen(window, 'cosmoz-cache-purge', '_onCachePurge');
 		},
 
