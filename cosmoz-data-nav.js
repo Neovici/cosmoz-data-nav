@@ -25,7 +25,7 @@
 		is: 'cosmoz-data-nav',
 		properties: {
 			/**
-			 * Array of buffer elements
+			 * The array of buffer elements.
 			 */
 			_elements: {
 				type: Array,
