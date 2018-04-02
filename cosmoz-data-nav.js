@@ -25,6 +25,16 @@
 		is: 'cosmoz-data-nav',
 		properties: {
 			/**
+			 * Array of buffer elements
+			 */
+			_elements: {
+				type: Array,
+				value() {
+					return [];
+				}
+			},
+
+			/**
 			 * The name of the variable to add to the binding scope for the array
 			 * element associated with a template instance.
 			 */
@@ -103,7 +113,7 @@
 				type: Object,
 				notify: true,
 				readOnly: true,
-				computed: '_getElement(selected)'
+				computed: '_getElement(selected, _elements)'
 			},
 
 			/**
@@ -181,7 +191,6 @@
 		 */
 		created() {
 			this._cache = {};
-			this._elements = [];
 		},
 
 		/**
