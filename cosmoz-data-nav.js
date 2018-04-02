@@ -182,7 +182,6 @@
 		created() {
 			this._cache = {};
 			this._elements = [];
-			this.listen(window, 'cosmoz-cache-purge', '_onCachePurge');
 		},
 
 		/**
@@ -192,6 +191,7 @@
 		 */
 		attached() {
 			this._templatesObserver = Polymer.dom(this.$.templatesSlot).observeNodes(this._onTemplatesChange.bind(this));
+			this.listen(window, 'cosmoz-cache-purge', '_onCachePurge');
 		},
 
 		/**
