@@ -60,10 +60,10 @@
 	(function () {
 		'use strict';
 
-		suite('defaults', function () {
-			var nav;
+		suite('defaults', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -74,38 +74,38 @@
 				done();
 			});
 
-			test('instantiates a cosmoz-data-nav element', function () {
+			test('instantiates a cosmoz-data-nav element', () => {
 				assert.equal(nav.is, 'cosmoz-data-nav');
 			});
 
-			test('creates buffer elements', function () {
+			test('creates buffer elements', () => {
 				assert.lengthOf(nav._elements, nav.elementsBuffer);
 			});
 
-			test('has template for elements', function () {
+			test('has template for elements', () => {
 				const template = nav.$.templatesSlot.querySelector('template');
 				assert.equal(template, nav._elementsTemplate);
 			});
 
-			test('buffer elements have incomplete content', function () {
+			test('buffer elements have incomplete content', () => {
 				nav._elements.forEach(element => assert.isNotNull(element.__incomplete));
 			});
 
-			test('buffer elements are not templatized without complete data', function () {
+			test('buffer elements are not templatized without complete data', () => {
 				nav._elements.forEach(element => assert.isUndefined(element.__instance));
 			});
 
-			test('selects first element', function () {
+			test('selects first element', () => {
 				assert.equal(nav.selected, 0);
 				const selectedEl = nav._getElement(nav.selected);
 				assert.include(nav._elements, selectedEl);
 			});
 		});
 
-		suite('properties check', function () {
-			var nav;
+		suite('properties check', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -117,7 +117,7 @@
 				done();
 			});
 
-			test('selected property is updated', function () {
+			test('selected property is updated', () => {
 				nav.select(1);
 				assert.equal(nav.selected, 1, 'Expected the index of selected item to be 1');
 				nav.select(3);
@@ -128,7 +128,7 @@
 				assert.equal(nav.selected, 2, 'Expected the index of selected item to be 2');
 			});
 
-			test('selectedNext is updated', function () {
+			test('selectedNext is updated', () => {
 				nav.select(13);
 				assert.equal(nav.selectedNext, 14);
 				nav.select(2);
@@ -139,11 +139,11 @@
 				assert.equal(nav.selectedNext, 1);
 			});
 
-			test('queueLength returns the length of items array', function () {
+			test('queueLength returns the length of items array', () => {
 				assert.equal(nav.queueLength, 20);
 			});
 
-			test('reverse property is working', function () {
+			test('reverse property is working', () => {
 				nav.select(5);
 				assert.isFalse(nav.reverse);
 				nav.select(15);
@@ -157,10 +157,10 @@
 			});
 		});
 
-		suite('cache', function () {
-			var nav;
+		suite('cache', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -172,19 +172,19 @@
 				done();
 			});
 
-			test('cache stores one item', function (done) {
+			test('cache stores one item', done => {
 				nav.setItemById('1', { id: 88 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					let cache = nav._cache;
 					assert.equal(cache['1'].id, 88);
 					done();
 				}, 70);
 			});
 
-			test('cache stores two items', function (done) {
+			test('cache stores two items', done => {
 				nav.setItemById('1', { id: 88 });
 				nav.setItemById('2', { id: 99 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					let cache = nav._cache;
 					assert.equal(cache['1'].id, 88);
 					assert.equal(cache['2'].id, 99);
@@ -192,10 +192,10 @@
 				}, 50);
 			});
 
-			test('clearCache method works', function (done) {
+			test('clearCache method works', done => {
 				nav.setItemById('1', { id: 1 });
 				nav.setItemById('2', { id: 2 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					let cache = nav._cache;
 					assert.equal(cache['1'].id, 1);
 					assert.equal(cache['2'].id, 2);
@@ -205,11 +205,11 @@
 				}, 70);
 			});
 
-			test('removeFromCache method works', function (done) {
+			test('removeFromCache method works', done => {
 				nav.setItemById('1', { id: 88 });
 				nav.setItemById('2', { id: 99 });
 				nav.setItemById('3', { id: 11 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					let cache = nav._cache;
 					assert.equal(cache['1'].id, 88);
 					assert.equal(cache['2'].id, 99);
@@ -226,10 +226,10 @@
 			});
 		});
 
-		suite('other methods', function () {
-			var nav;
+		suite('other methods', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -241,20 +241,20 @@
 				done();
 			});
 
-			test('isIncompleteFn checks if an item is incomplete', function (done) {
+			test('isIncompleteFn checks if an item is incomplete', done => {
 				assert.isTrue(nav.isIncompleteFn());
 				assert.isTrue(nav.isIncompleteFn(null));
 				assert.isFalse(nav.isIncompleteFn({id: '1'}));
 
 				nav.setItemById('1', { id: 1 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					assert.isTrue(nav.isIncompleteFn(nav.items[0]));
 					assert.isFalse(nav.isIncompleteFn(nav.items[1]));
 					done();
 				}, 70);
 			});
 
-			test('selectById updates selected property', function () {
+			test('selectById updates selected property', () => {
 				nav.setItemById('0', { id: 0 });
 				nav.setItemById('14', { id: 14 });
 				nav.setItemById('2', { id: 2 });
@@ -270,13 +270,13 @@
 				assert.equal(nav.selected, 17);
 			});
 
-			test('preloads data', function (done) {
+			test('preloads data', done => {
 				const data = {id: '0'};
 				assert.isTrue(nav.isIncompleteFn(nav.items[0]));
 				assert.equal(nav._preloadIdx, 0);
 
 				nav.setItemById('0', data);
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					assert.equal(nav._preloadIdx, 1);
 					assert.isFalse(nav.isIncompleteFn(nav.items[0]));
 					assert.deepEqual(nav.items[0], data);
@@ -285,10 +285,10 @@
 			});
 		});
 
-		suite('elements buffer', function () {
-			var nav;
+		suite('elements buffer', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('elementsBuffer');
 				nav.items = Array(10).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -300,16 +300,16 @@
 				done();
 			});
 
-			test('instantiates a cosmoz-data-nav element', function () {
+			test('instantiates a cosmoz-data-nav element', () => {
 				assert.equal(nav.is, 'cosmoz-data-nav');
 			});
 
-			test('elementsBuffer property updates _elements', function () {
+			test('elementsBuffer property updates _elements', () => {
 				assert.equal(nav.elementsBuffer, 4);
 				assert.equal(nav._elements.length, 4);
 			});
 
-			test('_createElement does not create element if length is equal to elementsBuffer', function (done) {
+			test('_createElement does not create element if length is equal to elementsBuffer', done => {
 				assert.equal(nav.elementsBuffer, 4);
 				assert.equal(nav._elements.length, 4);
 
@@ -324,10 +324,10 @@
 			});
 		});
 
-		suite('renderQueue', function () {
-			var nav;
+		suite('renderQueue', () => {
+			let nav;
 
-			setup(function (done) {
+			setup(done => {
 				nav = fixture('renderQueue');
 				nav.items = Array(10).fill('').map((e, i) => i.toString());
 				if (nav._templatesObserver.flush) {
@@ -339,16 +339,16 @@
 				done();
 			});
 
-			test('instantiates a cosmoz-data-nav element', function () {
+			test('instantiates a cosmoz-data-nav element', () => {
 				assert.equal(nav.is, 'cosmoz-data-nav');
 			});
 
-			test('renderQueue three items', function (done) {
+			test('renderQueue three items', done => {
 				nav._elements.forEach(element => assert.isUndefined(element.__instance));
 				nav.setItemById('0', { id: 0 });
 				nav.setItemById('1', { id: 1 });
 				nav.setItemById('2', { id: 2 });
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					const elements = nav._elements;
 					assert.deepEqual(elements[0].__instance.item, { id: 0 });
 					assert.deepEqual(elements[1].__instance.item, { id: 1 });
@@ -357,16 +357,16 @@
 				}, 1500);
 			});
 
-			test('renderQueue five items', function (done) {
+			test('renderQueue five items', done => {
 				nav._elements.forEach(element => assert.isUndefined(element.__instance));
 				const ids = [0, 1, 2, 3, 4];
-				ids.forEach(function (id) {
+				ids.forEach(id => {
 					nav.setItemById(id.toString(), { id: id });
 				});
-				Polymer.Base.async(function () {
+				Polymer.Base.async(() => {
 					const elements = nav._elements;
 					assert.equal(elements.length, 5);
-					elements.forEach(function (el, id) {
+					elements.forEach((el, id) => {
 						assert.deepEqual(el.__instance.item, { id: id });
 					});
 					done();
