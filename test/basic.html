@@ -67,7 +67,6 @@
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
 				nav._templatesObserver.flush ? nav._templatesObserver.flush() : Polymer.dom.flush();
-				nav._initSteps.splice(0).forEach((s)=>s.call());
 				done();
 			});
 
@@ -76,25 +75,25 @@
 			});
 
 
-			test('creates buffer elements', function(){
+			test('creates buffer elements', function () {
 				assert.lengthOf(nav._elements, nav.elementsBuffer);
 			});
 
-			test('has template for elements', function(){
+			test('has template for elements', function () {
 				const template = nav.$.templatesSlot.querySelector('template');
 				assert.equal(template, nav._elementsTemplate);
 			});
 
-			test('has template for incomplete elements', function(){
+			test('has template for incomplete elements', function () {
 
 			});
 
 			test('buffer elements have incomplete content', function () {
-				nav._elements.forEach( element => assert.isNotNull(element.__incomplete));
+				nav._elements.forEach(element => assert.isNotNull(element.__incomplete));
 			});
 
-			test('buffer elements are not templatized without complete data', function(){
-				nav._elements.forEach( element => assert.isUndefined(element.__instance));
+			test('buffer elements are not templatized without complete data', function () {
+				nav._elements.forEach(element => assert.isUndefined(element.__instance));
 			});
 
 			test('selects first element', function () {
@@ -115,7 +114,7 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
+
 				done();
 			});
 
@@ -170,7 +169,7 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
+
 				done();
 			});
 
@@ -239,7 +238,7 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
+
 				done();
 			});
 
@@ -254,16 +253,6 @@
 					assert.isFalse(nav.isIncompleteFn(nav.items[1]));
 					done();
 				}, 70);
-			});
-
-			test('setItemById works', function (done) {
-				nav.setItemById('0', { id: 77 });
-				Polymer.Base.async(function () {
-					let view = nav._elements[0].querySelector('cosmoz-data-nav-test-view'),
-						content = view.$$('div.flex');
-					assert.equal(content.innerText, 77);
-					done();
-				}, 900);
 			});
 
 			test('selectById updates selected property', function () {
@@ -285,7 +274,7 @@
 			test('preloads data', function (done) {
 				const data = {id: '0'};
 				assert.isTrue(nav.isIncompleteFn(nav.items[0]));
-				assert.isUndefined(nav._preloadIdx);
+				assert.equal(nav._preloadIdx, 0);
 
 				nav.setItemById('0', data);
 				Polymer.Base.async(function () {
@@ -308,7 +297,7 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
+
 				done();
 			});
 
@@ -330,15 +319,9 @@
 				done();
 			});
 
-			test('_createElement adds new element', function (done) {
-				assert.equal(nav.elementsBuffer, 4);
-				assert.equal(nav._elements.length, 4);
-
-				nav.elementsBuffer = 5;
-				nav._createElement();
-				assert.equal(nav._elements.length, 5);
-				assert.equal(nav._elements[4].classList[0], 'animatable');
-				done();
+			test('_createElement returns new element', () => {
+				const el = nav._createElement();
+				assert.equal(el.classList[0], 'animatable');
 			});
 		});
 
@@ -353,7 +336,7 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
+
 				done();
 			});
 
@@ -372,7 +355,7 @@
 					assert.deepEqual(elements[1].__instance.item, { id: 1 });
 					assert.deepEqual(elements[2].__instance.item, { id: 2 });
 					done();
-				}, 1200);
+				}, 1500);
 			});
 
 			test('renderQueue five items', function (done) {
@@ -388,7 +371,7 @@
 						assert.deepEqual(el.__instance.item, { id: id });
 					});
 					done();
-				}, 1000);
+				}, 1500);
 			});
 		});
 	}());

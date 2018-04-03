@@ -256,7 +256,6 @@
 			this._cache = {};
 			this._indexRenderQueue = [];
 			this.unlisten(window, 'cosmoz-cache-purge', '_onCachePurge');
-			this._initSteps.splice(0);
 		},
 
 		_onTemplatesChange(change) {
@@ -865,8 +864,9 @@
 				// maintain task in queue
 				return idx;
 			}
-
-			element.__incomplete._showHideChildren(true);
+			if (element.__incomplete) {
+				element.__incomplete._showHideChildren(true);
+			}
 
 			const isSelected = idx === this.selected,
 				needsRender  = element.item !== item;

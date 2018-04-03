@@ -58,7 +58,6 @@
 				} else {
 					Polymer.dom.flush();
 				}
-				nav._initSteps.splice(0).forEach(s => s.call());
 				done();
 			});
 
@@ -80,7 +79,7 @@
 
 					assert.isTrue(nav.resizerShouldNotify(view));
 					done();
-				}, 700);
+				}, 1000);
 			});
 		});
 	}());
