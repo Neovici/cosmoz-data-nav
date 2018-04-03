@@ -66,14 +66,17 @@
 			setup(function (done) {
 				nav = fixture('defaults');
 				nav.items = Array(20).fill('').map((e, i) => i.toString());
-				nav._templatesObserver.flush ? nav._templatesObserver.flush() : Polymer.dom.flush();
+				if (nav._templatesObserver.flush) {
+					nav._templatesObserver.flush();
+				} else {
+					Polymer.dom.flush();
+				}
 				done();
 			});
 
 			test('instantiates a cosmoz-data-nav element', function () {
 				assert.equal(nav.is, 'cosmoz-data-nav');
 			});
-
 
 			test('creates buffer elements', function () {
 				assert.lengthOf(nav._elements, nav.elementsBuffer);
@@ -82,10 +85,6 @@
 			test('has template for elements', function () {
 				const template = nav.$.templatesSlot.querySelector('template');
 				assert.equal(template, nav._elementsTemplate);
-			});
-
-			test('has template for incomplete elements', function () {
-
 			});
 
 			test('buffer elements have incomplete content', function () {
