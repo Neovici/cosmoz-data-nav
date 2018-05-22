@@ -832,6 +832,9 @@
 		},
 
 		_renderQueue() {
+			if (!this.attached) {
+				return;
+			}
 			const queue = this._indexRenderQueue;
 
 			if (!Array.isArray(queue) || queue.length < 1) {
