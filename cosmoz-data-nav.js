@@ -855,7 +855,7 @@
 				return;
 			}
 
-			if (this._isVisible || this.hiddenRendering) {
+			if (this.hiddenRendering || this._isVisible) {
 
 				this._renderRan = this._renderAbort = false;
 
