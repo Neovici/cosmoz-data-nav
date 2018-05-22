@@ -210,6 +210,14 @@
 			idPath: {
 				type: String,
 				value: 'id'
+			},
+
+			/**
+			 * True if element should render items even if it is not visible.
+			 */
+			hiddenRendering: {
+				type: Boolean,
+				value: false
 			}
 		},
 
@@ -847,7 +855,7 @@
 				return;
 			}
 
-			if (this._isVisible) {
+			if (this._isVisible || this.hiddenRendering) {
 
 				this._renderRan = this._renderAbort = false;
 
