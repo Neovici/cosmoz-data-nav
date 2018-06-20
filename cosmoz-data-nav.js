@@ -403,9 +403,16 @@
 		 * @return {void}
 		 */
 		setItemById(id, item) {
-			const index = this.items
-				.findIndex(item => this._getItemId(item) === id);
+			const items = this.items,
+				matches = items.filter(item => this._getItemId(item) === id),
+				match = matches.length > 1
+					? matches.find(this.isIncompleteFn, this)
+					: matches[0],
+				index = match ? items.indexOf(match) : -1;
 
+			if (matches.length > 1) {
+				console.warn('found multiple items with same id, <cosmoz-data-nav> will replace the first incomple one');
+			}
 			if (index < 0) {
 				console.warn('trying to replace an item that is not in the list', id, item);
 				return;
