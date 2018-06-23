@@ -404,21 +404,18 @@
 		 */
 		setItemById(id, item) {
 			const items = this.items,
-				matches = items.filter(item => this._getItemId(item) === id),
-				match = matches.length > 1
-					? matches.find(this.isIncompleteFn, this)
-					: matches[0],
-				index = match ? items.indexOf(match) : -1;
+				matches = items.filter(item => this._getItemId(item) === id);
 
-			if (matches.length > 1) {
-				console.warn('found multiple items with same id, <cosmoz-data-nav> will replace the first incomple one');
-			}
-			if (index < 0) {
+			if (matches.length === 0) {
 				console.warn('trying to replace an item that is not in the list', id, item);
 				return;
+			} else if (matches.length > 1) {
+				console.warn('found multiple items with same id');
 			}
 
-			this.set(['items', index], this._cache[id] = item);
+			this._cache[id] = Object.assign({}, item);
+			matches.forEach(match => this.set(['items', items.indexOf(match)], Object.assign({}, item)));
+
 			this._preload();
 
 			if (this.animating || this.selected == null) {
