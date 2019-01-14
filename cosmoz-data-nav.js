@@ -693,7 +693,7 @@
 				return;
 			}
 			let inBetween = path.slice(path.indexOf(selectEl)),
-				ancestorNav = inBetween.find(e => e.is && e.is === this.is),
+				ancestorNav = inBetween.find(({constructor: {is} = {}}) => is === this.constructor.is),
 				select;
 
 			if (ancestorNav !== this) {
