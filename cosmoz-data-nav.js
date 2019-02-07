@@ -925,7 +925,7 @@
 		}
 
 		_onCachePurge(e) {
-			if (e === null || e.detail === null || !Array.isArray(e.detail.ids) || e.detail.ids.length === 0) {
+			if (e == null || e.detail == null || !Array.isArray(e.detail.ids) || e.detail.ids.length === 0) {
 				return this.clearCache();
 			}
 			e.detail.ids.forEach(id => delete this._cache[id]);
