@@ -65,8 +65,8 @@ Example:
 				<template>
 						<neon-animatable class="vertical layout fit">
 								<my-view>
-										<paper-icon-button slot="actions" disabled$="[[ isFirstItem ]]" icon="chevron-left" on-click="selectPrevious"></paper-icon-button>
-										<paper-icon-button slot="actions" disabled$="[[ isLastItem ]]" icon="chevron-right" on-click="selectNext"></paper-icon-button>
+										<paper-icon-button slot="actions" hidden$="[[ isFirstItem ]]" icon="chevron-left" on-click="selectPrevious"></paper-icon-button>
+										<paper-icon-button slot="actions" hidden$="[[ isLastItem ]]" icon="chevron-right" on-click="selectNext"></paper-icon-button>
 								</my-view>
 						</neon-animatable>
 				</template>
@@ -129,8 +129,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 						<h3><span>[[ _('Data is updating', t) ]]</span></h3>
 					</div>
 				</div>
-				<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
-				<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
+				<paper-icon-button hidden$="[[ prevHidden ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+				<paper-icon-button hidden$="[[ nextHidden ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
 			</cosmoz-bottom-bar-view>
 		</template>
 `;
@@ -417,8 +417,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		this._incompleteTemplate = incompleteTemplate;
 
 		const baseProps = {
-			prevDisabled: true,
-			nextDisabled: true,
+			prevHidden: true,
+			nextHidden: true,
 			[this.indexAs]: true
 		};
 		this._elementCtor = templatize(this._elementTemplate, this, {
@@ -736,8 +736,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 
 	_getBaseProps(index) {
 		return {
-			prevDisabled: index < 1,
-			nextDisabled: index + 1 >= this.items.length,
+			prevHidden: index < 1,
+			nextHidden: index + 1 >= this.items.length,
 			[this.indexAs]: Math.max(Math.min(index, this.items.length - 1), 0)
 		};
 	}
