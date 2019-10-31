@@ -25,6 +25,7 @@
 			"exclude": []
 		},
 		"sauce": {
+			"jobName": "cosmoz-data-nav",
 			"browsers": [{
 				"browserName": "chrome",
 				"platform": "Windows 10",
