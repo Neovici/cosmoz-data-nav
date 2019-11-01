@@ -37,7 +37,7 @@
 			}, {
 				"browserName": "firefox",
 				"platform": "Windows 10",
-				"version": "latest-1"
+				"version": "latest"
 			}, {
 				"browserName": "safari",
 				"platform": "macOS 10.13",
