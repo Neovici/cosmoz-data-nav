@@ -340,6 +340,21 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		};
 	}
 
+	static get observers() {
+		return [
+			'_onItemsSplices(items.splices)'
+		];
+	}
+
+	_onItemsSplices(change) {
+		if (!change) {
+			return;
+		}
+
+		// TODO: react more intelligently
+		this._itemsChanged(change.indexSplices[0].object);
+	}
+
 	constructor() {
 		super();
 		this._previouslySelectedItem = null;
