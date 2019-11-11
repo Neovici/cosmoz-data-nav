@@ -194,6 +194,23 @@
 							expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0freshdata');
 						}).throws('expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0freshdata\'');
 					});
+
+					it.only('reacts to splices', () => {
+						nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+						flushRenderQueue(nav);
+
+						expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0');
+
+						nav.push('items', [{id: 'd'}]);
+						flushRenderQueue(nav);
+
+						expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0');
+
+						nav.splice('items', 0, 3);
+						flushRenderQueue(nav);
+
+						expect(selectedSlide(nav).textContent).to.equal('id: d,index: 0');
+					});
 				});
 
 				describe('maintainSelection', () => {
