@@ -677,7 +677,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			}
 			classes.remove('in');
 		}, 8);
-
 	}
 
 	/**
