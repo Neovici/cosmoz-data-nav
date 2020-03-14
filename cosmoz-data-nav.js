@@ -510,7 +510,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			return;
 		} else if (matches.length > 1) {
 			// eslint-disable-next-line no-console
-			console.log('Multiple replaceable items matches idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
+			console.warn('Multiple replaceable items matches idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
 		}
 
 		this._cache[id] = Object.assign({}, item);
