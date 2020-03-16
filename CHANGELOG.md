@@ -1,3 +1,10 @@
+## [3.0.8](https://github.com/neovici/cosmoz-data-nav/compare/v3.0.7...v3.0.8) (2020-03-16)
+
+
+### Bug Fixes
+
+* handle dom-if in _isDescendantOfElementInstance ([408b258](https://github.com/neovici/cosmoz-data-nav/commit/408b25812addf7b9ee117e3b5d9dc5d3035ae0b0))
+
 ## [3.0.7](https://github.com/neovici/cosmoz-data-nav/compare/v3.0.6...v3.0.7) (2020-01-08)
 
 
