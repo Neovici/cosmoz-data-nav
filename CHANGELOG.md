@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.0.8...v3.1.0) (2020-03-16)
+
+
+### Features
+
+* upgrade to cosmoz-page-router@^6.0.0 ([a8bce56](https://github.com/neovici/cosmoz-data-nav/commit/a8bce568e202d44182f688805e95e034247da7af))
+
 ## [3.0.8](https://github.com/neovici/cosmoz-data-nav/compare/v3.0.7...v3.0.8) (2020-03-16)
 
 
