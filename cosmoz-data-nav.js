@@ -909,10 +909,14 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		if (!instance) {
 			return false;
 		}
-
 		return instance.children
 			.filter(c => c.nodeType === Node.ELEMENT_NODE)
-			.some(child => this._isDescendantOf(descendant, child));
+			.some(child => {
+				if (child.tagName === 'DOM-IF') {
+					return this._isDescendantOfElementInstance(descendant, child);
+				}
+				return this._isDescendantOf(descendant, child);
+			});
 	}
 
 	/**
