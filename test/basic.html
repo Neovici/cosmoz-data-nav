@@ -175,7 +175,13 @@
 						data = { id: 0 },
 						cache = nav._cache;
 					nav.setItemById('0', data);
-					assert.isTrue(warnSpy.calledWithMatch(sinon.match(/Multiple replaceable items matches idPath id with id 0 in the item list/iu)), true);
+					sinon.assert.calledWith(warnSpy,
+						'Multiple replaceable items matches idPath',
+						'id',
+						'with id',
+						'0',
+						'in the item list', nav.items,
+						'to replace with item', {id: 0});
 					assert.equal(cache['0'].id, data.id);
 					assert.equal(nav.items[0].id, data.id);
 					assert.equal(nav.items[1].id, data.id);
@@ -271,7 +277,15 @@
 					const warnSpy = sinon.spy(console, 'warn'),
 						data = { id: 23 };
 					nav.setItemById('23', data);
-					assert.isTrue(warnSpy.calledWithMatch(sinon.match(/List item replacement failed, no matching idPath id with id 23 in the item list/iu)), true);
+					sinon.assert.calledWith(warnSpy,
+						'List item replacement failed, no matching idPath',
+						'id',
+						'with id',
+						'23',
+						'in the item list',
+						nav.items,
+						'to replace with item',
+						data);
 					warnSpy.restore();
 				});
 
