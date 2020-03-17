@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.1.0...v3.2.0) (2020-03-17)
+
+
+### Features
+
+* extend error message details ([#112](https://github.com/neovici/cosmoz-data-nav/issues/112)) ([602ac7c](https://github.com/neovici/cosmoz-data-nav/commit/602ac7c83ba4cbe52d751a6717b103844fe2ee3a))
+
 # [3.1.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.0.8...v3.1.0) (2020-03-16)
 
 
