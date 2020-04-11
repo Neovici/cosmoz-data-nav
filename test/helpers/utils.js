@@ -1,4 +1,7 @@
 import { html } from '@open-wc/testing';
+import '@polymer/polymer/lib/elements/custom-style.js';
+import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 
 export const
 	flushRenderQueue = nav => {
@@ -8,6 +11,25 @@ export const
 	},
 	selectedSlide = nav => nav.querySelector('div.selected .slide'),
 	isVisible = el => Boolean(el.offsetHeight || el.offsetWidth),
+	dataNavUserMixin = baseClass => class extends baseClass {
+		static get properties() {
+			return {
+				item: {
+					type: Object,
+					notify: true
+				},
+				index: {
+					type: Number
+				},
+				prevDisabled: {
+					type: Boolean
+				},
+				nextDisabled: {
+					type: Boolean
+				}
+			};
+		}
+	},
 	customStyle = html`
 		<custom-style>
 			<style include="iron-flex iron-positioning">

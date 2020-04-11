@@ -124,7 +124,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			<template id="incompleteTemplate">
 				<cosmoz-bottom-bar-view active incomplete class="fit">
 					<div slot="scroller-content" class="flex layout horizontal center-justified center">
-						<paper-spinner-lite active=""></paper-spinner-lite>
+						<paper-spinner-lite active></paper-spinner-lite>
 						<div style="margin-left: 10px">
 							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
 						</div>
