@@ -41,4 +41,12 @@ export const
 				}
 			</style>
 		</custom-style>
+	`,
+	defaultsFixture = html`
+		<cosmoz-data-nav>
+			<template>
+				<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]">
+				</cosmoz-data-nav-test-view>
+			</template>
+		</cosmoz-data-nav>
 	`;

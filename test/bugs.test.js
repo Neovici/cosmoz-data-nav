@@ -1,13 +1,13 @@
 /* eslint-disable max-lines-per-function, max-statements, max-nested-callbacks, strict */
 import {
-	expect, fixture, html, aTimeout
+	expect, fixture, html, aTimeout, assert
 } from '@open-wc/testing';
 
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 import { Base } from '@polymer/polymer/polymer-legacy';
 import {
-	flushRenderQueue, selectedSlide, isVisible
+	defaultsFixture, flushRenderQueue, selectedSlide, isVisible
 } from './helpers/utils';
 
 suite('bugs', () => {
@@ -84,5 +84,29 @@ suite('bugs', () => {
 		// the view should be rendered correctly
 		expect(isVisible(selectedSlide(nav))).to.be.true;
 		expect(selectedSlide(nav).textContent).to.equal('id: 3,index: 0');
+	});
+
+	test('https://github.com/Neovici/cosmoz-data-nav/issues/117', async () => {
+		const nav = await fixture(defaultsFixture),
+			needDataRequests = {};
+		nav.addEventListener('need-data', async event => {
+			const id = event.detail.id;
+			if (!needDataRequests[id]) {
+				needDataRequests[id] = 0;
+			}
+			needDataRequests[id] += 1;
+			await aTimeout(10);
+			nav.setItemById(id, { id });
+		});
+		nav._templatesObserver.flush();
+		nav.items = ['0', '1', '2', '3'];
+		await aTimeout(200);
+		Object.entries(needDataRequests).forEach(([id, reqs]) => {
+			try {
+				assert.equal(reqs, 1, `requests for id ${ id }`);
+			} catch (e) {
+				assert.equal(e.message, 'requests for id 1: expected 3 to equal 1');
+			}
+		});
 	});
 });
