@@ -48,19 +48,19 @@ suite('template', () => {
 		expect(nav.querySelector('div.selected').textContent).to.equal('id: 1,index: 0');
 	});
 
-	test('renders the wrong item if the templates observer runs after `items` is set [KNOWN BUG]', null, () => {
-		expect(async () => {
-			const [, nav] = await Promise.all([
-				fixture(customStyle),
-				fixture(basicFixture)
-			]);
-			nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
-			await waitUntil(() => nav._templatesObserver);
-			nav._templatesObserver.flush();
-			flushRenderQueue(nav);
+	test('renders the wrong item if the templates observer runs after `items` is set [KNOWN BUG]', async () => {
+		//expect(async () => {
+		const [, nav] = await Promise.all([
+			fixture(customStyle),
+			fixture(basicFixture)
+		]);
+		nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
+		await waitUntil(() => nav._templatesObserver);
+		nav._templatesObserver.flush();
+		flushRenderQueue(nav);
 
-			expect(nav.querySelector('div.selected').textContent).to.equal('id: 1,index: 0');
-		}).throws('expected \'id: 3,index: 2\' to equal \'id: 1,index: 0\'');
+		expect(nav.querySelector('div.selected').textContent).to.equal('id: 1,index: 0');
+		//}).throws('expected \'id: 3,index: 2\' to equal \'id: 1,index: 0\'');
 	});
 
 	test('re-renders when the template changes');
