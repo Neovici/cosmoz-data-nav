@@ -27,9 +27,6 @@ class CosmozDataNavResizableView extends mixinBehaviors([IronResizableBehavior],
 		`;
 	}
 
-	static get is() {
-		return 'cosmoz-data-nav-resizable-view';
-	}
 	static get properties() {
 		return {
 			item: {
@@ -56,4 +53,4 @@ class CosmozDataNavResizableView extends mixinBehaviors([IronResizableBehavior],
 		console.log('resize called on resizable view.');
 	}
 }
-customElements.define(CosmozDataNavResizableView.is, CosmozDataNavResizableView);
+customElements.define('cosmoz-data-nav-resizable-view', CosmozDataNavResizableView);

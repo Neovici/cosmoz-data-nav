@@ -24,9 +24,6 @@ class CosmozDataNavTestView extends PolymerElement {
 		`;
 	}
 
-	static get is() {
-		return 'cosmoz-data-nav-test-view';
-	}
 	static get properties() {
 		return {
 			item: {
@@ -45,4 +42,4 @@ class CosmozDataNavTestView extends PolymerElement {
 		};
 	}
 }
-customElements.define(CosmozDataNavTestView.is, CosmozDataNavTestView);
+customElements.define('cosmoz-data-nav-test-view', CosmozDataNavTestView);

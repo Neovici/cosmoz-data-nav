@@ -78,66 +78,62 @@ Example:
 class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
-		<style include="iron-flex iron-positioning">
-			:host {
-				position: relative;
-			}
+			<style include="iron-flex iron-positioning">
+				:host {
+					position: relative;
+				}
 
-			#items {
-				overflow-x: hidden;
-			}
+				#items {
+					overflow-x: hidden;
+				}
 
-			#items,
-			#items > ::slotted(.animatable){
-				@apply --layout-fit;
-				transform: translateX(0px);
-			}
+				#items,
+				#items > ::slotted(.animatable){
+					@apply --layout-fit;
+					transform: translateX(0px);
+				}
 
-			:host([animating]) #items > ::slotted(.animatable){
-				transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-				backface-visibility: hidden;
-			}
+				:host([animating]) #items > ::slotted(.animatable){
+					transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+					backface-visibility: hidden;
+				}
 
-			:host([animating][reverse]) #items > ::slotted(.in),
-			:host([animating]) #items > ::slotted(.out){
-				transform: translateX(-100%);
-			}
+				:host([animating][reverse]) #items > ::slotted(.in),
+				:host([animating]) #items > ::slotted(.out){
+					transform: translateX(-100%);
+				}
 
-			:host([animating][reverse]) #items > ::slotted(.out),
-			:host([animating]) #items > ::slotted(.in){
-				transform: translateX(100%);
-			}
+				:host([animating][reverse]) #items > ::slotted(.out),
+				:host([animating]) #items > ::slotted(.in){
+					transform: translateX(100%);
+				}
 
-			:host([has-items][animating]) #items > ::slotted(:not(.selected):not(.out)),
-			:host([has-items]:not([animating])) #items > ::slotted(:not(.selected)),
-			:host(:not([has-items])) #items > ::slotted(:not(:first-of-type)){
-				display: none;
-			}
-		</style>
-		<cosmoz-page-location id="location" route-hash="{{ _routeHashParams }}"></cosmoz-page-location>
-		<div id="items">
-			<slot name="items"></slot>
-		</div>
-		<div id="templates">
-			<slot id="templatesSlot"></slot>
-		</div>
-		<template id="incompleteTemplate">
-			<cosmoz-bottom-bar-view active incomplete class="fit">
-				<div slot="scroller-content" class="flex layout horizontal center-justified center">
-					<paper-spinner-lite active=""></paper-spinner-lite>
-					<div style="margin-left: 10px">
-						<h3><span>[[ _('Data is updating', t) ]]</span></h3>
+				:host([has-items][animating]) #items > ::slotted(:not(.selected):not(.out)),
+				:host([has-items]:not([animating])) #items > ::slotted(:not(.selected)),
+				:host(:not([has-items])) #items > ::slotted(:not(:first-of-type)){
+					display: none;
+				}
+			</style>
+			<cosmoz-page-location id="location" route-hash="{{ _routeHashParams }}"></cosmoz-page-location>
+			<div id="items">
+				<slot name="items"></slot>
+			</div>
+			<div id="templates">
+				<slot id="templatesSlot"></slot>
+			</div>
+			<template id="incompleteTemplate">
+				<cosmoz-bottom-bar-view active incomplete class="fit">
+					<div slot="scroller-content" class="flex layout horizontal center-justified center">
+						<paper-spinner-lite active=""></paper-spinner-lite>
+						<div style="margin-left: 10px">
+							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
+						</div>
 					</div>
-				</div>
-				<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
-				<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
-			</cosmoz-bottom-bar-view>
-		</template>
-`;
-	}
-
-	static get is() {
-		return 'cosmoz-data-nav';
+					<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+					<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
+				</cosmoz-bottom-bar-view>
+			</template>
+		`;
 	}
 
 	static get properties() { // eslint-disable-line max-lines-per-function
@@ -723,7 +719,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 					render: true
 				}
 			}));
-			return;
 		}
 
 		if (index >= Math.min(this.selected + this.preload, items.length - 1)) {
@@ -850,7 +845,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			return;
 		}
 		const inBetween = path.slice(path.indexOf(selectEl)),
-			ancestorNav = inBetween.find(e => e && e.constructor && e.constructor.is === this.constructor.is);
+			ancestorNav = inBetween.find(e => e && e.tagName === this.tagName);
 
 		if (ancestorNav !== this) {
 			return;
@@ -1146,4 +1141,4 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		return true;
 	}
 }
-customElements.define(CosmozDataNav.is, CosmozDataNav);
+customElements.define('cosmoz-data-nav', CosmozDataNav);
