@@ -10,13 +10,20 @@ import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 
 const defaultsFixture = html`
-	<cosmoz-data-nav>
-		<template>
-			<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]">
-			</cosmoz-data-nav-test-view>
-		</template>
-	</cosmoz-data-nav>
-`;
+		<cosmoz-data-nav>
+			<template>
+				<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]">
+				</cosmoz-data-nav-test-view>
+			</template>
+		</cosmoz-data-nav>
+	`,
+	getItems = (num = 20) => Array(num).fill('').map((e, i) => i.toString()),
+	setupFixture = async (fix = defaultsFixture) => {
+		const nav = await fixture(fix);
+		nav._templatesObserver.flush();
+		nav.items = getItems();
+		return nav;
+	};
 
 sinon.assert.expose(chai.assert, { prefix: '' });
 
@@ -24,9 +31,7 @@ suite('defaults', () => {
 	let nav;
 
 	suiteSetup(async () => {
-		nav = await fixture(defaultsFixture);
-		nav._templatesObserver.flush();
-		nav.items = Array(20).fill('').map((e, i) => i.toString());
+		nav = await setupFixture();
 	});
 
 	test('creates buffer elements', () => {
@@ -57,9 +62,7 @@ suite('properties check', () => {
 	let nav;
 
 	suiteSetup(async () => {
-		nav = await fixture(defaultsFixture);
-		nav._templatesObserver.flush();
-		nav.items = Array(20).fill('').map((e, i) => i.toString());
+		nav = await setupFixture();
 	});
 
 	test('selected property is updated', () => {
@@ -108,7 +111,7 @@ suite('duplicate ids', () => {
 	suiteSetup(async () => {
 		nav = await fixture(defaultsFixture);
 		nav._templatesObserver.flush();
-		const items = Array(20).fill('').map((e, i) => i.toString());
+		const items = getItems();
 		items[0] = '0';
 		items[1] = '0';
 		nav.items = items;
@@ -144,7 +147,7 @@ suite('cache', () => {
 	});
 
 	setup(() => {
-		nav.items = Array(20).fill('').map((e, i) => i.toString());
+		nav.items = getItems();
 	});
 
 	teardown(() => {
@@ -210,13 +213,10 @@ suite('cache', () => {
 });
 
 suite('other methods', () => {
-	const getItems = () => Array(20).fill('').map((e, i) => i.toString());
 
 	let nav;
 	setup(async () => {
-		nav = await fixture(defaultsFixture);
-		nav._templatesObserver.flush();
-		nav.items = getItems();
+		nav = await setupFixture();
 	});
 
 	test('setItemById warns about a unknown item', () => {
@@ -287,9 +287,7 @@ suite('navigation', () => {
 	let nav;
 
 	suiteSetup(async () => {
-		nav = await fixture(defaultsFixture);
-		nav._templatesObserver.flush();
-		nav.items = Array(10).fill('').map((e, i) => i.toString());
+		nav = await setupFixture();
 	});
 
 	test('selects next item', async () => {
@@ -320,15 +318,13 @@ suite('elements buffer', () => {
 	let nav;
 
 	setup(async () => {
-		nav = await fixture(html`
+		nav = await setupFixture(html`
 			<cosmoz-data-nav elements-buffer="4">
 				<template>
 					<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
 				</template>
 			</cosmoz-data-nav>
 		`);
-		nav._templatesObserver.flush();
-		nav.items = Array(10).fill('').map((e, i) => i.toString());
 	});
 
 	test('elementsBuffer property updates _elements', () => {
@@ -356,7 +352,7 @@ suite('renderQueue', () => {
 	setup(async () => {
 		[, nav] = await Promise.all([
 			fixture(customStyle),
-			fixture(html`
+			setupFixture(html`
 				<cosmoz-data-nav elements-buffer="5">
 					<template>
 						<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
@@ -364,8 +360,6 @@ suite('renderQueue', () => {
 				</cosmoz-data-nav>
 			`)
 		]);
-		nav._templatesObserver.flush();
-		nav.items = Array(10).fill('').map((e, i) => i.toString());
 	});
 
 	test('renderQueue three items', async () => {
