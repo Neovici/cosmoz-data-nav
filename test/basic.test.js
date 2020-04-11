@@ -4,20 +4,16 @@ import {
 
 import sinon from 'sinon';
 
-import { customStyle } from './helpers/utils.js';
+import {
+	customStyle, defaultsFixture
+} from './helpers/utils.js';
 
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 
-const defaultsFixture = html`
-		<cosmoz-data-nav>
-			<template>
-				<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]">
-				</cosmoz-data-nav-test-view>
-			</template>
-		</cosmoz-data-nav>
-	`,
-	getItems = (num = 20) => Array(num).fill('').map((e, i) => i.toString()),
+
+
+const getItems = (num = 20) => Array(num).fill('').map((e, i) => i.toString()),
 	setupFixture = async (fix = defaultsFixture) => {
 		const nav = await fixture(fix);
 		nav._templatesObserver.flush();
