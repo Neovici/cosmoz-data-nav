@@ -4,86 +4,74 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-
 	<title>cosmoz-data-nav demo</title>
-
-	<script src="/components/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-
-	<script type="module" src="/components/@polymer/polymer/lib/elements/custom-style.js"></script>
-
-	<script type="module" src="/components/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
-	<script type="module" src="/components/@polymer/iron-demo-helpers/demo-snippet.js"></script>
-
-	<script type="module" src="/components/@polymer/paper-icon-button/paper-icon-button.js"></script>
-	<script type="module" src="/components/@polymer/paper-spinner/paper-spinner-lite.js"></script>
-	<script type="module" src="/components/@polymer/paper-input/paper-textarea.js"></script>
-	<script type="module" src="/components/@polymer/iron-icons/iron-icons.js"></script>
-
-	<script type="module" src="./helpers/cosmoz-demo-view.js"></script>
-	<script type="module" src="../cosmoz-data-nav.js"></script>
-
-	<script type="module">
-		const container = document.createElement('template');
-
-		container.innerHTML = `<custom-style>
-			<style include="demo-pages-shared-styles iron-flex iron-positioning">
-				#container {
-					max-width: 800px;
-				}
-				cosmoz-data-nav {
-					display: block;
-					height: 400px;
-					position: relative;
-				}
-				[data-idx="0"]{
-					background-color: blue;
-				}
-				[data-idx="1"]{
-					background-color: red;
-				}
-				[data-idx="2"]{
-					background-color: orange;
-				}
-			</style>
-		</custom-style>`;
-
-		document.body.appendChild(container.content);
-	</script>
 </head>
 
 <body unresolved>
 	<div id="container" class="vertical-section-container centered">
 		<h3>Basic <code>cosmoz-data-nav</code>.</h3>
-		<demo-snippet>
+		<dom-bind id="basic">
 			<template>
-				<dom-bind id="basic">
+				<cosmoz-data-nav items="[[ items ]]" index-as="index" as="item"
+						on-need-data="onNeedData" selected="{{ selected }}" selected-item="{{ selItem }}" hash-param="tt">
 					<template>
-						<cosmoz-data-nav items="[[ items ]]" index-as="index" as="item" on-need-data="onNeedData" selected="{{ selected }}" selected-item="{{selItem}}" hash-param="tt">
-							<template>
-								<cosmoz-demo-view class="fit layout vertical" item="{{ item }}" index="[[index]]" data-idx$="{{ computeColorIndex(index) }}" prev-disabled="[[ prevDisabled ]]" next-disabled="[[ nextDisabled ]]"></cosmoz-demo-view>
-							</template>
-						</cosmoz-data-nav>
-						<paper-textarea value="{{ computeJSON(selected, items.*) }}">
-						</paper-textarea>
-							<div>Selected: [[toJSON(selItem)]]</div>
+						<cosmoz-demo-view class="fit layout vertical"
+							item="{{ item }}" index="[[ index ]]" data-idx$="[[ computeColorIndex(index) ]]"
+							prev-disabled="[[ prevDisabled ]]" next-disabled="[[ nextDisabled ]]">
+						</cosmoz-demo-view>
 					</template>
-				</dom-bind>
+				</cosmoz-data-nav>
+				<paper-textarea value="[[ computeJSON(selected, items.*) ]]">
+				</paper-textarea>
+					<div>Selected: [[ toJSON(selItem) ]]</div>
 			</template>
-		</demo-snippet>
+		</dom-bind>
 	</div>
 
 	<script type="module">
+		import '@polymer/polymer/lib/elements/custom-style.js';
+		import '@polymer/polymer/lib/elements/dom-bind.js';
+		import '@polymer/paper-input/paper-textarea.js';
+		import './helpers/cosmoz-demo-view.js';
+		import '../cosmoz-data-nav.js';
+
+		const container = document.createElement('template');
+		container.innerHTML = `
+			<custom-style>
+				<style include="iron-flex">
+					#container {
+						max-width: 800px;
+					}
+					cosmoz-data-nav {
+						display: block;
+						height: 400px;
+						position: relative;
+					}
+					[data-idx="0"]{
+						background-color: blue;
+					}
+					[data-idx="1"]{
+						background-color: red;
+					}
+					[data-idx="2"]{
+						background-color: orange;
+					}
+				</style>
+			</custom-style>
+		`;
+		document.body.appendChild(container.content);
+
 		import { Base } from '@polymer/polymer/polymer-legacy';
 
-		window.addEventListener('WebComponentsReady', () => {
-			let basic = document.getElementById('basic');
-			const items = Array(20).fill('').map((e, i) => i.toString()),
-				asyncs = {};
+		let basic = document.getElementById('basic');
+		const items = Array(20).fill('').map((e, i) => i.toString()),
+			asyncs = {};
 
-			basic = !basic.set ? basic.firstElementChild : basic;
+		basic = !basic.set ? basic.firstElementChild : basic;
 
-			basic.computeColorIndex = index => index % 3;
-			basic.onNeedData = function (event, detail) {
+		Object.assign(basic, {
+			computeColorIndex: index => index % 3,
+			onNeedData: (event, detail) => {
 				const id = detail.id;
 				if (asyncs[id]) {
 					Base.cancelAsync(asyncs[id]);
@@ -95,14 +83,14 @@
 					event.target.setItemById(detail.id, { id: detail.id });
 				}, 500);
 				return { id: detail.id };
-			};
-			basic.computeJSON = function (index) {
+			},
+			computeJSON(index) {
 				return JSON.stringify(this.items[index]);
-			};
-			basic.toJSON = item => JSON.stringify(item);
-			basic.set('items', items);
+			},
+			toJSON: item => JSON.stringify(item)
 		});
+
+		basic.set('items', items);
 	</script>
 </body>
-
 </html>
