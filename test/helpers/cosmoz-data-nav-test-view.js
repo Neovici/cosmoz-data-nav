@@ -5,7 +5,11 @@ import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
 
-class CosmozDataNavTestView extends PolymerElement {
+import {
+	dataNavUserMixin
+} from './utils.js';
+
+class CosmozDataNavTestView extends dataNavUserMixin(PolymerElement) {
 	static get template() {
 		return html`
 			<style>
@@ -15,7 +19,7 @@ class CosmozDataNavTestView extends PolymerElement {
 					text-align: center;
 				}
 			</style>
-			<div class="flex text">{{ item.id }}</div>
+			<div class="flex text">[[ item.id ]]</div>
 			<div>
 				<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
 				<span>[[ index ]]</span>
@@ -23,23 +27,9 @@ class CosmozDataNavTestView extends PolymerElement {
 			</div>
 		`;
 	}
-
-	static get properties() {
-		return {
-			item: {
-				type: Object,
-				notify: true
-			},
-			index: {
-				type: Number
-			},
-			prevDisabled: {
-				type: Boolean
-			},
-			nextDisabled: {
-				type: Boolean
-			}
-		};
-	}
 }
 customElements.define('cosmoz-data-nav-test-view', CosmozDataNavTestView);
+
+export {
+	CosmozDataNavTestView
+};
