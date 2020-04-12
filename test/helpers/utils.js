@@ -1,4 +1,6 @@
-import { html } from '@open-wc/testing';
+import {
+	fixture, html
+} from '@open-wc/testing';
 import '@polymer/polymer/lib/elements/custom-style.js';
 import '@polymer/iron-flex-layout/iron-flex-layout.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
@@ -26,6 +28,11 @@ export const
 				},
 				nextDisabled: {
 					type: Boolean
+				},
+				notifyProp: {
+					type: Boolean,
+					notify: true,
+					value: false
 				}
 			};
 		}
@@ -49,4 +56,11 @@ export const
 				</cosmoz-data-nav-test-view>
 			</template>
 		</cosmoz-data-nav>
-	`;
+	`,
+	getItems = (num = 20) => Array(num).fill('').map((e, i) => i.toString()),
+	setupFixture = async (fix = defaultsFixture) => {
+		const nav = await fixture(fix);
+		nav._templatesObserver.flush();
+		nav.items = getItems();
+		return nav;
+	};
