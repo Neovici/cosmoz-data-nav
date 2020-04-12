@@ -757,11 +757,11 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 	}
 
 	_getInstance(selectedElement) {
-		if (selectedElement == null || selectedElement.children.length < 2) {
+		if (selectedElement == null) {
 			return;
 		}
 		// index 0 is incomplete element
-		return selectedElement.children[1];
+		return selectedElement.children[0];
 	}
 
 	_getItem(index, items = this.items) {
