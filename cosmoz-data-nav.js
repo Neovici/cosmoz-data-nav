@@ -330,6 +330,14 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			hiddenRendering: {
 				type: Boolean,
 				value: false
+			},
+
+			/**
+			 * Whether we should request data for all preloaded items at once or one at a time
+			 */
+			parallelDataRequests: {
+				type: Boolean,
+				value: false
 			}
 		};
 	}
@@ -719,6 +727,9 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 					render: true
 				}
 			}));
+			if (!this.parallelDataRequests) {
+				return;
+			}
 		}
 
 		if (index >= Math.min(this.selected + this.preload, items.length - 1)) {
