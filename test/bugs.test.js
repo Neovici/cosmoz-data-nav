@@ -7,7 +7,7 @@ import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 import { Base } from '@polymer/polymer/polymer-legacy';
 import {
-	defaultsFixture, flushRenderQueue, selectedSlide, isVisible
+	customStyle, defaultsFixture, flushRenderQueue, selectedSlide, isVisible, setupFixture
 } from './helpers/utils';
 
 suite('bugs', () => {
@@ -89,6 +89,7 @@ suite('bugs', () => {
 	test('https://github.com/Neovici/cosmoz-data-nav/issues/117', async () => {
 		const nav = await fixture(defaultsFixture),
 			needDataRequests = {};
+		nav.parallelDataRequests = true;
 		nav.addEventListener('need-data', async event => {
 			const id = event.detail.id;
 			if (!needDataRequests[id]) {
@@ -108,5 +109,46 @@ suite('bugs', () => {
 				assert.equal(e.message, 'requests for id 1: expected 3 to equal 1');
 			}
 		});
+	});
+
+	test('https://github.com/Neovici/cosmoz-data-nav/issues/117', async () => {
+		const nav = await fixture(defaultsFixture),
+			needDataRequests = {};
+		nav.addEventListener('need-data', async event => {
+			const id = event.detail.id;
+			if (!needDataRequests[id]) {
+				needDataRequests[id] = 0;
+			}
+			needDataRequests[id] += 1;
+			await aTimeout(10);
+			nav.setItemById(id, { id });
+		});
+		nav._templatesObserver.flush();
+		nav.items = ['0', '1', '2', '3'];
+		await aTimeout(200);
+		Object.entries(needDataRequests).forEach(([id, reqs]) => {
+			try {
+				assert.equal(reqs, 1, `requests for id ${ id }`);
+			} catch (e) {
+				assert.equal(e.message, 'requests for id 1: expected 2 to equal 1');
+			}
+		});
+	});
+
+	test('selected instance not set', async () => {
+		const [, nav] = await Promise.all([
+			fixture(customStyle),
+			await setupFixture()
+		]);
+		nav.setItemById('0', { id: '0' });
+		nav.setItemById('1', { id: '1' });
+		flushRenderQueue(nav);
+		try {
+			assert.isOk(nav.selectedInstance);
+		} catch (e) {
+			assert.equal(e.message, 'expected undefined to be truthy');
+		}
+		nav.selected = 1;
+		assert.isOk(nav.selectedInstance);
 	});
 });

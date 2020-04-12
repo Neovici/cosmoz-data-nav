@@ -5,21 +5,11 @@ import {
 import sinon from 'sinon';
 
 import {
-	customStyle, defaultsFixture
+	customStyle, defaultsFixture, flushRenderQueue, getItems, setupFixture
 } from './helpers/utils.js';
 
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
-
-
-
-const getItems = (num = 20) => Array(num).fill('').map((e, i) => i.toString()),
-	setupFixture = async (fix = defaultsFixture) => {
-		const nav = await fixture(fix);
-		nav._templatesObserver.flush();
-		nav.items = getItems();
-		return nav;
-	};
 
 sinon.assert.expose(chai.assert, { prefix: '' });
 
@@ -131,6 +121,20 @@ suite('duplicate ids', () => {
 		warnSpy.restore();
 		done();
 
+	});
+});
+
+suite('lacks template', () => {
+	let warnSpy;
+	suiteSetup(async () => {
+		warnSpy = sinon.spy(console, 'warn');
+		await fixture(html`<cosmoz-data-nav><b></b></cosmoz-data-nav>`);
+	});
+	test('data-nav warns about missing template', () => {
+		sinon.assert.calledWith(warnSpy, 'cosmoz-data-nav requires a template');
+	});
+	suiteTeardown(() => {
+		warnSpy.restore();
 	});
 });
 
@@ -356,6 +360,15 @@ suite('renderQueue', () => {
 				</cosmoz-data-nav>
 			`)
 		]);
+	});
+
+	test('selected instance notify prop', async () => {
+		nav.items = [{ id: '0' }, { id: '0' }, { id: '0' }];
+		nav._templatesObserver.flush();
+		flushRenderQueue(nav);
+		nav.selected = 1;
+		const inst = nav.selectedInstance;
+		inst.item = { ...inst.item };
 	});
 
 	test('renderQueue three items', async () => {
