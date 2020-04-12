@@ -10,6 +10,25 @@ import {
 	customStyle, defaultsFixture, flushRenderQueue, selectedSlide, isVisible, setupFixture
 } from './helpers/utils';
 
+const oneRequestPerItem = async nav => {
+	const needDataRequests = {};
+	nav.addEventListener('need-data', async event => {
+		const id = event.detail.id;
+		if (!needDataRequests[id]) {
+			needDataRequests[id] = 0;
+		}
+		needDataRequests[id] += 1;
+		await aTimeout();
+		nav.setItemById(id, { id });
+	});
+	nav._templatesObserver.flush();
+	nav.items = ['0', '1', '2', '3'];
+	await aTimeout();
+	Object.entries(needDataRequests).forEach(([id, reqs]) => {
+		assert.equal(reqs, 1, `requests for id ${ id }`);
+	});
+};
+
 suite('bugs', () => {
 	test('https://github.com/Neovici/cosmoz-data-nav/issues/84', async () => {
 		const items = [
@@ -87,52 +106,26 @@ suite('bugs', () => {
 	});
 
 	test('https://github.com/Neovici/cosmoz-data-nav/issues/117', async () => {
-		const nav = await fixture(defaultsFixture),
-			needDataRequests = {};
+		const nav = await fixture(defaultsFixture);
 		nav.parallelDataRequests = true;
-		nav.addEventListener('need-data', async event => {
-			const id = event.detail.id;
-			if (!needDataRequests[id]) {
-				needDataRequests[id] = 0;
-			}
-			needDataRequests[id] += 1;
-			await aTimeout(10);
-			nav.setItemById(id, { id });
-		});
-		nav._templatesObserver.flush();
-		nav.items = ['0', '1', '2', '3'];
-		await aTimeout(200);
-		Object.entries(needDataRequests).forEach(([id, reqs]) => {
-			try {
-				assert.equal(reqs, 1, `requests for id ${ id }`);
-			} catch (e) {
-				assert.equal(e.message, 'requests for id 1: expected 3 to equal 1');
-			}
-		});
+		try {
+			await oneRequestPerItem(nav);
+		} catch (e) {
+			assert.equal(e.message, 'requests for id 1: expected 3 to equal 1');
+			return;
+		}
+		assert.isTrue(false, 'bug fixed?');
 	});
 
 	test('https://github.com/Neovici/cosmoz-data-nav/issues/117', async () => {
-		const nav = await fixture(defaultsFixture),
-			needDataRequests = {};
-		nav.addEventListener('need-data', async event => {
-			const id = event.detail.id;
-			if (!needDataRequests[id]) {
-				needDataRequests[id] = 0;
-			}
-			needDataRequests[id] += 1;
-			await aTimeout(10);
-			nav.setItemById(id, { id });
-		});
-		nav._templatesObserver.flush();
-		nav.items = ['0', '1', '2', '3'];
-		await aTimeout(200);
-		Object.entries(needDataRequests).forEach(([id, reqs]) => {
-			try {
-				assert.equal(reqs, 1, `requests for id ${ id }`);
-			} catch (e) {
-				assert.equal(e.message, 'requests for id 1: expected 2 to equal 1');
-			}
-		});
+		const nav = await fixture(defaultsFixture);
+		try {
+			await oneRequestPerItem(nav);
+		} catch (e) {
+			assert.equal(e.message, 'requests for id 1: expected 2 to equal 1');
+			return;
+		}
+		assert.isTrue(false, 'bug fixed?');
 	});
 
 	test('selected instance not set', async () => {
@@ -143,12 +136,15 @@ suite('bugs', () => {
 		nav.setItemById('0', { id: '0' });
 		nav.setItemById('1', { id: '1' });
 		flushRenderQueue(nav);
+		let bug = false;
 		try {
 			assert.isOk(nav.selectedInstance);
 		} catch (e) {
 			assert.equal(e.message, 'expected undefined to be truthy');
+			bug = true;
 		}
 		nav.selected = 1;
 		assert.isOk(nav.selectedInstance);
+		assert.isTrue(bug, 'bug fixed?');
 	});
 });
