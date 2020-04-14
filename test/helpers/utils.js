@@ -28,16 +28,11 @@ export const
 				},
 				nextDisabled: {
 					type: Boolean
-				},
-				notifyProp: {
-					type: Boolean,
-					notify: true,
-					value: false
 				}
 			};
 		}
 	},
-	customStyle = html`
+	visibilityFixture = html`
 		<custom-style>
 			<style include="iron-flex iron-positioning">
 				cosmoz-data-nav {

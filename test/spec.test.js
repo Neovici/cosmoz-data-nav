@@ -5,7 +5,7 @@ import {
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 import {
-	flushRenderQueue, selectedSlide, customStyle
+	flushRenderQueue, selectedSlide, visibilityFixture
 } from './helpers/utils';
 import { flush as syncFlush } from '@polymer/polymer/lib/utils/flush';
 
@@ -37,7 +37,7 @@ suite('constructor', () => {
 suite('template', () => {
 	test('renders items using a template', async () => {
 		const [, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			fixture(basicFixture)
 		]);
 		nav._templatesObserver.flush();
@@ -51,7 +51,7 @@ suite('template', () => {
 	test('renders the wrong item if the templates observer runs after `items` is set [KNOWN BUG]', async () => {
 		//expect(async () => {
 		const [, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			fixture(basicFixture)
 		]);
 		nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
@@ -70,7 +70,7 @@ suite('properties', () => {
 	let nav;
 	setup(async () => {
 		[, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			fixture(basicFixture)
 		]);
 		nav._templatesObserver.flush();
