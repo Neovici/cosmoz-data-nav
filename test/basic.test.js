@@ -5,7 +5,7 @@ import {
 import sinon from 'sinon';
 
 import {
-	customStyle, defaultsFixture, flushRenderQueue, getItems, setupFixture
+	visibilityFixture, defaultsFixture, flushRenderQueue, getItems, setupFixture
 } from './helpers/utils.js';
 
 import '../cosmoz-data-nav.js';
@@ -351,7 +351,7 @@ suite('renderQueue', () => {
 
 	setup(async () => {
 		[, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			setupFixture(html`
 				<cosmoz-data-nav elements-buffer="5">
 					<template>

@@ -760,7 +760,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		if (selectedElement == null) {
 			return;
 		}
-		// index 0 is incomplete element
 		return selectedElement.children[0];
 	}
 

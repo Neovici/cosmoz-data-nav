@@ -7,7 +7,7 @@ import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 import { Base } from '@polymer/polymer/polymer-legacy';
 import {
-	customStyle, defaultsFixture, flushRenderQueue, selectedSlide, isVisible, setupFixture
+	visibilityFixture, defaultsFixture, flushRenderQueue, selectedSlide, isVisible, setupFixture
 } from './helpers/utils';
 
 const oneRequestPerItem = async nav => {
@@ -130,7 +130,7 @@ suite('bugs', () => {
 
 	test('selected instance not set', async () => {
 		const [, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			await setupFixture()
 		]);
 		nav.setItemById('0', { id: '0' });

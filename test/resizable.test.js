@@ -4,7 +4,7 @@ import {
 
 import sinon from 'sinon';
 
-import { customStyle } from './helpers/utils.js';
+import { visibilityFixture } from './helpers/utils.js';
 
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-resizable-view.js';
@@ -30,7 +30,7 @@ suite('resizable', () => {
 
 	suiteSetup(async () => {
 		[, nav] = await Promise.all([
-			fixture(customStyle),
+			fixture(visibilityFixture),
 			fixture(html`
 				<cosmoz-data-nav>
 					<template>
