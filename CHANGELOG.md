@@ -1,3 +1,24 @@
+# [3.3.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.2.0...v3.3.0) (2020-04-15)
+
+
+### Bug Fixes
+
+* drop old comment and notifyProp prop, rename visibility fixture ([111e122](https://github.com/neovici/cosmoz-data-nav/commit/111e1228a2ad0b706ddd2fd4a95a7f7553111d03))
+* **test:** reuse need-request tests logic, fix false passes, speed up ([05d4662](https://github.com/neovici/cosmoz-data-nav/commit/05d4662028a7c1dbd795bdca044c37a453111e6a))
+* _getInstance and selectedInstance old logic ([c2908eb](https://github.com/neovici/cosmoz-data-nav/commit/c2908eb4d6f726d4ae1eb3c3dc45865964b917a3))
+* reuse getItems, setupFixture, add tests, add bug tests ([6bf06a9](https://github.com/neovici/cosmoz-data-nav/commit/6bf06a97152a75ec7346458e2e1abb91384fb9c9))
+* **test:** add test for [#117](https://github.com/neovici/cosmoz-data-nav/issues/117) ([c251fbc](https://github.com/neovici/cosmoz-data-nav/commit/c251fbcd76f6150ba9477fe43a56a850eec9ad3b))
+* **test:** port spec tests to karma ([2f92a9f](https://github.com/neovici/cosmoz-data-nav/commit/2f92a9f142fa7097d11133c9368f2ac303a89462))
+* **test:** reuse more logic ([5688863](https://github.com/neovici/cosmoz-data-nav/commit/568886378821969b2b7e6ea4f89375efe95e0315))
+* repo upgrade ([174cdd4](https://github.com/neovici/cosmoz-data-nav/commit/174cdd43bc8022d5cded2ddc019f0b011d1fe400))
+* reuse code to avoid duplication (code climate) ([0f6f38d](https://github.com/neovici/cosmoz-data-nav/commit/0f6f38d0b11249e86d6faaff7b5b22d30b57bb31))
+* update demo, add (now working?) spec test ([59c269e](https://github.com/neovici/cosmoz-data-nav/commit/59c269e382dc8392e2a5ec655c97eb780fbd9735))
+
+
+### Features
+
+* configurable data request parallelization ([13a284a](https://github.com/neovici/cosmoz-data-nav/commit/13a284a1d8eb26983b56a9b51b4e40f1fefaed69))
+
 # [3.2.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.1.0...v3.2.0) (2020-03-17)
 
 
