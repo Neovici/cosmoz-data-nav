@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.0...v3.3.1) (2020-06-11)
+
+
+### Bug Fixes
+
+* **selected-instance:** is always the incomplete template ([b570511](https://github.com/neovici/cosmoz-data-nav/commit/b5705114ef3b634aebae81c94b318f656c5a0e8a))
+
 # [3.3.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.2.0...v3.3.0) (2020-04-15)
 
 
