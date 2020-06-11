@@ -760,7 +760,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		if (selectedElement == null) {
 			return;
 		}
-		return selectedElement.children[0];
+		// return reference to the rendered template instance or the incomplete template if missing
+		return selectedElement.children[1] || selectedElement.children[0];
 	}
 
 	_getItem(index, items = this.items) {
