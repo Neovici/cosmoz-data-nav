@@ -92,7 +92,8 @@ suite('properties check', () => {
 });
 
 suite('duplicate ids', () => {
-	let nav;
+	let nav,
+		warnSpy;
 
 	suiteSetup(async () => {
 		nav = await fixture(defaultsFixture);
@@ -101,12 +102,16 @@ suite('duplicate ids', () => {
 		items[0] = '0';
 		items[1] = '0';
 		nav.items = items;
+		warnSpy = sinon.spy(console, 'warn');
+	});
+
+	suiteTeardown(() => {
+		warnSpy.restore();
 	});
 
 	test('setItemById handlers duplicate ids', done => {
-		const warnSpy = sinon.spy(console, 'warn'),
-			data = { id: 0 },
-			cache = nav._cache;
+		const data = { id: 0 },
+			cache = nav.__cache;
 		nav.setItemById('0', data);
 		sinon.assert.calledWith(warnSpy,
 			'Multiple replaceable items matches idPath',
@@ -115,13 +120,12 @@ suite('duplicate ids', () => {
 			'0',
 			'in the item list', nav.items,
 			'to replace with item', { id: 0 });
-		assert.equal(cache['0'].id, data.id);
+		assert.equal(cache.get('0').id, data.id);
 		assert.equal(nav.items[0].id, data.id);
 		assert.equal(nav.items[1].id, data.id);
-		warnSpy.restore();
 		done();
-
 	});
+
 });
 
 suite('lacks template', () => {
@@ -151,62 +155,61 @@ suite('cache', () => {
 	});
 
 	teardown(() => {
-		nav.clearCache();
+		nav.__cache.clear();
 	});
 
 	test('cache stores one item', () => {
-		const cache = nav._cache;
+		const cache = nav.__cache;
 		nav.setItemById('1', { id: 88 });
-		assert.equal(cache['1'].id, 88);
+		assert.equal(cache.get('1').id, 88);
 	});
 
 	test('cache stores two items', () => {
-		const cache = nav._cache;
+		const cache = nav.__cache;
 		nav.setItemById('1', { id: 88 });
 		nav.setItemById('2', { id: 99 });
-		assert.equal(cache['1'].id, 88);
-		assert.equal(cache['2'].id, 99);
+		assert.equal(cache.get('1').id, 88);
+		assert.equal(cache.get('2').id, 99);
 	});
 
-	test('clearCache method works', () => {
-		const cache = nav._cache;
+	test('__cache.clear method works', () => {
+		const cache = nav.__cache;
 		nav.setItemById('1', { id: 1 });
 		nav.setItemById('2', { id: 2 });
-		assert.equal(cache['1'].id, 1);
-		assert.equal(cache['2'].id, 2);
-		nav.clearCache();
-		assert.deepEqual(nav._cache, {});
+		assert.equal(cache.get('1').id, 1);
+		assert.equal(cache.get('2').id, 2);
+		nav.__cache.clear();
+		assert.isUndefined(cache.get('1'));
+		assert.isUndefined(cache.get('2'));
 	});
 
-	test('removeFromCache method works', () => {
-		const cache = nav._cache;
+	test('__cache.dropItem method works', () => {
+		const cache = nav.__cache;
 		nav.setItemById('1', { id: 88 });
 		nav.setItemById('2', { id: 99 });
 		nav.setItemById('3', { id: 11 });
-		assert.equal(cache['1'].id, 88);
-		assert.equal(cache['2'].id, 99);
-		assert.equal(cache['3'].id, 11);
+		assert.equal(cache.get('1').id, 88);
+		assert.equal(cache.get('2').id, 99);
+		assert.equal(cache.get('3').id, 11);
 
-		nav.removeFromCache(cache['2']);
-		assert.isUndefined(nav._cache['2']);
-		assert.equal(Object.keys(nav._cache).length, 2);
-		nav.removeFromCache(cache['1']);
-		assert.isUndefined(nav._cache['1']);
-		assert.equal(Object.keys(nav._cache).length, 1);
+		nav.__cache.dropItem(cache.get('2'));
+		assert.isUndefined(nav.__cache.get('2'));
+		nav.__cache.dropItem(cache.get('1'));
+		assert.isUndefined(nav.__cache.get('1'));
 	});
 
-	test('removeFromCache called with null or unknown item', () => {
-		const cache = nav._cache;
+	test('__cache.dropItem called with null or unknown item', () => {
+		const cache = nav.__cache;
 		let cacheKeys;
 		nav.setItemById('1', { id: 900 });
-		assert.equal(cache['1'].id, 900);
+		assert.equal(cache.get('1').id, 900);
 
 		cacheKeys = Object.keys(cache);
-		nav.removeFromCache(null);
+		nav.__cache.dropItem(null);
 		assert.equal(cacheKeys.length, Object.keys(cache).length);
 
 		cacheKeys = Object.keys(cache);
-		nav.removeFromCache({});
+		nav.__cache.dropItem({});
 		assert.equal(cacheKeys.length, Object.keys(cache).length);
 	});
 
@@ -262,7 +265,7 @@ suite('other methods', () => {
 	});
 
 	test('preloads data', async () => {
-		nav.clearCache();
+		nav.__cache.clear();
 		setTimeout(() => {
 			nav.items = getItems();
 		});
