@@ -346,11 +346,8 @@ suite('properties', () => {
 	});
 
 	suite('selectedInstance', () => {
-		test('exposes the instance of the selected item');
-		test('does not work properly [KNOWN BUG]', () => {
-			expect(() => {
-				expect(nav.selectedInstance).to.exist;
-			}).throws('expected undefined to exist');
+		test('exposes the instance of the selected item', () => {
+			expect(nav.selectedInstance).to.exist;
 		});
 	});
 
