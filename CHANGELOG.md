@@ -1,3 +1,11 @@
+## [3.3.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.1...v3.3.2) (2020-06-17)
+
+
+### Bug Fixes
+
+* **test:** drop selectedInstance bug tests 🎉 ([2ff6a26](https://github.com/neovici/cosmoz-data-nav/commit/2ff6a26dd93784f80fc4c1ce26110163f7708c8b))
+* update selected instance after rendering ([30d7a93](https://github.com/neovici/cosmoz-data-nav/commit/30d7a93aa8370a447ab08bf30c1d1a8d3f6249f8))
+
 ## [3.3.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.0...v3.3.1) (2020-06-11)
 
 
