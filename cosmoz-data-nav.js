@@ -1096,6 +1096,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			// resize is a expensive operation
 			this._renderRan = this._notifyElementResize();
 		}
+		this._setSelectedInstance(this._getInstance(element));
 	}
 
 	_onCachePurge(e) {
