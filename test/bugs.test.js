@@ -136,15 +136,8 @@ suite('bugs', () => {
 		nav.setItemById('0', { id: '0' });
 		nav.setItemById('1', { id: '1' });
 		flushRenderQueue(nav);
-		let bug = false;
-		try {
-			assert.isOk(nav.selectedInstance);
-		} catch (e) {
-			assert.equal(e.message, 'expected undefined to be truthy');
-			bug = true;
-		}
+		assert.isOk(nav.selectedInstance);
 		nav.selected = 1;
 		assert.isOk(nav.selectedInstance);
-		assert.isTrue(bug, 'bug fixed?');
 	});
 });
