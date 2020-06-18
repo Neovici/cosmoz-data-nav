@@ -23,7 +23,7 @@ import '@neovici/cosmoz-bottom-bar/cosmoz-bottom-bar-view';
 import { translatable } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-page-router/cosmoz-page-location';
 
-import { hauntedPolymer } from './haunted-polymer';
+import { hauntedPolymer } from '@neovici/cosmoz-utils';
 
 import { useCache } from './lib/cache.js';
 
