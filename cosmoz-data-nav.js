@@ -25,7 +25,7 @@ import '@neovici/cosmoz-page-router/cosmoz-page-location';
 
 import { hauntedPolymer } from '@neovici/cosmoz-utils';
 
-import { useCache } from './lib/cache.js';
+import { useCache } from './lib/use-cache.js';
 
 const _async = window.requestIdleCallback || window.requestAnimationFrame || window.setTimeout,
 	_hasDeadline = 'IdleDeadline' in window,
