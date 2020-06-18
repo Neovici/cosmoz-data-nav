@@ -1,3 +1,10 @@
+## [3.3.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.2...v3.3.3) (2020-06-18)
+
+
+### Bug Fixes
+
+* make sure selected instance isn't updated for preloads ([957354b](https://github.com/neovici/cosmoz-data-nav/commit/957354b011adead47126a4027cc9cda382f451dc))
+
 ## [3.3.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.1...v3.3.2) (2020-06-17)
 
 
