@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.3...v3.4.0) (2020-06-18)
+
+
+### Features
+
+* **👻:** extract cache behavior with haunted-polymer hook ([#120](https://github.com/neovici/cosmoz-data-nav/issues/120)) ([126aeac](https://github.com/neovici/cosmoz-data-nav/commit/126aeac1e093f3ff7e95b01511d8755b8d25ba0b))
+
 ## [3.3.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.2...v3.3.3) (2020-06-18)
 
 
