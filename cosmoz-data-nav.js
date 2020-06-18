@@ -23,6 +23,10 @@ import '@neovici/cosmoz-bottom-bar/cosmoz-bottom-bar-view';
 import { translatable } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-page-router/cosmoz-page-location';
 
+import { hauntedPolymer } from '@neovici/cosmoz-utils';
+
+import { useCache } from './lib/use-cache.js';
+
 const _async = window.requestIdleCallback || window.requestAnimationFrame || window.setTimeout,
 	_hasDeadline = 'IdleDeadline' in window,
 	_asyncPeriod = (cb, timeout = 1500) => {
@@ -75,7 +79,7 @@ Example:
 @demo demo/index.html
 @appliesMixin translatable
 */
-class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
+class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mixinBehaviors([IronResizableBehavior], PolymerElement))) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
 			<style include="iron-flex iron-positioning">
@@ -345,10 +349,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 	constructor() {
 		super();
 		this._previouslySelectedItem = null;
-		this._cache = {};
 		this._preloadIdx = 0;
 		this._boundOnTemplatesChange = this._onTemplatesChange.bind(this);
-		this._onCachePurgeHandler = this._onCachePurge.bind(this);
 	}
 
 	connectedCallback() {
@@ -357,7 +359,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			this.$.templatesSlot,
 			this._boundOnTemplatesChange
 		);
-		window.addEventListener('cosmoz-cache-purge', this._onCachePurgeHandler);
 		this.addEventListener('tap', this._onTap);
 		this.addEventListener('transitionend', this._onTransitionEnd);
 	}
@@ -374,9 +375,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		}
 
 		this._previouslySelectedItem = null;
-		this._cache = {};
 		this._indexRenderQueue = [];
-		window.removeEventListener('cosmoz-cache-purge', this._onCachePurgeHandler);
 		this.removeEventListener('tap', this._onTap);
 		this.removeEventListener('transitionend', this._onTransitionEnd);
 
@@ -462,7 +461,7 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		if (prop !== this.as || value === item || this._allElementInstances.indexOf(inst) < 0) {
 			return;
 		}
-		this.removeFromCache(item);
+		this.__cache.dropItem(item);
 		this.set(['items', index], value);
 	}
 
@@ -517,8 +516,8 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			console.warn('Multiple replaceable items matches idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
 		}
 
-		this._cache[id] = Object.assign({}, item);
-		matches.forEach(match => this.set(['items', items.indexOf(match)], Object.assign({}, item)));
+		this.__cache.set(id, item);
+		matches.forEach(match => this.set(['items', items.indexOf(match)], { ...item }));
 
 		this._preload();
 
@@ -527,21 +526,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		}
 
 		this._updateSelected();
-	}
-
-	clearCache() {
-		this._cache = {};
-	}
-
-	removeFromCache(item) {
-		if (item == null) {
-			return;
-		}
-		const cache = this._cache,
-			key = Object.keys(cache).find(k => cache[k] === item);
-		if (key != null) {
-			delete cache[key];
-		}
 	}
 
 	/**
@@ -561,8 +545,11 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 		// replace incomplete items with cached item data
 		if (length) {
 			items.forEach((item, index) => {
-				if (this.isIncompleteFn(item) && this._cache[item]) {
-					this.set(['items', index], this._cache[item]);
+				if (this.isIncompleteFn(item)) {
+					const cachedItem = this.__cache?.get(item);
+					if (cachedItem) {
+						this.set(['items', index], cachedItem);
+					}
 				}
 			});
 		}
@@ -1097,13 +1084,6 @@ class CosmozDataNav extends translatable(mixinBehaviors([IronResizableBehavior],
 			this._renderRan = this._notifyElementResize();
 			this._setSelectedInstance(this._getInstance(element));
 		}
-	}
-
-	_onCachePurge(e) {
-		if (e == null || e.detail == null || !Array.isArray(e.detail.ids) || e.detail.ids.length === 0) {
-			return this.clearCache();
-		}
-		e.detail.ids.forEach(id => delete this._cache[id]);
 	}
 
 	_getItemId(item) {
