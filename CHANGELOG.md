@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.0...v3.4.1) (2020-06-19)
+
+
+### Bug Fixes
+
+* **build:** publish lib/ to npm package ([978f38d](https://github.com/neovici/cosmoz-data-nav/commit/978f38d5b6c26b36844e5fd2340dbdbed3819599))
+
 # [3.4.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.3.3...v3.4.0) (2020-06-18)
 
 
