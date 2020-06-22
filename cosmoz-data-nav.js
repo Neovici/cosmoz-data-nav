@@ -94,7 +94,6 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 					transform: translateX(0px);
 				}
 
-				.fit,
 				#items,
 				#items > ::slotted(.animatable) {
 					position: absolute;
@@ -132,8 +131,10 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 				<slot id="templatesSlot"></slot>
 			</div>
 			<template id="incompleteTemplate">
-				<cosmoz-bottom-bar-view active incomplete class="fit">
-					<div slot="scroller-content">
+				<cosmoz-bottom-bar-view active incomplete style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;">
+					<div slot="scroller-content"
+							style="display: flex; flex: 1; flex-basis: 0.000000001px; flex-direction: row; justify-content: center;  align-items: center;"
+					>
 						<paper-spinner-lite active></paper-spinner-lite>
 						<div style="margin-left: 10px">
 							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
