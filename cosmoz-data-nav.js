@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 import '@webcomponents/shadycss/entrypoints/apply-shim';
 
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/paper-icon-button';
 import '@polymer/paper-spinner/paper-spinner-lite';
 
@@ -82,7 +80,7 @@ Example:
 class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mixinBehaviors([IronResizableBehavior], PolymerElement))) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
-			<style include="iron-flex iron-positioning">
+			<style>
 				:host {
 					position: relative;
 				}
@@ -93,10 +91,18 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 
 				#items,
 				#items > ::slotted(.animatable){
-					@apply --layout-fit;
 					transform: translateX(0px);
 				}
 
+				.fit,
+				#items,
+				#items > ::slotted(.animatable) {
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+				}
 				:host([animating]) #items > ::slotted(.animatable){
 					transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0s;
 					backface-visibility: hidden;
@@ -127,7 +133,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			</div>
 			<template id="incompleteTemplate">
 				<cosmoz-bottom-bar-view active incomplete class="fit">
-					<div slot="scroller-content" class="flex layout horizontal center-justified center">
+					<div slot="scroller-content">
 						<paper-spinner-lite active></paper-spinner-lite>
 						<div style="margin-left: 10px">
 							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
