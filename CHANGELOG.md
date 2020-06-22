@@ -1,3 +1,10 @@
+## [3.4.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.2...v3.4.3) (2020-06-22)
+
+
+### Bug Fixes
+
+* incomplete instance styling ([25ec6c4](https://github.com/neovici/cosmoz-data-nav/commit/25ec6c4dc95d2493c2eb3e03f98f64b1050bafe9))
+
 ## [3.4.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.1...v3.4.2) (2020-06-22)
 
 
