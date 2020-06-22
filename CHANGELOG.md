@@ -1,3 +1,10 @@
+## [3.4.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.1...v3.4.2) (2020-06-22)
+
+
+### Bug Fixes
+
+* drop iron-flex-layout ([317b71d](https://github.com/neovici/cosmoz-data-nav/commit/317b71d9bb0f03396119097bd8b2baa53829f000))
+
 ## [3.4.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.0...v3.4.1) (2020-06-19)
 
 
