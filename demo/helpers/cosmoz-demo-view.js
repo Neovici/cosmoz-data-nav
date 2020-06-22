@@ -1,6 +1,4 @@
 import '@polymer/paper-icon-button/paper-icon-button';
-import '@polymer/iron-flex-layout/iron-flex-layout';
-import '@polymer/iron-flex-layout/iron-flex-layout-classes';
 import '@polymer/iron-icons/iron-icons.js';
 
 import { PolymerElement } from '@polymer/polymer/polymer-element';
@@ -15,12 +13,14 @@ class CosmozDemoView extends dataNavUserMixin(PolymerElement) {
 		return html`
 			<style>
 				.text {
+					flex: 1;
+					flex-basis: 0.000000001px;
 					font-size: 300px;
 					line-height: 360px;
 					text-align: center;
 				}
 			</style>
-			<div class="flex text">[[ item.id ]]</div>
+			<div class="text">[[ item.id ]]</div>
 			<div>
 				<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
 				<span>[[ index ]]</span>
