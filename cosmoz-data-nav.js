@@ -1,9 +1,6 @@
 /* eslint-disable max-lines */
 import '@webcomponents/shadycss/entrypoints/apply-shim';
 
-import '@polymer/paper-icon-button';
-import '@polymer/paper-spinner/paper-spinner-lite';
-
 import { render } from 'lit-html';
 
 import { PolymerElement } from '@polymer/polymer/polymer-element';
@@ -19,8 +16,6 @@ import { Debouncer } from '@polymer/polymer/lib/utils/debounce';
 import { animationFrame } from '@polymer/polymer/lib/utils/async';
 import { flush } from '@polymer/polymer/lib/utils/flush';
 
-import '@neovici/cosmoz-bottom-bar/cosmoz-bottom-bar-view';
-import { translatable } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-page-router/cosmoz-page-location';
 
 import { hauntedPolymer } from '@neovici/cosmoz-utils';
@@ -33,7 +28,7 @@ const _async = window.requestIdleCallback || window.requestAnimationFrame || win
 		_async(() => cb(), _hasDeadline && { timeout });
 	};
 
-class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(translatable(mixinBehaviors([IronResizableBehavior], PolymerElement))) {
+class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
 			<style>
