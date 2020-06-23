@@ -1,3 +1,10 @@
+## [3.4.4](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.3...v3.4.4) (2020-06-23)
+
+
+### Bug Fixes
+
+* correct placement of next/prev in incomplete items ([aac4119](https://github.com/neovici/cosmoz-data-nav/commit/aac4119868e43a5a225d14010375715ee60273a0))
+
 ## [3.4.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.2...v3.4.3) (2020-06-22)
 
 
