@@ -51,7 +51,7 @@ suite('resizable', () => {
 			nav.addEventListener('iron-resize', spy);
 			nav.notifyResize();
 			assert.calledOnce(spy);
-			assert.equal(nav._interestedResizables.length, 6);
+			assert.equal(nav._interestedResizables.length, 3);
 			assert.isTrue(nav.resizerShouldNotify(view));
 			done();
 		});

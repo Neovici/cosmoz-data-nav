@@ -111,7 +111,7 @@ suite('duplicate ids', () => {
 
 	test('setItemById handlers duplicate ids', done => {
 		const data = { id: 0 },
-			cache = nav.__cache;
+			cache = nav.haunted.cache;
 		nav.setItemById('0', data);
 		sinon.assert.calledWith(warnSpy,
 			'Multiple replaceable items matches idPath',
@@ -155,36 +155,36 @@ suite('cache', () => {
 	});
 
 	teardown(() => {
-		nav.__cache.clear();
+		nav.haunted.cache.clear();
 	});
 
 	test('cache stores one item', () => {
-		const cache = nav.__cache;
+		const cache = nav.haunted.cache;
 		nav.setItemById('1', { id: 88 });
 		assert.equal(cache.get('1').id, 88);
 	});
 
 	test('cache stores two items', () => {
-		const cache = nav.__cache;
+		const cache = nav.haunted.cache;
 		nav.setItemById('1', { id: 88 });
 		nav.setItemById('2', { id: 99 });
 		assert.equal(cache.get('1').id, 88);
 		assert.equal(cache.get('2').id, 99);
 	});
 
-	test('__cache.clear method works', () => {
-		const cache = nav.__cache;
+	test('haunted.cache.clear method works', () => {
+		const cache = nav.haunted.cache;
 		nav.setItemById('1', { id: 1 });
 		nav.setItemById('2', { id: 2 });
 		assert.equal(cache.get('1').id, 1);
 		assert.equal(cache.get('2').id, 2);
-		nav.__cache.clear();
+		nav.haunted.cache.clear();
 		assert.isUndefined(cache.get('1'));
 		assert.isUndefined(cache.get('2'));
 	});
 
-	test('__cache.dropItem method works', () => {
-		const cache = nav.__cache;
+	test('haunted.cache.dropItem method works', () => {
+		const cache = nav.haunted.cache;
 		nav.setItemById('1', { id: 88 });
 		nav.setItemById('2', { id: 99 });
 		nav.setItemById('3', { id: 11 });
@@ -192,24 +192,24 @@ suite('cache', () => {
 		assert.equal(cache.get('2').id, 99);
 		assert.equal(cache.get('3').id, 11);
 
-		nav.__cache.dropItem(cache.get('2'));
-		assert.isUndefined(nav.__cache.get('2'));
-		nav.__cache.dropItem(cache.get('1'));
-		assert.isUndefined(nav.__cache.get('1'));
+		nav.haunted.cache.dropItem(cache.get('2'));
+		assert.isUndefined(nav.haunted.cache.get('2'));
+		nav.haunted.cache.dropItem(cache.get('1'));
+		assert.isUndefined(nav.haunted.cache.get('1'));
 	});
 
-	test('__cache.dropItem called with null or unknown item', () => {
-		const cache = nav.__cache;
+	test('haunted.cache.dropItem called with null or unknown item', () => {
+		const cache = nav.haunted.cache;
 		let cacheKeys;
 		nav.setItemById('1', { id: 900 });
 		assert.equal(cache.get('1').id, 900);
 
 		cacheKeys = Object.keys(cache);
-		nav.__cache.dropItem(null);
+		nav.haunted.cache.dropItem(null);
 		assert.equal(cacheKeys.length, Object.keys(cache).length);
 
 		cacheKeys = Object.keys(cache);
-		nav.__cache.dropItem({});
+		nav.haunted.cache.dropItem({});
 		assert.equal(cacheKeys.length, Object.keys(cache).length);
 	});
 
@@ -265,7 +265,7 @@ suite('other methods', () => {
 	});
 
 	test('preloads data', async () => {
-		nav.__cache.clear();
+		nav.haunted.cache.clear();
 		setTimeout(() => {
 			nav.items = getItems();
 		});
@@ -294,13 +294,18 @@ suite('navigation', () => {
 	});
 
 	test('selects next item', async () => {
+		nav.items = [0, 1];
 		nav.setItemById('0', { id: 0 });
 		nav.setItemById('1', { id: 1 });
 		nav._renderQueue();
 		nav._renderQueue();
-		const firstElement = nav._getElement(0);
+		const firstElement = nav._getElement(0),
+			instance = nav._getInstance(firstElement);
 		let nextBtn; /* eslint-disable-next-line no-return-assign */
-		await waitUntil(() => nextBtn = firstElement.querySelector('[cosmoz-data-nav-select="+1"]'));
+		await waitUntil(() => {
+			nextBtn = instance.querySelector('[cosmoz-data-nav-select="+1"]');
+			return !!nextBtn;
+		});
 		nextBtn.click();
 		await waitUntil(() => nav._selectDebouncer);
 		assert.isOk(nav._selectDebouncer);
