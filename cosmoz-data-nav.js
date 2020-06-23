@@ -4,6 +4,8 @@ import '@webcomponents/shadycss/entrypoints/apply-shim';
 import '@polymer/paper-icon-button';
 import '@polymer/paper-spinner/paper-spinner-lite';
 
+import { render } from 'lit-html';
+
 import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
 import { useShadow } from '@polymer/polymer/lib/utils/settings';
@@ -23,61 +25,15 @@ import '@neovici/cosmoz-page-router/cosmoz-page-location';
 
 import { hauntedPolymer } from '@neovici/cosmoz-utils';
 
-import { useCache } from './lib/use-cache.js';
+import { useDataNav } from './lib/use-data-nav.js';
 
 const _async = window.requestIdleCallback || window.requestAnimationFrame || window.setTimeout,
 	_hasDeadline = 'IdleDeadline' in window,
 	_asyncPeriod = (cb, timeout = 1500) => {
 		_async(() => cb(), _hasDeadline && { timeout });
-	},
-	_doAsyncSteps = (steps, timeout) => {
-		const callStep = () => {
-			if (!Array.isArray(steps) || steps.length < 1) {
-				return;
-			}
-			const step = steps.shift();
-			step();
-			_asyncPeriod(callStep, timeout);
-		};
-		return _asyncPeriod(callStep, timeout);
 	};
 
-/**
-`cosmoz-data-nav` provides a way to show each individual item of a list in a queue-style behavior
-to the user.
-
-A list of `items` and a `<template>` for each item is used to render the queue, and methods to
-slide to next/previous item is exposed.
-
-For performance and to avoid DOM bloat, the items are "lazy-rendered" and the `maxPreload` setting
-decides how many _upcoming_ items that should be pre-rendered.
-
-It can also be "lazy-loaded" when each item's details aren't available, by instead of (or in addition to)
-`items` also set an `idList` array with identifiers for each item.
-If `cosmoz-data-nav` tries to render an item that is missing but an id exists for the position, it will fire
-a `need-data` event to announce this and expect an `object-details-fetched` event when the item details are
-available. This event should have an `id` property that corresponds to the `id` requested and also an `object`
-property with the item. This design enables parallelization since multiple items can be requested at once,
-and responded to in an unordered, async manner. Also, `cosmoz-data-nav` does not need to be aware of any
-template-design or item model.
-
-Example:
-
-		<cosmoz-data-nav id-list="[[ getItemIds(myList) ]]" on-need-data="triggerDetailFetch">
-				<template>
-						<neon-animatable class="vertical layout fit">
-								<my-view>
-										<paper-icon-button slot="actions" disabled$="[[ isFirstItem ]]" icon="chevron-left" on-click="selectPrevious"></paper-icon-button>
-										<paper-icon-button slot="actions" disabled$="[[ isLastItem ]]" icon="chevron-right" on-click="selectNext"></paper-icon-button>
-								</my-view>
-						</neon-animatable>
-				</template>
-		</cosmoz-data-nav>
-
-@demo demo/index.html
-@appliesMixin translatable
-*/
-class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mixinBehaviors([IronResizableBehavior], PolymerElement))) {
+class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(translatable(mixinBehaviors([IronResizableBehavior], PolymerElement))) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
 			<style>
@@ -130,20 +86,6 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			<div id="templates">
 				<slot id="templatesSlot"></slot>
 			</div>
-			<template id="incompleteTemplate">
-				<cosmoz-bottom-bar-view active incomplete style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;">
-					<div slot="scroller-content"
-							style="display: flex; flex: 1; flex-basis: 0.000000001px; flex-direction: row; justify-content: center;  align-items: center;"
-					>
-						<paper-spinner-lite active></paper-spinner-lite>
-						<div style="margin-left: 10px">
-							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
-						</div>
-					</div>
-					<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1" slot="extra"></paper-icon-button>
-					<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1" slot="extra"></paper-icon-button>
-				</cosmoz-bottom-bar-view>
-			</template>
 		`;
 	}
 
@@ -155,7 +97,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			_elements: {
 				type: Array,
 				value() {
-					return [this._createElement()];
+					return [];
 				}
 			},
 
@@ -353,6 +295,27 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 		};
 	}
 
+	static get observers() {
+		return [
+			'renderIncomplete(selected, haunted)'
+		];
+	}
+
+	renderIncomplete(index, haunted) {
+		if (haunted == null) {
+			return;
+		}
+
+		const position = index < this.items.length ? index : index - 1,
+			element = this._getElement(position),
+			item = this.items[position];
+
+		if (element == null || !this.isIncompleteFn(item)) {
+			return;
+		}
+		render(haunted.incompleteTemplates[position], element.__incomplete);
+	}
+
 	constructor() {
 		super();
 		this._previouslySelectedItem = null;
@@ -389,7 +352,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 		this.splice('_elements', 0, this._elements.length, this._createElement())
 			.forEach(element => {
 				this._removeInstance(element.__instance);
-				this._removeInstance(element.__incomplete);
+				element.removeChild(element.__incomplete);
 				element.__instance = element.__incomplete = null;
 			});
 	}
@@ -397,15 +360,14 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 	_onTemplatesChange(change) {
 		if (!this._elementTemplate) {
 			const templates = change.addedNodes.filter(n => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE'),
-				elementTemplate = templates.find(n => n.matches(':not([incomplete])')),
-				incompleteTemplate = templates.find(n => n.matches('[incomplete]')) || this.$.incompleteTemplate;
+				elementTemplate = templates[0];
 
 			if (!elementTemplate) {
 				// eslint-disable-next-line no-console
 				console.warn('cosmoz-data-nav requires a template');
 				return;
 			}
-			this._templatize(elementTemplate, incompleteTemplate);
+			this._templatize(elementTemplate);
 		}
 
 		const elements = this._elements,
@@ -414,15 +376,11 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 		this.splice('_elements', -1, 0, ...Array(this.elementsBuffer - length)
 			.fill().map(this._createElement, this));
 
-		_doAsyncSteps(elements.map(el => {
-			this.appendChild(el);
-			return this._createIncomplete.bind(this, el);
-		}));
+		elements.forEach(el => this.appendChild(el));
 	}
 
-	_templatize(elementTemplate, incompleteTemplate) {
+	_templatize(elementTemplate) {
 		this._elementTemplate = elementTemplate;
-		this._incompleteTemplate = incompleteTemplate;
 
 		const baseProps = {
 			prevDisabled: true,
@@ -434,11 +392,6 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			parentModel: true,
 			forwardHostProp: this._forwardHostProp,
 			notifyInstanceProp: this._notifyInstanceProp
-		});
-		this._incompleteCtor = templatize(this._incompleteTemplate, this, {
-			instanceProps: baseProps,
-			parentModel: true,
-			forwardHostProp: this._forwardHostProp
 		});
 	}
 
@@ -468,24 +421,18 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 		if (prop !== this.as || value === item || this._allElementInstances.indexOf(inst) < 0) {
 			return;
 		}
-		this.__cache.dropItem(item);
+		this.haunted.cache.dropItem(item);
 		this.set(['items', index], value);
 	}
 
 	_createElement() {
-		const element = document.createElement('div');
+		const element = document.createElement('div'),
+			incDiv = document.createElement('div');
+		element.appendChild(incDiv);
+		element.__incomplete = incDiv;
 		element.setAttribute('slot', 'items');
 		element.classList.add('animatable');
 		return element;
-	}
-
-	_createIncomplete(element) {
-		if (element.__incomplete) {
-			return;
-		}
-		const incomplete = new this._incompleteCtor({});
-		element.__incomplete = incomplete;
-		element.appendChild(incomplete.root);
 	}
 
 	/**
@@ -523,7 +470,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			console.warn('Multiple replaceable items matches idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
 		}
 
-		this.__cache.set(id, item);
+		this.haunted.cache.set(id, item);
 		matches.forEach(match => this.set(['items', items.indexOf(match)], { ...item }));
 
 		this._preload();
@@ -553,7 +500,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 		if (length) {
 			items.forEach((item, index) => {
 				if (this.isIncompleteFn(item)) {
-					const cachedItem = this.__cache?.get(item);
+					const cachedItem = this.haunted?.cache?.get(item);
 					if (cachedItem) {
 						this.set(['items', index], cachedItem);
 					}
@@ -755,7 +702,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			return;
 		}
 		// return reference to the rendered template instance or the incomplete template if missing
-		return selectedElement.children[1] || selectedElement.children[0];
+		return selectedElement.children[1] || selectedElement.__incomplete;
 	}
 
 	_getItem(index, items = this.items) {
@@ -765,13 +712,12 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 
 	_resetElement(index) { // eslint-disable-line max-statements
 		const element = this._getElement(index);
-		if (!element || !element.__incomplete) {
+		if (!element) {
 			return;
 		}
 
 		const item = this.items[index],
 			baseProps = this._getBaseProps(index),
-			incomplete = element.__incomplete,
 			instance = element.__instance;
 
 		if (instance) {
@@ -782,13 +728,11 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			return;
 		}
 
-		Object.assign(incomplete, baseProps);
-
 		if (element._reset) {
 			return;
 		}
 		element._reset = true;
-		incomplete._showHideChildren(false);
+		element.__incomplete.style.display = 'block';
 
 		if (!instance) {
 			return;
@@ -1070,9 +1014,7 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 			// maintain task in queue
 			return idx;
 		}
-		if (element.__incomplete) {
-			element.__incomplete._showHideChildren(true);
-		}
+		element.__incomplete.style.display = 'none';
 
 		const isSelected = idx === this.selected,
 			needsRender = element.item !== item;

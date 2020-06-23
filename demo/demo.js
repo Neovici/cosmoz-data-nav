@@ -1,5 +1,5 @@
 import {
-	component, html, useMemo, useState, useEffect
+	component, html, useState, useEffect
 } from 'haunted';
 import '@polymer/paper-input/paper-textarea.js';
 import './helpers/cosmoz-demo-view.js';
@@ -9,7 +9,9 @@ const asyncs = {},
 	// eslint-disable-next-line max-lines-per-function
 	DataNavDemo = function () {
 
-		const items = useMemo(() => Array(20).fill('').map((e, i) => i.toString()), []),
+		const
+			makeItems = () => Array(20).fill('').map((e, i) => i.toString()),
+			[items, setItems] = useState(makeItems()),
 			[selected, setSelected] = useState(),
 			[selItem, setSelItem] = useState(),
 			[instance, setInstance] = useState(),
@@ -21,7 +23,7 @@ const asyncs = {},
 					asyncs[id] = null;
 				}
 				// eslint-disable-next-line no-console
-				console.log('on need data', event.target, event.srcElement);
+				console.log('on need data', id);
 				asyncs[id] = setTimeout(() => dataNav.setItemById(id, { id }), 500);
 			},
 			computeJSON = index => JSON.stringify(items[index]);
@@ -73,6 +75,7 @@ const asyncs = {},
             </cosmoz-data-nav>
             <paper-textarea value="${ computeJSON(selected) }"></paper-textarea>
             <div>Selected: ${ JSON.stringify(selItem) }</div>
+            <button @click="${ () => setItems(makeItems()) }">Make new items</button>
         `;
 	};
 
