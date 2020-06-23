@@ -299,11 +299,8 @@ suite('navigation', () => {
 		nav._renderQueue();
 		nav._renderQueue();
 		const firstElement = nav._getElement(0);
-		await waitUntil(() => firstElement.querySelector('*'));
-		const nextBtn = firstElement
-			.querySelector('*')
-			.root
-			.querySelector('[cosmoz-data-nav-select="+1"]');
+		let nextBtn; /* eslint-disable-next-line no-return-assign */
+		await waitUntil(() => nextBtn = firstElement.querySelector('[cosmoz-data-nav-select="+1"]'));
 		nextBtn.click();
 		await waitUntil(() => nav._selectDebouncer);
 		assert.isOk(nav._selectDebouncer);
