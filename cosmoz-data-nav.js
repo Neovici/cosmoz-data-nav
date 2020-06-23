@@ -140,8 +140,8 @@ class CosmozDataNav extends hauntedPolymer('__cache', useCache)(translatable(mix
 							<h3><span>[[ _('Data is updating', t) ]]</span></h3>
 						</div>
 					</div>
-					<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
-					<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
+					<paper-icon-button disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1" slot="extra"></paper-icon-button>
+					<paper-icon-button disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1" slot="extra"></paper-icon-button>
 				</cosmoz-bottom-bar-view>
 			</template>
 		`;
