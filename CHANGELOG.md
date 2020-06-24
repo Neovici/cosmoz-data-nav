@@ -1,3 +1,16 @@
+# [3.5.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.4...v3.5.0) (2020-06-24)
+
+
+### Bug Fixes
+
+* don't nest useMemo ([06915c6](https://github.com/neovici/cosmoz-data-nav/commit/06915c613e647b80229b405b75c416c549e8eb3b))
+* reorganize imports/deps, drop translatable mixin ([597748b](https://github.com/neovici/cosmoz-data-nav/commit/597748b3b818b04baf5b54891c29d59814f6ed44))
+
+
+### Features
+
+* use haunted to manage incomplete templates ([fac0c2b](https://github.com/neovici/cosmoz-data-nav/commit/fac0c2b15f4204fab2a81f1517c39cc63aea99b8))
+
 ## [3.4.4](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.3...v3.4.4) (2020-06-23)
 
 
