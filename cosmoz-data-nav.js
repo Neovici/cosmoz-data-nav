@@ -390,12 +390,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 		});
 	}
 
-	get _allInstances() {
-		return this._elements
-			.reduce((p, n) => p.concat([n.__instance, n.__incomplete]), [])
-			.filter(i => i != null);
-	}
-
 	get _allElementInstances() {
 		return this._elements
 			.map(e => e.__instance)
@@ -403,7 +397,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	}
 
 	_forwardHostProp(prop, value) {
-		const instances = this._allInstances;
+		const instances = this._allElementInstances;
 		if (!instances || !instances.length) {
 			return;
 		}
