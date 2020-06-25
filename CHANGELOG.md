@@ -1,3 +1,16 @@
+# [3.6.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.5.0...v3.6.0) (2020-06-25)
+
+
+### Bug Fixes
+
+* add renderItem test, fix renderItem teardown ([cb51ae6](https://github.com/neovici/cosmoz-data-nav/commit/cb51ae691a6274a2e0f850ed9def1b04c63e664c))
+* make sure to only _forwardHostProp on instance templates ([dc59194](https://github.com/neovici/cosmoz-data-nav/commit/dc5919467708b46074c0b6d4de84292928f4e77c))
+
+
+### Features
+
+* renderItem: render templates with lit-html ([fc10bdf](https://github.com/neovici/cosmoz-data-nav/commit/fc10bdfdad5883aea34911ef62cfa7a4e70fe3da))
+
 # [3.5.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.4.4...v3.5.0) (2020-06-24)
 
 
