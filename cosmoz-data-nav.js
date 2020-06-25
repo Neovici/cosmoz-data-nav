@@ -350,7 +350,11 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 
 		this.splice('_elements', 0, this._elements.length, this._createElement())
 			.forEach(element => {
-				this._removeInstance(element.__instance);
+				if (this.renderItem) {
+					element.removeChild(element.__instance);
+				} else {
+					this._removeInstance(element.__instance);
+				}
 				element.removeChild(element.__incomplete);
 				element.__instance = element.__incomplete = null;
 			});

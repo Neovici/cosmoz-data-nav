@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
 	assert, fixture, html, oneEvent, waitUntil
 } from '@open-wc/testing';
@@ -398,5 +399,33 @@ suite('renderQueue', () => {
 		nav._elements.forEach((el, id) => {
 			assert.deepEqual(el.__instance.item, { id });
 		});
+	});
+});
+
+suite('renderItem', () => {
+	let nav,
+		itemsRendered = 0;
+	const renderItem = (item, index) => {
+		itemsRendered += 1;
+		return html`
+			<cosmoz-data-nav-test-view class="fit layout vertical" item="${ item }" index="${ index }">
+			</cosmoz-data-nav-test-view>
+		`;
+	};
+
+	suiteSetup(async () => {
+		[, nav] = await Promise.all([
+			fixture(visibilityFixture),
+			setupFixture(html`
+				<cosmoz-data-nav .renderItem="${ renderItem }">
+				</cosmoz-data-nav>
+			`)
+		]);
+	});
+
+	test('renders items', async () => {
+		nav.items = [{ id: '0' }, { id: '1' }, { id: '2' }];
+		flushRenderQueue(nav);
+		assert.equal(itemsRendered, nav.items.map(nav.isIncompleteFn).filter(i => !i).length);
 	});
 });
