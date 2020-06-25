@@ -26,7 +26,13 @@ const asyncs = {},
 				console.log('on need data', id);
 				asyncs[id] = setTimeout(() => dataNav.setItemById(id, { id }), 500);
 			},
-			computeJSON = index => JSON.stringify(items[index]);
+			computeJSON = index => JSON.stringify(items[index]),
+			renderItem = (item, index, items) => html`
+                <cosmoz-demo-view
+                    .item="${ item }" .index="${ index }"
+                    .prevDisabled="${ index < 1 }" .nextDisabled="${ index > items.length - 2 }">
+                </cosmoz-demo-view>
+            `;
 
 		useEffect(() => {
 			if (instance?.dataset == null) {
@@ -65,13 +71,8 @@ const asyncs = {},
                     @selected-changed="${ e => setSelected(e?.detail?.value) }"
                     @selected-item-changed="${ e => setSelItem(e?.detail?.value) }"
                     @selected-instance-changed="${ e => setInstance(e?.detail?.value) }"
+                    .renderItem="${ renderItem }"
             >
-                <template>
-                    <cosmoz-demo-view
-                        item="{{ item }}" index="[[ index ]]"
-                        prev-disabled="[[ prevDisabled ]]" next-disabled="[[ nextDisabled ]]">
-                    </cosmoz-demo-view>
-                </template>
             </cosmoz-data-nav>
             <paper-textarea value="${ computeJSON(selected) }"></paper-textarea>
             <div>Selected: ${ JSON.stringify(selItem) }</div>

@@ -154,6 +154,10 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 				value: 1
 			},
 
+			renderItem: {
+				type: Function
+			},
+
 			/**
 			 * The currently selected index.
 			 */
@@ -353,7 +357,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	}
 
 	_onTemplatesChange(change) {
-		if (!this._elementTemplate) {
+		if (!this._elementTemplate && !this.renderItem) {
 			const templates = change.addedNodes.filter(n => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE'),
 				elementTemplate = templates[0];
 
@@ -419,6 +423,11 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			incDiv = document.createElement('div');
 		element.appendChild(incDiv);
 		element.__incomplete = incDiv;
+		if (this.renderItem) {
+			const instDiv = document.createElement('div');
+			element.appendChild(instDiv);
+			element.__instance = instDiv;
+		}
 		element.setAttribute('slot', 'items');
 		element.classList.add('animatable');
 		return element;
@@ -547,12 +556,13 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			return;
 		}
 
-		// update instance's data-nav related props
-		const instance = renderedElement.__instance;
-		Object.entries(this._getBaseProps(index))
-			.forEach(([key, value]) => instance._setPendingProperty(key, value));
-		instance._flushProperties();
-
+		if (!this.renderItem) {
+			// update instance's data-nav related props
+			const instance = renderedElement.__instance;
+			Object.entries(this._getBaseProps(index))
+				.forEach(([key, value]) => instance._setPendingProperty(key, value));
+			instance._flushProperties();
+		}
 		this._elements.splice(renderedIndex, 1);
 		this.splice('_elements', elementIndex, 0, renderedElement);
 	}
@@ -709,7 +719,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			baseProps = this._getBaseProps(index),
 			instance = element.__instance;
 
-		if (instance) {
+		if (!this.renderItem && instance) {
 			Object.assign(instance, baseProps);
 		}
 
@@ -727,7 +737,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			return;
 		}
 
-		instance._showHideChildren(true);
+		this._toggleInstance(instance, false);
 	}
 
 	_removeInstance(instance) {
@@ -859,7 +869,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	 * @return {Boolean} True if the element should be notified
 	 */
 	resizerShouldNotify(resizable) {
-		return this._isDescendantOfElementInstance(resizable, this.selectedElement);
+		return !this.renderItem && this._isDescendantOfElementInstance(resizable, this.selectedElement);
 	}
 
 	/**
@@ -894,7 +904,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	 * @return {Boolean} True if descendant has been notified.
 	 */
 	_notifyElementResize(element = this.selectedElement) {
-		if (!this.isConnected || !element) {
+		if (this.renderItem || !this.isConnected || !element) {
 			return false;
 		}
 
@@ -942,8 +952,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			instance = new this._elementCtor(props);
 
 		element.__instance = instance;
-		element.item = item;
-		element._reset = false;
 		element.appendChild(instance.root);
 	}
 
@@ -1011,17 +1019,32 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 		this._renderRan = needsRender;
 
 		if (needsRender) {
+			element.item = item;
+			element._reset = false;
+			if (this.renderItem) {
+				render(this.renderItem(item, idx, this.items), element.__instance);
+				this._toggleInstance(element.__instance, true);
+				return;
+			}
 			this._forwardItem(element, item, idx);
 			if (isSelected) {
 				return idx;
 			}
 		} else if (isSelected) {
 			// make sure that the instance is visible (may be a re-aligned invisible instance)
-			element.__instance._showHideChildren(false);
+			this._toggleInstance(element.__instance, true);
 			// resize is a expensive operation
 			this._renderRan = this._notifyElementResize();
 			this._setSelectedInstance(this._getInstance(element));
 		}
+	}
+
+	_toggleInstance(inst, show) {
+		if (this.renderItem) {
+			inst.style.display = show ? 'block' : 'none';
+			return;
+		}
+		inst._showHideChildren(!show);
 	}
 
 	_getItemId(item) {
