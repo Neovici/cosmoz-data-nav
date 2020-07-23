@@ -623,6 +623,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 				prev.classList.add('out');
 				prev.classList.remove('selected');
 			}
+			this.renderItem && IronResizableBehavior.notifyResize.call(this);
 			classes.remove('in');
 		}, 8);
 	}
@@ -856,7 +857,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 		if (!instance) {
 			return false;
 		}
-		return instance.children
+		return Array.from(instance.children)
 			.filter(c => c.nodeType === Node.ELEMENT_NODE)
 			.some(child => {
 				if (child.tagName === 'DOM-IF') {
@@ -873,7 +874,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	 * @return {Boolean} True if the element should be notified
 	 */
 	resizerShouldNotify(resizable) {
-		return !this.renderItem && this._isDescendantOfElementInstance(resizable, this.selectedElement);
+		return this._isDescendantOfElementInstance(resizable, this.selectedElement);
 	}
 
 	/**
