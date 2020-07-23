@@ -623,7 +623,9 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 				prev.classList.add('out');
 				prev.classList.remove('selected');
 			}
-			this.renderItem && IronResizableBehavior.notifyResize.call(this);
+			if (this.renderItem) {
+				IronResizableBehavior.notifyResize.call(this);
+			}
 			classes.remove('in');
 		}, 8);
 	}
