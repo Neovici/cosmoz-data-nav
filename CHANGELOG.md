@@ -1,3 +1,10 @@
+## [3.6.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.0...v3.6.1) (2020-07-23)
+
+
+### Bug Fixes
+
+* **renderItem:** iron-lists inside data-nav views do not re-render ([851c614](https://github.com/neovici/cosmoz-data-nav/commit/851c6149b3ecc10ed4495f469ba16e0c56ed0565))
+
 # [3.6.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.5.0...v3.6.0) (2020-06-25)
 
 
