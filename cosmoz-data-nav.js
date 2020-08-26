@@ -623,9 +623,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 				prev.classList.add('out');
 				prev.classList.remove('selected');
 			}
-			if (this.renderItem) {
-				IronResizableBehavior.notifyResize.call(this);
-			}
 			classes.remove('in');
 		}, 8);
 	}
@@ -851,10 +848,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	 * @returns {Boolean} True if	 element is a descendant
 	 */
 	_isDescendantOfElementInstance(descendant, element) {
-		if (!element) {
-			return false;
-		}
-		const instance = element.__instance;
+		const instance = element?.__instance;
 
 		if (!instance) {
 			return false;
@@ -911,7 +905,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	 * @return {Boolean} True if descendant has been notified.
 	 */
 	_notifyElementResize(element = this.selectedElement) {
-		if (this.renderItem || !this.isConnected || !element) {
+		if (!this.isConnected || !element) {
 			return false;
 		}
 
@@ -921,15 +915,14 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 			return false;
 		}
 
-		const resizable = this._interestedResizables.find(resizable =>
+		const resizable = this._interestedResizables.filter(resizable =>
 			this._isDescendantOfElementInstance(resizable, element)
 		);
 
-		if (resizable == null) {
+		if (resizable.length < 1) {
 			return false;
 		}
-
-		this._notifyDescendant(resizable);
+		resizable.forEach(resizable => this._notifyDescendant(resizable));
 		instance.__resized = true;
 		return true;
 	}
@@ -963,7 +956,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 	}
 
 	_renderQueue() {
-		if (!this.attached) {
+		if (!this.isConnected) {
 			return;
 		}
 		const queue = this._indexRenderQueue;
