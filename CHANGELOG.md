@@ -1,3 +1,10 @@
+## [3.6.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.1...v3.6.2) (2020-08-27)
+
+
+### Bug Fixes
+
+* correct resizable handle ([0d84ae6](https://github.com/neovici/cosmoz-data-nav/commit/0d84ae69a5869ac4a84209663b79232ff20b6de8))
+
 ## [3.6.1](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.0...v3.6.1) (2020-07-23)
 
 
