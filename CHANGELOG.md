@@ -1,3 +1,10 @@
+## [3.6.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.2...v3.6.3) (2020-10-05)
+
+
+### Bug Fixes
+
+* remove iron-resizable-behavior ([5b26b77](https://github.com/neovici/cosmoz-data-nav/commit/5b26b77d601e54e8b2d1fd5a45daae047944639e))
+
 ## [3.6.2](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.1...v3.6.2) (2020-08-27)
 
 
