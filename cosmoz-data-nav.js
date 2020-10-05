@@ -1,6 +1,4 @@
 /* eslint-disable max-lines */
-import '@webcomponents/shadycss/entrypoints/apply-shim';
-
 import { render } from 'lit-html';
 
 import { PolymerElement } from '@polymer/polymer/polymer-element';
