@@ -3,11 +3,8 @@ import { render } from 'lit-html';
 
 import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
-import { useShadow } from '@polymer/polymer/lib/utils/settings';
 import { templatize } from '@polymer/polymer/lib/utils/templatize';
 
-import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class';
-import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior';
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer';
 
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce';
@@ -26,7 +23,7 @@ const _async = window.requestIdleCallback || window.requestAnimationFrame || win
 		_async(() => cb(), _hasDeadline && { timeout });
 	};
 
-class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
+class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement) {
 	static get template() { // eslint-disable-line max-lines-per-function
 		return html`
 			<style>
@@ -822,109 +819,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 		return Boolean(this.offsetWidth || this.offsetHeight);
 	}
 
-	_isDescendantOf(descendant, ancestor, limit = this) {
-		let parent = descendant;
-		while (parent && parent !== limit) {
-			if (parent === ancestor) {
-				return true;
-			}
-			const nextParent = parent.parentNode;
-			if (nextParent == null && parent instanceof ShadowRoot) {
-				parent = parent.host;
-				continue;
-			}
-			parent = nextParent;
-
-		}
-		return false;
-	}
-
-	/**
-	 * Check if a element is a descendant of another element
-	 * @param {HTMLElement} descendant Element to test
-	 * @param {HTMLElement} element Ancestor element
-	 * @returns {Boolean} True if	 element is a descendant
-	 */
-	_isDescendantOfElementInstance(descendant, element) {
-		const instance = element?.__instance;
-
-		if (!instance) {
-			return false;
-		}
-		return Array.from(instance.children)
-			.filter(c => c.nodeType === Node.ELEMENT_NODE)
-			.some(child => {
-				if (child.tagName === 'DOM-IF') {
-					return this._isDescendantOfElementInstance(descendant, child);
-				}
-				return this._isDescendantOf(descendant, child);
-			});
-	}
-
-	/**
-	 * Check if a element is a descendant of the currently selected element.
-	 *
-	 * @param	 {HTMLElement} resizable A descendant resizable element
-	 * @return {Boolean} True if the element should be notified
-	 */
-	resizerShouldNotify(resizable) {
-		return this._isDescendantOfElementInstance(resizable, this.selectedElement);
-	}
-
-	/**
-	 * Handles resize notifications from descendants.
-	 *
-	 * @param	 {Event} event The resize event
-	 * @return {void}
-	 */
-	_onDescendantIronResize(event) {
-		if (this._notifyingDescendant || this.animating || !this._isVisible || !this.resizerShouldNotify(event.target)) {
-			event.stopPropagation();
-			return;
-		}
-
-		if (useShadow && event.target.domHost === this) {
-			return;
-		}
-		this._fireResize();
-	}
-
-	notifyResize() {
-		if (!this.isConnected || this.animating || !this._isVisible) {
-			return;
-		}
-		IronResizableBehavior.notifyResize.call(this);
-	}
-
-	/**
-	 * Notifies a descendant resizable of the element.
-	 *
-	 * @param	 {HTMLElement} element The element to search within for a resizable
-	 * @return {Boolean} True if descendant has been notified.
-	 */
-	_notifyElementResize(element = this.selectedElement) {
-		if (!this.isConnected || !element) {
-			return false;
-		}
-
-		const instance = element.__instance;
-
-		if (instance == null || instance.__resized) {
-			return false;
-		}
-
-		const resizable = this._interestedResizables.filter(resizable =>
-			this._isDescendantOfElementInstance(resizable, element)
-		);
-
-		if (resizable.length < 1) {
-			return false;
-		}
-		resizable.forEach(resizable => this._notifyDescendant(resizable));
-		instance.__resized = true;
-		return true;
-	}
-
 	/**
 	 * Select item by id.
 	 *
@@ -1031,8 +925,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(mixinBehaviors
 		} else if (isSelected) {
 			// make sure that the instance is visible (may be a re-aligned invisible instance)
 			this._toggleInstance(element.__instance, true);
-			// resize is a expensive operation
-			this._renderRan = this._notifyElementResize();
+			this._renderRan = true;
 			this._setSelectedInstance(this._getInstance(element));
 		}
 	}
