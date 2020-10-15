@@ -1,3 +1,10 @@
+## [3.6.4](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.3...v3.6.4) (2020-10-15)
+
+
+### Bug Fixes
+
+* upgrade cosmoz-bottom-bar ([9bac932](https://github.com/neovici/cosmoz-data-nav/commit/9bac9329edb040e7e038bfbe6374c4bb43d2855b))
+
 ## [3.6.3](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.2...v3.6.3) (2020-10-05)
 
 
