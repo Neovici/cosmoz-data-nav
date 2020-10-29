@@ -935,7 +935,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			inst.style.display = show ? 'block' : 'none';
 			return;
 		}
-		inst._showHideChildren(!show);
+		inst?._showHideChildren(!show);
 	}
 
 	_getItemId(item) {

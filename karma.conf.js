@@ -12,7 +12,7 @@ const { createDefaultConfig } = require('@open-wc/testing-karma'),
 		slChrome: {
 			base: 'SauceLabs',
 			browserName: 'chrome',
-			browserVersion: 'beta',
+			browserVersion: '86.0',
 			platformName: 'Windows 10'
 		}
 	},
