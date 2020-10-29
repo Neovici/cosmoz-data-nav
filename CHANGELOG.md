@@ -1,3 +1,10 @@
+## [3.6.5](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.4...v3.6.5) (2020-10-29)
+
+
+### Bug Fixes
+
+* check undefined inst in _toggleInstance ([358d466](https://github.com/neovici/cosmoz-data-nav/commit/358d4663b8d5d9daab2b32628638c1e633485d2e))
+
 ## [3.6.4](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.3...v3.6.4) (2020-10-15)
 
 
