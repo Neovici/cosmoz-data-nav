@@ -86,7 +86,7 @@
 		"karma": "^5.2.0",
 		"karma-firefox-launcher": "^2.0.0",
 		"karma-sauce-launcher": "^4.2.0",
-		"semantic-release": "^17.2.0",
+		"semantic-release": "^17.2.3",
 		"sinon": "^9.2.0",
 		"web-animations-js": "^2.3.1"
 	}
