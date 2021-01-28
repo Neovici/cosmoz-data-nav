@@ -1,3 +1,10 @@
+## [3.6.6](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.5...v3.6.6) (2021-01-28)
+
+
+### Bug Fixes
+
+* read id from hash param only when we we never read it or maintainSelection is tru ([a6cfd4a](https://github.com/neovici/cosmoz-data-nav/commit/a6cfd4a79292e692e0acc5dc2c30bbba2425da03))
+
 ## [3.6.5](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.4...v3.6.5) (2020-10-29)
 
 
