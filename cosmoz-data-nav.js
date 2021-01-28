@@ -973,6 +973,10 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			return;
 		}
 
+		if (this._readFromHashOnce && !this.maintainSelection) {
+			return;
+		}
+
 		const path = ['_routeHashParams', hashParam],
 			hashValue = this.get(path),
 			selection = this.items.findIndex(i => this._getItemId(i) === hashValue);
@@ -980,9 +984,10 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		if (selection < 0 || selection === this.selected) {
 			return;
 		}
-
+		this._readFromHashOnce = true;
 		this.selected = selection;
 		return true;
 	}
+
 }
 customElements.define('cosmoz-data-nav', CosmozDataNav);
