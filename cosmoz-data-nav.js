@@ -978,8 +978,14 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		}
 
 		const path = ['_routeHashParams', hashParam],
-			hashValue = this.get(path),
-			selection = this.items.findIndex(i => this._getItemId(i) === hashValue);
+			hashValue = this.get(path);
+
+		if (!hashValue) {
+			this._readFromHashOnce = true;
+			return;
+		}
+
+		const selection = this.items.findIndex(i => this._getItemId(i) === hashValue);
 
 		if (selection < 0 || selection === this.selected) {
 			return;
