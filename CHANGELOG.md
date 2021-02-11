@@ -1,3 +1,10 @@
+## [3.6.7](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.6...v3.6.7) (2021-02-11)
+
+
+### Bug Fixes
+
+* mark hash params as read when hash value is empty ([#147](https://github.com/neovici/cosmoz-data-nav/issues/147)) ([618f46b](https://github.com/neovici/cosmoz-data-nav/commit/618f46bd3c8d4b77209641842b6308ad44beb07a)), closes [#144](https://github.com/neovici/cosmoz-data-nav/issues/144)
+
 ## [3.6.6](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.5...v3.6.6) (2021-01-28)
 
 
