@@ -81,12 +81,12 @@
 		"@webcomponents/webcomponentsjs": "^2.5.0",
 		"deepmerge": "^4.2.2",
 		"es-dev-server": "^1.57.0",
-		"eslint": "^7.21.0",
+		"eslint": "^7.22.0",
 		"husky": "^4.3.0",
 		"karma": "^5.2.0",
 		"karma-firefox-launcher": "^2.0.0",
 		"karma-sauce-launcher": "^4.2.0",
-		"semantic-release": "^17.4.1",
+		"semantic-release": "^17.4.2",
 		"sinon": "^9.2.0",
 		"web-animations-js": "^2.3.1"
 	}
