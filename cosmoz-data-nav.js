@@ -601,7 +601,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			this._elements.forEach(el => el.classList.remove('selected'));
 		}
 
-		classes.toggle('in', !!this.animating);
+		classes.toggle('in', animating);
 		classes.add('selected');
 
 		if (!animating) {
