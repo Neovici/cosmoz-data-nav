@@ -1,3 +1,10 @@
+## [3.6.8](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.7...v3.6.8) (2021-03-16)
+
+
+### Bug Fixes
+
+* only add the in class when we really want to reset animationg ([9cbabf7](https://github.com/neovici/cosmoz-data-nav/commit/9cbabf730919db5cc46f37e4eeee794dc1c34ddc))
+
 ## [3.6.7](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.6...v3.6.7) (2021-02-11)
 
 
