@@ -61,7 +61,7 @@
 		"@neovici/cosmoz-bottom-bar": "^4.0.2",
 		"@neovici/cosmoz-i18next": "^3.2.2",
 		"@neovici/cosmoz-page-router": "^6.0.5",
-		"@neovici/cosmoz-utils": "^3.13.0",
+		"@neovici/cosmoz-utils": "^3.17.0",
 		"@polymer/paper-icon-button": "^3.0.0",
 		"@polymer/paper-spinner": "^3.0.0",
 		"@polymer/polymer": "^3.4.1",
