@@ -59,14 +59,14 @@
 	},
 	"dependencies": {
 		"@neovici/cosmoz-bottom-bar": "^4.0.2",
-		"@neovici/cosmoz-i18next": "^3.2.2",
+		"@neovici/cosmoz-i18next": "^3.2.3",
 		"@neovici/cosmoz-page-router": "^6.0.5",
 		"@neovici/cosmoz-utils": "^3.18.0",
 		"@polymer/paper-icon-button": "^3.0.0",
 		"@polymer/paper-spinner": "^3.0.0",
 		"@polymer/polymer": "^3.4.1",
-		"haunted": "^4.7.0",
-		"lit-html": "^1.4.0"
+		"haunted": "^4.8.0",
+		"lit-html": "^1.4.1"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^11.0.0",
@@ -81,7 +81,7 @@
 		"@webcomponents/webcomponentsjs": "^2.5.0",
 		"deepmerge": "^4.2.2",
 		"es-dev-server": "^1.57.0",
-		"eslint": "^7.25.0",
+		"eslint": "^7.26.0",
 		"husky": "^4.3.0",
 		"karma": "^5.2.0",
 		"karma-firefox-launcher": "^2.0.0",
