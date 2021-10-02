@@ -29,7 +29,7 @@ const
 			last: index === items.length - 1
 		};
 	},
-	useDataNavList = items => {
+	useDataNavList = (items, renderFn) => {
 		const
 			state = useRef({ prevIndex: 0 }),
 			[item, setItem] = useState(items[0]),
@@ -43,6 +43,7 @@ const
 		return {
 			index,
 			item,
+			render: useMemo(() => item && renderFn(item), [item]),
 			animation: index > state.current.prevIndex ? slideInRight : slideInLeft,
 			prev: useCallback(() => {
 				state.current.prevIndex = index;
@@ -59,11 +60,10 @@ const
 	DemoNext = () => {
 		const
 			[items, setItems] = useState(initItems),
-			{ index, item, animation, prev, next, first, last } = useDataNavList(items),
+			{ index, render, animation, prev, next, first, last } = useDataNavList(items, renderSlide),
 			addItem = () => setItems(items => [...items, { id: items.length + 1, pic: 'https://picsum.photos/1200/300?random=' + (items.length + 1) }]),
-			resetItems = () => setItems(initItems),
-			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1)),
-			render = useMemo(() => renderSlide(item), [item]);
+			resetItems = () => setItems([]),
+			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1));
 
 		return html`
 		<style>
@@ -75,7 +75,7 @@ const
 		</style>
 
 		<cosmoz-data-nav-next .render=${ render } .animation=${ animation }></cosmoz-data-nav-next>
-		${ index } / ${ items.length }
+		${ index + 1 } / ${ items.length }
 		<button @click=${ prev } ?disabled=${ first }>Prev</button>
 		<button @click=${ next } ?disabled=${ last }>Next</button>
 		<button @click=${ addItem }>Add item</button>
