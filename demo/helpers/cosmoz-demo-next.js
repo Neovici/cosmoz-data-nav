@@ -59,9 +59,10 @@ const
 	DemoNext = () => {
 		const
 			[items, setItems] = useState(initItems),
-			{ item, animation, prev, next, first, last } = useDataNavList(items),
+			{ index, item, animation, prev, next, first, last } = useDataNavList(items),
 			addItem = () => setItems(items => [...items, { id: items.length + 1, pic: 'https://picsum.photos/1200/300?random=' + (items.length + 1) }]),
 			resetItems = () => setItems(initItems),
+			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1)),
 			render = useMemo(() => renderSlide(item), [item]);
 
 		return html`
@@ -74,10 +75,12 @@ const
 		</style>
 
 		<cosmoz-data-nav-next .render=${ render } .animation=${ animation }></cosmoz-data-nav-next>
+		${ index } / ${ items.length }
 		<button @click=${ prev } ?disabled=${ first }>Prev</button>
 		<button @click=${ next } ?disabled=${ last }>Next</button>
 		<button @click=${ addItem }>Add item</button>
 		<button @click=${ resetItems }>Reset items</button>
+		<button @click=${ shuffleItems }>Shuffle items</button>
 	`;
 	};
 
