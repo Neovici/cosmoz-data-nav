@@ -4,41 +4,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>cosmoz-data-nav-next</title>
-	<script type="module" src="../cosmoz-data-nav-next.js"></script>
+	<script type="module" src="./helpers/cosmoz-demo-next.js"></script>
 	<style>
 		html, body {
 			margin:0;
 		}
-
-		cosmoz-data-nav-next {
-			width: 100vw;
-			height: 500px;
-			background: lightgray;
-		}
 	</style>
 </head>
 <body>
-	<cosmoz-data-nav-next></cosmoz-data-nav-next>
-	<button>SLIDE!</button>
-	<script type="module">
-		import { html } from 'haunted';
-		import { slideInRight, slideInLeft } from '../lib/next/animations';
-
-		const
-			el = document.querySelector('cosmoz-data-nav-next'),
-			button = document.querySelector('button'),
-			renderSlide = i => () => html`
-				<h1>my slide ${ i }</h1>
-				<img src="https://picsum.photos/1200/300?random=${ i }" width="1200" height="300" style="background:gray;width:100%; height: auto;" />
-			`;
-
-		let i = 0;
-
-		el.render = renderSlide(i);
-		button.addEventListener('click', () => {
-			el.render = renderSlide(++i);
-			el.animation = Math.random() > 0.1 ? slideInRight : slideInLeft;
-		});
-	</script>
+	<cosmoz-demo-next></cosmoz-demo-next>
 </body>
 </html>
