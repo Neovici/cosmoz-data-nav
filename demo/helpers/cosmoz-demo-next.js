@@ -1,6 +1,6 @@
-import { component, html, useCallback, useEffect, useMemo, useRef, useState } from 'haunted';
-import { slideInRight, slideInLeft } from '../../lib/next/animations';
+import { component, html, useState } from 'haunted';
 import '../../cosmoz-data-nav-next';
+import { useDataNavList } from '../../lib/next/use-data-nav-list';
 
 const
 	renderSlide = item => () => html`
@@ -14,49 +14,6 @@ const
 		{ id: 3, pic: 'https://picsum.photos/1200/300?random=3' },
 		{ id: 4, pic: 'https://picsum.photos/1200/300?random=4' }
 	],
-	useDataNavList2 = items => {
-		const
-			[state, setState] = useState({ index: 0, prevIndex: 0 }),
-			index = Math.max(0, Math.min(items.length - 1, state.index));
-
-		return {
-			index,
-			item: items[index],
-			animation: useMemo(() => state.index > state.prevIndex ? slideInRight : slideInLeft, [state]),
-			prev: useCallback(() => setState(state => ({ index: Math.max(0, state.index - 1), prevIndex: state.index })), []),
-			next: useCallback(() => setState(state => ({ index: Math.min(items.length - 1, state.index + 1), prevIndex: state.index })), [items.length]),
-			first: index === 0,
-			last: index === items.length - 1
-		};
-	},
-	useDataNavList = (items, renderFn) => {
-		const
-			state = useRef({ prevIndex: 0 }),
-			[item, setItem] = useState(items[0]),
-			index = useMemo(() => items.indexOf(item), [items, item]);
-
-		useEffect(() => setItem(item => {
-			state.current.prevIndex = index;
-			return items.indexOf(item) >= 0 ? item : items[0];
-		}), [items]);
-
-		return {
-			index,
-			item,
-			render: useMemo(() => item && renderFn(item), [item]),
-			animation: index > state.current.prevIndex ? slideInRight : slideInLeft,
-			prev: useCallback(() => {
-				state.current.prevIndex = index;
-				setItem(items[Math.max(0, Math.min(items.length - 1, index - 1))]);
-			}, [items, index]),
-			next: useCallback(() => {
-				state.current.prevIndex = index;
-				setItem(items[Math.max(0, Math.min(items.length - 1, index + 1))]);
-			}, [items, index]),
-			first: index === 0,
-			last: index === items.length - 1
-		};
-	},
 	DemoNext = () => {
 		const
 			[items, setItems] = useState(initItems),
