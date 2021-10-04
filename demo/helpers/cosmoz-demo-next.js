@@ -19,8 +19,9 @@ const
 			[items, setItems] = useState(initItems),
 			{ index, render, animation, prev, next, first, last } = useDataNavList(items, renderSlide),
 			addItem = () => setItems(items => [...items, { id: items.length + 1, pic: 'https://picsum.photos/1200/300?random=' + (items.length + 1) }]),
-			resetItems = () => setItems([]),
-			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1));
+			resetItems = () => setItems(initItems),
+			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1)),
+			updateItem = () => setItems(items => items.map((i, index) => index === 0 ? {...i, pic: 'https://picsum.photos/1200/300?random='+Math.random()} : i ));
 
 		return html`
 		<style>
@@ -38,6 +39,7 @@ const
 		<button @click=${ addItem }>Add item</button>
 		<button @click=${ resetItems }>Reset items</button>
 		<button @click=${ shuffleItems }>Shuffle items</button>
+		<button @click=${ updateItem }>Update item</button>
 	`;
 	};
 
