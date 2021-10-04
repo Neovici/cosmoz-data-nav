@@ -3,7 +3,7 @@ import '../../cosmoz-data-nav-next';
 import { useDataNavList } from '../../lib/next/use-data-nav-list';
 
 const
-	renderSlide = item => () => html`
+	renderSlide = item => html`
 		<h1>my slide ${ item.id }</h1>
 		<img src="${ item.pic }" width="1200" height="300"
 			style="background:gray;width:100%; height: auto;" />
@@ -17,11 +17,11 @@ const
 	DemoNext = () => {
 		const
 			[items, setItems] = useState(initItems),
-			{ index, render, animation, prev, next, first, last } = useDataNavList(items, renderSlide),
+			{ index, slide, prev, next, first, last } = useDataNavList(items, renderSlide),
 			addItem = () => setItems(items => [...items, { id: items.length + 1, pic: 'https://picsum.photos/1200/300?random=' + (items.length + 1) }]),
 			resetItems = () => setItems(initItems),
 			shuffleItems = () => setItems(items => items.concat().sort(() => Math.random() > 0.5 ? 1 : -1)),
-			updateItem = () => setItems(items => items.map((i, index) => index === 0 ? {...i, pic: 'https://picsum.photos/1200/300?random='+Math.random()} : i ));
+			updateItem = () => setItems(items => items.map((i, index) => index === 0 ? { ...i, pic: 'https://picsum.photos/1200/300?random=' + Math.round(Math.random() * 100) } : i));
 
 		return html`
 		<style>
@@ -32,7 +32,7 @@ const
 			}
 		</style>
 
-		<cosmoz-data-nav-next .render=${ render } .animation=${ animation }></cosmoz-data-nav-next>
+		<cosmoz-data-nav-next .slide=${ slide }></cosmoz-data-nav-next>
 		${ index + 1 } / ${ items.length }
 		<button @click=${ prev } ?disabled=${ first }>Prev</button>
 		<button @click=${ next } ?disabled=${ last }>Next</button>
