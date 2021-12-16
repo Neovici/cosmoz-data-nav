@@ -36,11 +36,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				}
 
 				#items,
-				#items > ::slotted(.animatable){
-					transform: translateX(0px);
-				}
-
-				#items,
 				#items > ::slotted(.animatable) {
 					position: absolute;
 					top: 0;
