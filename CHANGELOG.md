@@ -1,3 +1,10 @@
+## [3.6.9](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.8...v3.6.9) (2021-12-16)
+
+
+### Bug Fixes
+
+* **cosmoz-data-nav:** prevent creation of a new stacking context ([#170](https://github.com/neovici/cosmoz-data-nav/issues/170)) ([cdee901](https://github.com/neovici/cosmoz-data-nav/commit/cdee901c2b36ed1ca35c68c150cbc38d3965aa66))
+
 ## [3.6.8](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.7...v3.6.8) (2021-03-16)
 
 
