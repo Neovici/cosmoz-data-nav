@@ -11,8 +11,6 @@ import { Debouncer } from '@polymer/polymer/lib/utils/debounce';
 import { animationFrame } from '@polymer/polymer/lib/utils/async';
 import { flush } from '@polymer/polymer/lib/utils/flush';
 
-import '@neovici/cosmoz-page-router/cosmoz-page-location';
-
 import { hauntedPolymer } from '@neovici/cosmoz-utils';
 
 import { useDataNav } from './lib/use-data-nav.js';
@@ -21,6 +19,20 @@ const _async = window.requestIdleCallback || window.requestAnimationFrame || win
 	_hasDeadline = 'IdleDeadline' in window,
 	_asyncPeriod = (cb, timeout = 1500) => {
 		_async(() => cb(), _hasDeadline && { timeout });
+	},
+
+	hashUrl = () => new URL(location.hash.replace(/^#!?/iu, '').replace('%23', '#'), location.origin),
+	getHashParam = param => new URLSearchParams(hashUrl().hash.replace('#', '')).get(param),
+	setHashParam = (param, value) => {
+		const
+			url = hashUrl(),
+			searchParams = new URLSearchParams(url.hash.replace('#', ''));
+
+		searchParams.set(param, value);
+
+		const newUrl = '#!' + Object.assign(url, { hash: searchParams }).href.replace(location.origin, '');
+
+		history.replaceState(null, '', newUrl);
 	};
 
 class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement) {
@@ -64,7 +76,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 					display: none;
 				}
 			</style>
-			<cosmoz-page-location id="location" route-hash="{{ _routeHashParams }}"></cosmoz-page-location>
 			<div id="items">
 				<slot name="items"></slot>
 			</div>
@@ -248,14 +259,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			hashParam: {
 				type: String
-			},
-
-			/**
-			 * The route hash parameters extracted by the `cosmoz-page-location`
-			 * element.
-			 */
-			_routeHashParams: {
-				type: Object
 			},
 
 			/**
@@ -941,7 +944,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		const hashParam = this.hashParam,
 			idPath = this.idPath;
 
-		if (!hashParam || !idPath || !this._routeHashParams || !this.items.length) {
+		if (!hashParam || !idPath || !this.items.length) {
 			return;
 		}
 
@@ -950,21 +953,20 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			return;
 		}
 		const itemId = this._getItemId(item),
-			path = ['_routeHashParams', hashParam],
-			hashValue = this.get(path);
+			hashValue = getHashParam(hashParam);
 
 		if (itemId === hashValue) {
 			return;
 		}
 
-		this.set(path, itemId);
+		setHashParam(hashParam, itemId);
 	}
 
 	_updateSelectedFromHash() {
 		const hashParam = this.hashParam,
 			idPath = this.idPath;
 
-		if (!(hashParam && idPath && this._routeHashParams)) {
+		if (!(hashParam && idPath)) {
 			return;
 		}
 
@@ -972,8 +974,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			return;
 		}
 
-		const path = ['_routeHashParams', hashParam],
-			hashValue = this.get(path);
+		const hashValue = getHashParam(hashParam);
 
 		if (!hashValue) {
 			this._readFromHashOnce = true;
