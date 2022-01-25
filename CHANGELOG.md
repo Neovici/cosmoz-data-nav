@@ -1,3 +1,10 @@
+## [3.6.10](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.9...v3.6.10) (2022-01-25)
+
+
+### Bug Fixes
+
+* use vanilla js to interact with URL ([#172](https://github.com/neovici/cosmoz-data-nav/issues/172)) ([91786aa](https://github.com/neovici/cosmoz-data-nav/commit/91786aa429073deb20cd31185d2ac1c06977abfa))
+
 ## [3.6.9](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.8...v3.6.9) (2021-12-16)
 
 
