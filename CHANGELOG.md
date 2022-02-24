@@ -1,3 +1,10 @@
+## [3.6.11](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.10...v3.6.11) (2022-02-24)
+
+
+### Bug Fixes
+
+* use display contents for renderItem instance ([37e3c13](https://github.com/neovici/cosmoz-data-nav/commit/37e3c1374ffecfd237bfa71b98df9c108bb3a3d1))
+
 ## [3.6.10](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.9...v3.6.10) (2022-01-25)
 
 
