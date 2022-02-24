@@ -930,7 +930,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 
 	_toggleInstance(inst, show) {
 		if (this.renderItem) {
-			inst.style.display = show ? 'block' : 'none';
+			inst.style.display = show ? 'contents' : 'none';
 			return;
 		}
 		inst?._showHideChildren(!show);
