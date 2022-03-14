@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.11...v3.7.0) (2022-03-14)
+
+
+### Features
+
+* **use-incomplete-template:** replace cosmoz-bottom-bar-view ([#177](https://github.com/neovici/cosmoz-data-nav/issues/177)) ([556f89e](https://github.com/neovici/cosmoz-data-nav/commit/556f89e89ab1269c2b7cdaa53c5948d7d173ab16))
+
 ## [3.6.11](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.10...v3.6.11) (2022-02-24)
 
 
