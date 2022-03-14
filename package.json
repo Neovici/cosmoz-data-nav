@@ -51,7 +51,7 @@
 		]
 	},
 	"dependencies": {
-		"@neovici/cosmoz-bottom-bar": "^4.0.2",
+		"@neovici/cosmoz-bottom-bar": "^5.0.0",
 		"@neovici/cosmoz-i18next": "^3.2.3",
 		"@neovici/cosmoz-utils": "^3.18.0",
 		"@polymer/paper-icon-button": "^3.0.0",
