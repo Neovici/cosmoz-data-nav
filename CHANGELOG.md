@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.7.0...v3.8.0) (2022-03-14)
+
+
+### Features
+
+* **deps:** upgrade cosmoz-bottom-bar ([#178](https://github.com/neovici/cosmoz-data-nav/issues/178)) ([f98e1e6](https://github.com/neovici/cosmoz-data-nav/commit/f98e1e6100ef50de5eafdd04298e5ee3474cde49))
+
 # [3.7.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.6.11...v3.7.0) (2022-03-14)
 
 
