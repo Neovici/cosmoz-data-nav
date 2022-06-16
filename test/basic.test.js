@@ -12,7 +12,7 @@ import {
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 
-sinon.assert.expose(chai.assert, { prefix: '' });
+sinon.assert.expose(assert, { prefix: '' });
 
 suite('defaults', () => {
 	let nav;
