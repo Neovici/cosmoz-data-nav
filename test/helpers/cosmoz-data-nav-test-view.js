@@ -3,9 +3,7 @@ import '@polymer/paper-icon-button/paper-icon-button';
 import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
 
-import {
-	dataNavUserMixin
-} from './utils.js';
+import { dataNavUserMixin } from './utils.js';
 
 class CosmozDataNavTestView extends dataNavUserMixin(PolymerElement) {
 	static get template() {
@@ -21,15 +19,23 @@ class CosmozDataNavTestView extends dataNavUserMixin(PolymerElement) {
 			</style>
 			<div class="text">[[ item.id ]]</div>
 			<div>
-				<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+				<paper-icon-button
+					slot="actions"
+					disabled$="[[ prevDisabled ]]"
+					icon="chevron-left"
+					cosmoz-data-nav-select="-1"
+				></paper-icon-button>
 				<span>[[ index ]]</span>
-				<paper-icon-button slot="actions" disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
+				<paper-icon-button
+					slot="actions"
+					disabled$="[[ nextDisabled ]]"
+					icon="chevron-right"
+					cosmoz-data-nav-select="+1"
+				></paper-icon-button>
 			</div>
 		`;
 	}
 }
 customElements.define('cosmoz-data-nav-test-view', CosmozDataNavTestView);
 
-export {
-	CosmozDataNavTestView
-};
+export { CosmozDataNavTestView };
