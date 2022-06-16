@@ -61,8 +61,8 @@
 		"lit-html": "^1.4.1"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^16.0.0",
-		"@commitlint/config-conventional": "^16.2.0",
+		"@commitlint/cli": "^17.0.0",
+		"@commitlint/config-conventional": "^17.0.0",
 		"@neovici/cfg": "^1.13.0",
 		"@open-wc/testing": "^2.5.33",
 		"@polymer/iron-icons": "^3.0.1",
@@ -70,11 +70,10 @@
 		"@semantic-release/changelog": "^6.0.0",
 		"@semantic-release/git": "^10.0.0",
 		"@web/dev-server": "^0.1.30",
-		"@web/test-runner": "^0.13.27",
 		"@webcomponents/webcomponentsjs": "^2.5.0",
-		"husky": "^7.0.0",
+		"husky": "^8.0.0",
 		"semantic-release": "^19.0.0",
-		"sinon": "^13.0.0",
+		"sinon": "^14.0.0",
 		"web-animations-js": "^2.3.1"
 	}
 }
