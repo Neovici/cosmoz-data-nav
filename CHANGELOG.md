@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.8.0...v4.0.0) (2022-06-16)
+
+
+### Features
+
+* upgrade to lit@^2 ([9f832c9](https://github.com/neovici/cosmoz-data-nav/commit/9f832c9680ad2392cd2ff8b05a426951b2f66314))
+
+
+### BREAKING CHANGES
+
+* Upgrade to lit@^2 & haunted@^5
+
 # [3.8.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.7.0...v3.8.0) (2022-03-14)
 
 
