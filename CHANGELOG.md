@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v4.0.0...v5.0.0) (2022-07-19)
+
+
+### Features
+
+* **deps:** upgrade to cosmoz-utils@5 ([b0ba3ac](https://github.com/neovici/cosmoz-data-nav/commit/b0ba3ace3145e6514b576ac45e4279b452cbfb8e))
+
+
+### BREAKING CHANGES
+
+* **deps:** Upgrade cosmoz-utils.
+
 # [4.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v3.8.0...v4.0.0) (2022-06-16)
 
 
