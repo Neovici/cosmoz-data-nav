@@ -69,11 +69,11 @@
 		"@polymer/paper-input": "^3.2.1",
 		"@semantic-release/changelog": "^6.0.0",
 		"@semantic-release/git": "^10.0.0",
-		"@web/dev-server": "^0.1.30",
+		"@web/dev-server": "^0.3.0",
 		"@webcomponents/webcomponentsjs": "^2.5.0",
 		"husky": "^8.0.0",
-		"semantic-release": "^19.0.0",
-		"sinon": "^14.0.0",
+		"semantic-release": "^21.0.0",
+		"sinon": "^15.0.0",
 		"web-animations-js": "^2.3.1"
 	}
 }
