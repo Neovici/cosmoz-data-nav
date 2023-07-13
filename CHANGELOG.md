@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/neovici/cosmoz-data-nav/compare/v5.0.0...v5.1.0) (2023-07-13)
+
+
+### Features
+
+* **cosmoz-data-nav:** update when length changes ([40684cc](https://github.com/neovici/cosmoz-data-nav/commit/40684cc61ae0c9a0804d4cb1da17fec56efa4de2))
+
 # [5.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v4.0.0...v5.0.0) (2022-07-19)
 
 
