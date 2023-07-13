@@ -904,7 +904,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		element.__incomplete.style.display = 'none';
 
 		const isSelected = idx === this.selected,
-			needsRender = element.item !== item;
+			needsRender = element.item !== item || (this.renderItem && element.ilen !== this.items?.length);
 
 		this._renderRan = needsRender;
 
@@ -914,6 +914,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			if (this.renderItem) {
 				render(this.renderItem(item, idx, this.items), element.__instance);
 				this._toggleInstance(element.__instance, true);
+				element.ilen = this.items?.length
 				return;
 			}
 			this._forwardItem(element, item, idx);
