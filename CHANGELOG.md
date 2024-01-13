@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v5.1.0...v6.0.0) (2024-01-13)
+
+
+### Features
+
+* update to pion ([2d9737e](https://github.com/neovici/cosmoz-data-nav/commit/2d9737eb5abbe494dd2e6cfa09e43f587eb88a79))
+
+
+### BREAKING CHANGES
+
+* Update to @pionjs/pion.
+
 # [5.1.0](https://github.com/neovici/cosmoz-data-nav/compare/v5.0.0...v5.1.0) (2023-07-13)
 
 
