@@ -1,4 +1,6 @@
 {
-	"extends": "./node_modules/@neovici/cfg/eslint"
+  "extends": "./node_modules/@neovici/cfg/eslint",
+  "rules": {
+    "valid-jsdoc": 0
+  }
 }
-
