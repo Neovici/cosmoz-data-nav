@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v6.0.0...v7.0.0) (2025-01-17)
+
+
+### Features
+
+* update cosmoz-dropdown ([4a32610](https://github.com/neovici/cosmoz-data-nav/commit/4a3261029dfd23c565448e9d22736d83ccba59e7))
+
+
+### BREAKING CHANGES
+
+* Update cosmoz-dropdown
+
 # [6.0.0](https://github.com/neovici/cosmoz-data-nav/compare/v5.1.0...v6.0.0) (2024-01-13)
 
 
