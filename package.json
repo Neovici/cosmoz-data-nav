@@ -6,13 +6,13 @@
     "polymer",
     "web-components"
   ],
-  "homepage": "https://github.com/neovici/cosmoz-data-nav#readme",
+  "homepage": "https://github.com/Neovici/cosmoz-data-nav#readme",
   "bugs": {
-    "url": "https://github.com/neovici/cosmoz-data-nav/issues"
+    "url": "https://github.com/Neovici/cosmoz-data-nav/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neovici/cosmoz-data-nav.git"
+    "url": "git+https://github.com/Neovici/cosmoz-data-nav.git"
   },
   "license": "Apache-2.0",
   "author": "",
