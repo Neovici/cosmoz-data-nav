@@ -157,7 +157,7 @@ suite('properties', () => {
 					'id: a,index: 0newdata',
 				);
 			}).throws(
-				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0newdata'",
+				'expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0newdata\'',
 			);
 
 			// attempt #2: modify item data using polymer manipulation features
@@ -171,7 +171,7 @@ suite('properties', () => {
 					'id: a,index: 0otherdata',
 				);
 			}).throws(
-				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0otherdata'",
+				'expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0otherdata\'',
 			);
 
 			// attempt #3: try to force render
@@ -189,7 +189,7 @@ suite('properties', () => {
 					'id: a,index: 0freshdata',
 				);
 			}).throws(
-				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0freshdata'",
+				'expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0freshdata\'',
 			);
 		});
 	});
@@ -268,7 +268,7 @@ suite('properties', () => {
 			suite(
 				'when the last selected item is no longer present, by reference or by id',
 				() => {
-					test("maintains `selected` to it's current value", () => {
+					test('maintains `selected` to it\'s current value', () => {
 						nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
 						nav.selected = 1;
 						flushRenderQueue(nav);
