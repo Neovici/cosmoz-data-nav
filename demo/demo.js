@@ -1,10 +1,9 @@
-import { component, html, useState, useEffect } from '@pionjs/pion';
+import { component, html, useEffect, useState } from '@pionjs/pion';
 import '@polymer/paper-input/paper-textarea.js';
-import './helpers/cosmoz-demo-view.js';
 import '../cosmoz-data-nav.js';
+import './helpers/cosmoz-demo-view.js';
 
 const asyncs = {},
-	// eslint-disable-next-line max-lines-per-function
 	DataNavDemo = function () {
 		const makeItems = () =>
 				Array(20)

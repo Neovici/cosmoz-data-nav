@@ -1,18 +1,20 @@
-/* eslint-disable max-lines-per-function, max-statements, max-nested-callbacks, strict */
-import {
-	expect, fixture, html, aTimeout, assert
-} from '@open-wc/testing';
+import { aTimeout, assert, expect, fixture, html } from '@open-wc/testing';
 
+import { Base } from '@polymer/polymer/polymer-legacy';
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
-import { Base } from '@polymer/polymer/polymer-legacy';
 import {
-	visibilityFixture, defaultsFixture, flushRenderQueue, selectedSlide, isVisible, setupFixture
+	defaultsFixture,
+	flushRenderQueue,
+	isVisible,
+	selectedSlide,
+	setupFixture,
+	visibilityFixture,
 } from './helpers/utils';
 
-const oneRequestPerItem = async nav => {
+const oneRequestPerItem = async (nav) => {
 	const needDataRequests = {};
-	nav.addEventListener('need-data', async event => {
+	nav.addEventListener('need-data', async (event) => {
 		const id = event.detail.id;
 		if (!needDataRequests[id]) {
 			needDataRequests[id] = 0;
@@ -25,19 +27,13 @@ const oneRequestPerItem = async nav => {
 	nav.items = ['0', '1', '2', '3'];
 	await aTimeout();
 	Object.entries(needDataRequests).forEach(([id, reqs]) => {
-		assert.equal(reqs, 1, `requests for id ${ id }`);
+		assert.equal(reqs, 1, `requests for id ${id}`);
 	});
 };
 
 suite('bugs', () => {
 	test('https://github.com/Neovici/cosmoz-data-nav/issues/84', async () => {
-		const items = [
-				{ id: 0 },
-				{ id: 1 },
-				{ id: 2 },
-				{ id: 3 },
-				{ id: 4 }
-			],
+		const items = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
 			// initialize cosmoz-data-nav as hidden,
 			// simulating the list-queue-core behavior
 			nav = await fixture(html`
@@ -47,8 +43,8 @@ suite('bugs', () => {
 							<span>id: [[ item.id ]],</span>
 							<span>index: [[ index ]]</span>
 							<span>[[ item.data ]]</span>
-							<input type="button" value="Next" cosmoz-data-nav-select="+1">
-							<input type="button" value="Prev" cosmoz-data-nav-select="-1">
+							<input type="button" value="Next" cosmoz-data-nav-select="+1" />
+							<input type="button" value="Prev" cosmoz-data-nav-select="-1" />
 						</div>
 					</template>
 				</cosmoz-data-nav>
@@ -58,7 +54,7 @@ suite('bugs', () => {
 		// the bug manifests when data is set as incomplete,
 		// so we must set up the need-data handler
 		const asyncs = {};
-		nav.addEventListener('need-data', event => {
+		nav.addEventListener('need-data', (event) => {
 			const id = event.detail.id;
 			if (!id) {
 				return;
@@ -131,7 +127,7 @@ suite('bugs', () => {
 	test('selected instance not set', async () => {
 		const [, nav] = await Promise.all([
 			fixture(visibilityFixture),
-			await setupFixture()
+			await setupFixture(),
 		]);
 		nav.setItemById('0', { id: '0' });
 		nav.setItemById('1', { id: '1' });

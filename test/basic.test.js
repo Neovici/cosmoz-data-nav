@@ -1,12 +1,14 @@
 /* eslint-disable max-lines */
-import {
-	assert, fixture, html, oneEvent, waitUntil
-} from '@open-wc/testing';
+import { assert, fixture, html, oneEvent, waitUntil } from '@open-wc/testing';
 
 import sinon from 'sinon';
 
 import {
-	visibilityFixture, defaultsFixture, flushRenderQueue, getItems, setupFixture
+	defaultsFixture,
+	flushRenderQueue,
+	getItems,
+	setupFixture,
+	visibilityFixture,
 } from './helpers/utils.js';
 
 import '../cosmoz-data-nav.js';
@@ -31,11 +33,11 @@ suite('defaults', () => {
 	});
 
 	test('buffer elements have incomplete content', () => {
-		nav._elements.forEach(element => assert.isNotNull(element.__incomplete));
+		nav._elements.forEach((element) => assert.isNotNull(element.__incomplete));
 	});
 
 	test('buffer elements are not templatized without complete data', () => {
-		nav._elements.forEach(element => assert.isUndefined(element.__instance));
+		nav._elements.forEach((element) => assert.isUndefined(element.__instance));
 	});
 
 	test('selects first element', () => {
@@ -54,13 +56,29 @@ suite('properties check', () => {
 
 	test('selected property is updated', () => {
 		nav.select(1);
-		assert.equal(nav.selected, 1, 'Expected the index of selected item to be 1');
+		assert.equal(
+			nav.selected,
+			1,
+			'Expected the index of selected item to be 1',
+		);
 		nav.select(3);
-		assert.equal(nav.selected, 3, 'Expected the index of selected item to be 3');
+		assert.equal(
+			nav.selected,
+			3,
+			'Expected the index of selected item to be 3',
+		);
 		nav.select(7);
-		assert.equal(nav.selected, 7, 'Expected the index of selected item to be 7');
+		assert.equal(
+			nav.selected,
+			7,
+			'Expected the index of selected item to be 7',
+		);
 		nav.select(2);
-		assert.equal(nav.selected, 2, 'Expected the index of selected item to be 2');
+		assert.equal(
+			nav.selected,
+			2,
+			'Expected the index of selected item to be 2',
+		);
 	});
 
 	test('selectedNext is updated', () => {
@@ -93,8 +111,7 @@ suite('properties check', () => {
 });
 
 suite('duplicate ids', () => {
-	let nav,
-		warnSpy;
+	let nav, warnSpy;
 
 	suiteSetup(async () => {
 		nav = await fixture(defaultsFixture);
@@ -110,34 +127,40 @@ suite('duplicate ids', () => {
 		warnSpy.restore();
 	});
 
-	test('setItemById handlers duplicate ids', done => {
+	test('setItemById handlers duplicate ids', (done) => {
 		const data = { id: 0 },
 			cache = nav.haunted.cache;
 		nav.setItemById('0', data);
-		sinon.assert.calledWith(warnSpy,
+		sinon.assert.calledWith(
+			warnSpy,
 			'Multiple replaceable items matches idPath',
 			'id',
 			'with id',
 			'0',
-			'in the item list', nav.items,
-			'to replace with item', { id: 0 });
+			'in the item list',
+			nav.items,
+			'to replace with item',
+			{ id: 0 },
+		);
 		assert.equal(cache.get('0').id, data.id);
 		assert.equal(nav.items[0].id, data.id);
 		assert.equal(nav.items[1].id, data.id);
 		done();
 	});
-
 });
 
 suite('lacks template', () => {
 	let warnSpy;
+
 	suiteSetup(async () => {
 		warnSpy = sinon.spy(console, 'warn');
 		await fixture(html`<cosmoz-data-nav><b></b></cosmoz-data-nav>`);
 	});
+
 	test('data-nav warns about missing template', () => {
 		sinon.assert.calledWith(warnSpy, 'cosmoz-data-nav requires a template');
 	});
+
 	suiteTeardown(() => {
 		warnSpy.restore();
 	});
@@ -213,12 +236,11 @@ suite('cache', () => {
 		nav.haunted.cache.dropItem({});
 		assert.equal(cacheKeys.length, Object.keys(cache).length);
 	});
-
 });
 
 suite('other methods', () => {
-
 	let nav;
+
 	setup(async () => {
 		nav = await setupFixture();
 	});
@@ -227,7 +249,8 @@ suite('other methods', () => {
 		const warnSpy = sinon.spy(console, 'warn'),
 			data = { id: 23 };
 		nav.setItemById('23', data);
-		sinon.assert.calledWith(warnSpy,
+		sinon.assert.calledWith(
+			warnSpy,
 			'List item replacement failed, no matching idPath',
 			'id',
 			'with id',
@@ -235,7 +258,8 @@ suite('other methods', () => {
 			'in the item list',
 			nav.items,
 			'to replace with item',
-			data);
+			data,
+		);
 		warnSpy.restore();
 	});
 
@@ -302,7 +326,7 @@ suite('navigation', () => {
 		nav._renderQueue();
 		const firstElement = nav._getElement(0),
 			instance = nav._getInstance(firstElement);
-		let nextBtn; /* eslint-disable-next-line no-return-assign */
+		let nextBtn;
 		await waitUntil(() => {
 			nextBtn = instance.querySelector('[cosmoz-data-nav-select="+1"]');
 			return !!nextBtn;
@@ -327,7 +351,11 @@ suite('elements buffer', () => {
 		nav = await setupFixture(html`
 			<cosmoz-data-nav elements-buffer="4">
 				<template>
-					<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
+					<cosmoz-data-nav-test-view
+						class="fit layout vertical"
+						item="{{ item }}"
+						index="[[ index ]]"
+					></cosmoz-data-nav-test-view>
 				</template>
 			</cosmoz-data-nav>
 		`);
@@ -361,10 +389,14 @@ suite('renderQueue', () => {
 			setupFixture(html`
 				<cosmoz-data-nav elements-buffer="5">
 					<template>
-						<cosmoz-data-nav-test-view class="fit layout vertical" item="{{ item }}" index="[[ index ]]"></cosmoz-data-nav-test-view>
+						<cosmoz-data-nav-test-view
+							class="fit layout vertical"
+							item="{{ item }}"
+							index="[[ index ]]"
+						></cosmoz-data-nav-test-view>
 					</template>
 				</cosmoz-data-nav>
-			`)
+			`),
 		]);
 	});
 
@@ -378,7 +410,7 @@ suite('renderQueue', () => {
 	});
 
 	test('renderQueue three items', async () => {
-		nav._elements.forEach(element => assert.isUndefined(element.__instance));
+		nav._elements.forEach((element) => assert.isUndefined(element.__instance));
 		nav.setItemById('0', { id: 0 });
 		nav.setItemById('1', { id: 1 });
 		nav.setItemById('2', { id: 2 });
@@ -389,9 +421,9 @@ suite('renderQueue', () => {
 	});
 
 	test('renderQueue five items', async () => {
-		nav._elements.forEach(element => assert.isUndefined(element.__instance));
+		nav._elements.forEach((element) => assert.isUndefined(element.__instance));
 		const ids = [0, 1, 2, 3, 4];
-		ids.forEach(id => {
+		ids.forEach((id) => {
 			nav.setItemById(id.toString(), { id });
 		});
 		await waitUntil(() => nav._elements[4].__instance);
@@ -408,7 +440,11 @@ suite('renderItem', () => {
 	const renderItem = (item, index) => {
 		itemsRendered += 1;
 		return html`
-			<cosmoz-data-nav-test-view class="fit layout vertical" item="${ item }" index="${ index }">
+			<cosmoz-data-nav-test-view
+				class="fit layout vertical"
+				item="${item}"
+				index="${index}"
+			>
 			</cosmoz-data-nav-test-view>
 		`;
 	};
@@ -417,15 +453,17 @@ suite('renderItem', () => {
 		[, nav] = await Promise.all([
 			fixture(visibilityFixture),
 			setupFixture(html`
-				<cosmoz-data-nav .renderItem="${ renderItem }">
-				</cosmoz-data-nav>
-			`)
+				<cosmoz-data-nav .renderItem="${renderItem}"> </cosmoz-data-nav>
+			`),
 		]);
 	});
 
 	test('renders items', async () => {
 		nav.items = [{ id: '0' }, { id: '1' }, { id: '2' }];
 		flushRenderQueue(nav);
-		assert.equal(itemsRendered, nav.items.map(nav.isIncompleteFn).filter(i => !i).length);
+		assert.equal(
+			itemsRendered,
+			nav.items.map(nav.isIncompleteFn).filter((i) => !i).length,
+		);
 	});
 });
