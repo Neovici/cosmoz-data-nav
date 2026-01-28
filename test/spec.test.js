@@ -1,15 +1,12 @@
-/* eslint-disable max-lines-per-function, max-statements, max-nested-callbacks */
-import {
-	expect, fixture, html, waitUntil
-} from '@open-wc/testing';
+import { expect, fixture, html, waitUntil } from '@open-wc/testing';
+import { flush as syncFlush } from '@polymer/polymer/lib/utils/flush';
 import '../cosmoz-data-nav.js';
 import './helpers/cosmoz-data-nav-test-view.js';
 import {
-	flushRenderQueue, selectedSlide, visibilityFixture
+	flushRenderQueue,
+	selectedSlide,
+	visibilityFixture,
 } from './helpers/utils';
-import { flush as syncFlush } from '@polymer/polymer/lib/utils/flush';
-
-
 
 const basicFixture = html`
 	<cosmoz-data-nav>
@@ -18,8 +15,8 @@ const basicFixture = html`
 				<span>id: [[ item.id ]],</span>
 				<span>index: [[ index ]]</span>
 				<span>[[ item.data ]]</span>
-				<input type="button" value="Next" cosmoz-data-nav-select="+1">
-				<input type="button" value="Prev" cosmoz-data-nav-select="-1">
+				<input type="button" value="Next" cosmoz-data-nav-select="+1" />
+				<input type="button" value="Prev" cosmoz-data-nav-select="-1" />
 			</div>
 		</template>
 	</cosmoz-data-nav>
@@ -29,6 +26,7 @@ suite('constructor', () => {
 	suiteSetup(async () => {
 		await fixture(basicFixture);
 	});
+
 	test('renders', () => {
 		expect(document.body.querySelector('cosmoz-data-nav')).to.exist;
 	});
@@ -38,28 +36,32 @@ suite('template', () => {
 	test('renders items using a template', async () => {
 		const [, nav] = await Promise.all([
 			fixture(visibilityFixture),
-			fixture(basicFixture)
+			fixture(basicFixture),
 		]);
 		nav._templatesObserver.flush();
 		nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 		flushRenderQueue(nav);
 
-		expect(nav.querySelector('div.selected').textContent).to.equal('id: 1,index: 0');
+		expect(nav.querySelector('div.selected').textContent).to.equal(
+			'id: 1,index: 0',
+		);
 	});
 
 	test('renders the wrong item if the templates observer runs after `items` is set [KNOWN BUG]', async () => {
 		//expect(async () => {
 		const [, nav] = await Promise.all([
 			fixture(visibilityFixture),
-			fixture(basicFixture)
+			fixture(basicFixture),
 		]);
 		nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
 		await waitUntil(() => nav._templatesObserver);
 		nav._templatesObserver.flush();
 		flushRenderQueue(nav);
 
-		expect(nav.querySelector('div.selected').textContent).to.equal('id: 1,index: 0');
+		expect(nav.querySelector('div.selected').textContent).to.equal(
+			'id: 1,index: 0',
+		);
 		//}).throws('expected \'id: 3,index: 2\' to equal \'id: 1,index: 0\'');
 	});
 
@@ -68,10 +70,11 @@ suite('template', () => {
 
 suite('properties', () => {
 	let nav;
+
 	setup(async () => {
 		[, nav] = await Promise.all([
 			fixture(visibilityFixture),
-			fixture(basicFixture)
+			fixture(basicFixture),
 		]);
 		nav._templatesObserver.flush();
 		nav.items = [{ id: 1 }, { id: 2 }, { id: 3 }];
@@ -80,6 +83,7 @@ suite('properties', () => {
 	});
 
 	test('is true if the element is currently animating');
+
 	test('controls whether the element should animate');
 
 	suite('as', () => {
@@ -107,7 +111,9 @@ suite('properties', () => {
 	});
 
 	suite('hiddenRendering', () => {
-		test('controls whether the element should render items even if it is not visible');
+		test(
+			'controls whether the element should render items even if it is not visible',
+		);
 	});
 
 	suite('idPath', () => {
@@ -119,7 +125,9 @@ suite('properties', () => {
 	});
 
 	suite('isIncompleteFn', () => {
-		test('defines the function used to determine if an element is incomplete and nees to be preloaded');
+		test(
+			'defines the function used to determine if an element is incomplete and nees to be preloaded',
+		);
 	});
 
 	suite('items', () => {
@@ -133,7 +141,7 @@ suite('properties', () => {
 		test('does not update the view when an item changes', () => {
 			const item = {
 				id: 'a',
-				data: 'somedata'
+				data: 'somedata',
 			};
 			nav.items = [item];
 			flushRenderQueue(nav);
@@ -145,9 +153,12 @@ suite('properties', () => {
 			expect(nav.items[0]).to.have.property('data', 'newdata');
 
 			expect(() => {
-				expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0newdata');
-			}).throws('expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0newdata\'');
-
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: a,index: 0newdata',
+				);
+			}).throws(
+				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0newdata'",
+			);
 
 			// attempt #2: modify item data using polymer manipulation features
 			// this could work, but is not implemented
@@ -156,8 +167,12 @@ suite('properties', () => {
 			expect(nav.items[0]).to.have.property('data', 'otherdata');
 
 			expect(() => {
-				expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0otherdata');
-			}).throws('expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0otherdata\'');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: a,index: 0otherdata',
+				);
+			}).throws(
+				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0otherdata'",
+			);
 
 			// attempt #3: try to force render
 			// this does not work, because data-nav checks if it should re-render
@@ -170,8 +185,12 @@ suite('properties', () => {
 			flushRenderQueue(nav);
 
 			expect(() => {
-				expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0freshdata');
-			}).throws('expected \'id: a,index: 0somedata\' to equal \'id: a,index: 0freshdata\'');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: a,index: 0freshdata',
+				);
+			}).throws(
+				"expected 'id: a,index: 0somedata' to equal 'id: a,index: 0freshdata'",
+			);
 		});
 	});
 
@@ -198,75 +217,94 @@ suite('properties', () => {
 			test('on `items` change, updates `selected` to match the last selected item, by reference', () => {
 				const item = {
 					id: 'b',
-					data: 'somedata'
+					data: 'somedata',
 				};
 				nav.items = [{ id: 'a' }, item, { id: 'c' }];
 				nav.selected = 1;
 				flushRenderQueue(nav);
-				expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1somedata');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: b,index: 1somedata',
+				);
 
 				nav.items = [{ id: 'a' }, { id: 'd' }, { id: 'e' }, item];
 				expect(nav.selected).to.equal(3);
 				flushRenderQueue(nav);
-				expect(selectedSlide(nav).textContent).to.equal('id: b,index: 3somedata');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: b,index: 3somedata',
+				);
 			});
 
 			test('on `items` change, updates `selected` to match the last selected item, by id', () => {
-				nav.items = [{ id: 'a' }, {
-					id: 'b',
-					data: 'somedata'
-				}, { id: 'c' }];
+				nav.items = [
+					{ id: 'a' },
+					{
+						id: 'b',
+						data: 'somedata',
+					},
+					{ id: 'c' },
+				];
 				nav.selected = 1;
 				flushRenderQueue(nav);
-				expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1somedata');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: b,index: 1somedata',
+				);
 
-				nav.items = [{ id: 'a' }, { id: 'd' }, { id: 'e' }, {
-					id: 'b',
-					data: 'otherdata'
-				}];
+				nav.items = [
+					{ id: 'a' },
+					{ id: 'd' },
+					{ id: 'e' },
+					{
+						id: 'b',
+						data: 'otherdata',
+					},
+				];
 				expect(nav.selected).to.equal(3);
 				flushRenderQueue(nav);
-				expect(selectedSlide(nav).textContent).to.equal('id: b,index: 3otherdata');
+				expect(selectedSlide(nav).textContent).to.equal(
+					'id: b,index: 3otherdata',
+				);
 			});
 
-			suite('when the last selected item is no longer present, by reference or by id', () => {
-				test('maintains `selected` to it\'s current value', () => {
-					nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
-					nav.selected = 1;
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1');
+			suite(
+				'when the last selected item is no longer present, by reference or by id',
+				() => {
+					test("maintains `selected` to it's current value", () => {
+						nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+						nav.selected = 1;
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1');
 
-					nav.items = [{ id: 'a' }, { id: 'd' }, { id: 'e' }];
-					expect(nav.selected).to.equal(1);
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: d,index: 1');
-				});
+						nav.items = [{ id: 'a' }, { id: 'd' }, { id: 'e' }];
+						expect(nav.selected).to.equal(1);
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: d,index: 1');
+					});
 
-				test('realigns element if already rendered', () => {
-					nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
-					nav.selected = 1;
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1');
+					test('realigns element if already rendered', () => {
+						nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }];
+						nav.selected = 1;
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: b,index: 1');
 
-					nav.items = [{ id: 'a' }, { id: 'c' }, { id: 'd' }];
-					expect(nav.selected).to.equal(1);
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: c,index: 1');
-				});
+						nav.items = [{ id: 'a' }, { id: 'c' }, { id: 'd' }];
+						expect(nav.selected).to.equal(1);
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: c,index: 1');
+					});
 
-				test('updates `selected` if there are not enough items', () => {
-					nav.items = [{ id: 'a' }, { id: 'e' }];
-					nav.selected = 1;
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: e,index: 1');
+					test('updates `selected` if there are not enough items', () => {
+						nav.items = [{ id: 'a' }, { id: 'e' }];
+						nav.selected = 1;
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: e,index: 1');
 
-					nav.items = [{ id: 'a' }];
-					expect(nav.selected).to.equal(0);
-					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0');
-				});
-
-			});
+						nav.items = [{ id: 'a' }];
+						expect(nav.selected).to.equal(0);
+						flushRenderQueue(nav);
+						expect(selectedSlide(nav).textContent).to.equal('id: a,index: 0');
+					});
+				},
+			);
 
 			test('resets selected to 0 when `items` is empty', () => {
 				nav.items = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
@@ -288,28 +326,43 @@ suite('properties', () => {
 			suite('when idPath is set', () => {
 				test('works as expected', () => {
 					nav.idPath = 'deep.id';
-					nav.items = [{ deep: { id: 'a' }}, {
-						deep: { id: 'b' },
-						data: 'somedata'
-					}, { deep: { id: 'c' }}];
+					nav.items = [
+						{ deep: { id: 'a' } },
+						{
+							deep: { id: 'b' },
+							data: 'somedata',
+						},
+						{ deep: { id: 'c' } },
+					];
 					nav.selected = 1;
 					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: ,index: 1somedata');
+					expect(selectedSlide(nav).textContent).to.equal(
+						'id: ,index: 1somedata',
+					);
 
-					nav.items = [{ deep: { id: 'a' }}, { deep: { id: 'd' }}, { deep: { id: 'e' }}, {
-						deep: { id: 'b' },
-						data: 'otherdata'
-					}];
+					nav.items = [
+						{ deep: { id: 'a' } },
+						{ deep: { id: 'd' } },
+						{ deep: { id: 'e' } },
+						{
+							deep: { id: 'b' },
+							data: 'otherdata',
+						},
+					];
 					expect(nav.selected).to.equal(3);
 					flushRenderQueue(nav);
-					expect(selectedSlide(nav).textContent).to.equal('id: ,index: 3otherdata');
+					expect(selectedSlide(nav).textContent).to.equal(
+						'id: ,index: 3otherdata',
+					);
 				});
 			});
 		});
 	});
 
 	suite('preload', () => {
-		test('defines the number of items after the currently selected one to preload');
+		test(
+			'defines the number of items after the currently selected one to preload',
+		);
 	});
 
 	suite('queueLength', () => {
@@ -317,11 +370,15 @@ suite('properties', () => {
 	});
 
 	suite('reverse', () => {
-		test('is true if the index of the currently selected item is smaller than the previous one');
+		test(
+			'is true if the index of the currently selected item is smaller than the previous one',
+		);
 	});
 
 	suite('selectAttribute', () => {
-		test('defines the name of the attribute that is used to control the direction of the navigation');
+		test(
+			'defines the name of the attribute that is used to control the direction of the navigation',
+		);
 	});
 
 	suite('selected', () => {

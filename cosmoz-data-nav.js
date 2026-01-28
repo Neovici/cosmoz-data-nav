@@ -1,42 +1,56 @@
 /* eslint-disable max-lines */
 import { render } from 'lit-html';
 
-import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
 import { templatize } from '@polymer/polymer/lib/utils/templatize';
+import { PolymerElement } from '@polymer/polymer/polymer-element';
 
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer';
 
-import { Debouncer } from '@polymer/polymer/lib/utils/debounce';
 import { animationFrame } from '@polymer/polymer/lib/utils/async';
+import { Debouncer } from '@polymer/polymer/lib/utils/debounce';
 import { flush } from '@polymer/polymer/lib/utils/flush';
 
 import { hauntedPolymer } from '@neovici/cosmoz-utils';
 
 import { useDataNav } from './lib/use-data-nav.js';
 
-const _async = window.requestIdleCallback || window.requestAnimationFrame || window.setTimeout,
+const _async =
+		window.requestIdleCallback ||
+		window.requestAnimationFrame ||
+		window.setTimeout,
 	_hasDeadline = 'IdleDeadline' in window,
 	_asyncPeriod = (cb, timeout = 1500) => {
 		_async(() => cb(), _hasDeadline && { timeout });
 	},
-
-	hashUrl = () => new URL(location.hash.replace(/^#!?/iu, '').replace('%23', '#'), location.origin),
-	getHashParam = param => new URLSearchParams(hashUrl().hash.replace('#', '')).get(param),
+	hashUrl = () =>
+		new URL(
+			location.hash.replace(/^#!?/iu, '').replace('%23', '#'),
+			location.origin,
+		),
+	getHashParam = (param) =>
+		new URLSearchParams(hashUrl().hash.replace('#', '')).get(param),
 	setHashParam = (param, value) => {
-		const
-			url = hashUrl(),
+		const url = hashUrl(),
 			searchParams = new URLSearchParams(url.hash.replace('#', ''));
 
 		searchParams.set(param, value);
 
-		const newUrl = '#!' + Object.assign(url, { hash: searchParams }).href.replace(location.origin, '');
+		const newUrl =
+			'#!' +
+			Object.assign(url, { hash: searchParams }).href.replace(
+				location.origin,
+				'',
+			);
 
 		history.replaceState(null, '', newUrl);
 	};
 
-class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement) {
-	static get template() { // eslint-disable-line max-lines-per-function
+class CosmozDataNav extends hauntedPolymer(
+	'haunted',
+	useDataNav,
+)(PolymerElement) {
+	static get template() {
 		return html`
 			<style>
 				:host {
@@ -55,24 +69,26 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 					bottom: 0;
 					left: 0;
 				}
-				:host([animating]) #items > ::slotted(.animatable){
+				:host([animating]) #items > ::slotted(.animatable) {
 					transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0s;
 					backface-visibility: hidden;
 				}
 
 				:host([animating][reverse]) #items > ::slotted(.in),
-				:host([animating]) #items > ::slotted(.out){
+				:host([animating]) #items > ::slotted(.out) {
 					transform: translateX(-100%);
 				}
 
 				:host([animating][reverse]) #items > ::slotted(.out),
-				:host([animating]) #items > ::slotted(.in){
+				:host([animating]) #items > ::slotted(.in) {
 					transform: translateX(100%);
 				}
 
-				:host([has-items][animating]) #items > ::slotted(:not(.selected):not(.out)),
+				:host([has-items][animating])
+					#items
+					> ::slotted(:not(.selected):not(.out)),
 				:host([has-items]:not([animating])) #items > ::slotted(:not(.selected)),
-				:host(:not([has-items])) #items > ::slotted(:not(:first-of-type)){
+				:host(:not([has-items])) #items > ::slotted(:not(:first-of-type)) {
 					display: none;
 				}
 			</style>
@@ -85,7 +101,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		`;
 	}
 
-	static get properties() { // eslint-disable-line max-lines-per-function
+	static get properties() {
 		return {
 			/**
 			 * The array of buffer elements.
@@ -94,7 +110,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				type: Array,
 				value() {
 					return [];
-				}
+				},
 			},
 
 			/**
@@ -103,7 +119,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			as: {
 				type: String,
-				value: 'item'
+				value: 'item',
 			},
 
 			/**
@@ -112,7 +128,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			indexAs: {
 				type: String,
-				value: 'index'
+				value: 'index',
 			},
 
 			/**
@@ -124,7 +140,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 					return [];
 				},
 				notify: true,
-				observer: '_itemsChanged'
+				observer: '_itemsChanged',
 			},
 
 			/**
@@ -133,18 +149,18 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			queueLength: {
 				type: Number,
 				notify: true,
-				readOnly: true
+				readOnly: true,
 			},
 
 			hasItems: {
 				type: Boolean,
 				readOnly: true,
-				reflectToAttribute: true
+				reflectToAttribute: true,
 			},
 
 			elementsBuffer: {
 				type: Number,
-				value: 3
+				value: 3,
 			},
 
 			/**
@@ -152,11 +168,11 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			preload: {
 				type: Number,
-				value: 1
+				value: 1,
 			},
 
 			renderItem: {
-				type: Function
+				type: Function,
 			},
 
 			/**
@@ -166,7 +182,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				type: Number,
 				value: 0,
 				notify: true,
-				observer: '_updateSelected'
+				observer: '_updateSelected',
 			},
 
 			/**
@@ -176,7 +192,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				type: Number,
 				notify: true,
 				value: 1,
-				readOnly: true
+				readOnly: true,
 			},
 
 			/**
@@ -185,7 +201,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			selectedElement: {
 				type: Object,
 				notify: true,
-				readOnly: true
+				readOnly: true,
 			},
 
 			/**
@@ -194,7 +210,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			selectedInstance: {
 				type: Object,
 				notify: true,
-				readOnly: true
+				readOnly: true,
 			},
 
 			/**
@@ -204,7 +220,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				type: Object,
 				notify: true,
 				readOnly: true,
-				computed: '_getItem(selected, items.*)'
+				computed: '_getItem(selected, items.*)',
 			},
 
 			/**
@@ -213,7 +229,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			maintainSelection: {
 				type: Boolean,
-				value: false
+				value: false,
 			},
 
 			/**
@@ -222,7 +238,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			selectAttribute: {
 				type: String,
-				value: 'cosmoz-data-nav-select'
+				value: 'cosmoz-data-nav-select',
 			},
 
 			/**
@@ -231,7 +247,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			animating: {
 				type: Boolean,
 				value: false,
-				reflectToAttribute: true
+				reflectToAttribute: true,
 			},
 
 			/**
@@ -240,7 +256,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			reverse: {
 				type: Boolean,
 				value: false,
-				reflectToAttribute: true
+				reflectToAttribute: true,
 			},
 
 			/**
@@ -250,15 +266,15 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			isIncompleteFn: {
 				type: Function,
 				value() {
-					return item => item == null || typeof item !== 'object';
-				}
+					return (item) => item == null || typeof item !== 'object';
+				},
 			},
 
 			/**
 			 * The hash parameter to use for selecting an item.
 			 */
 			hashParam: {
-				type: String
+				type: String,
 			},
 
 			/**
@@ -266,7 +282,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			idPath: {
 				type: String,
-				value: 'id'
+				value: 'id',
 			},
 
 			/**
@@ -274,7 +290,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			hiddenRendering: {
 				type: Boolean,
-				value: false
+				value: false,
 			},
 
 			/**
@@ -282,15 +298,13 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			 */
 			parallelDataRequests: {
 				type: Boolean,
-				value: false
-			}
+				value: false,
+			},
 		};
 	}
 
 	static get observers() {
-		return [
-			'renderIncomplete(selected, haunted)'
-		];
+		return ['renderIncomplete(selected, haunted)'];
 	}
 
 	renderIncomplete(index, haunted) {
@@ -319,7 +333,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		super.connectedCallback();
 		this._templatesObserver = new FlattenedNodesObserver(
 			this.$.templatesSlot,
-			this._boundOnTemplatesChange
+			this._boundOnTemplatesChange,
 		);
 		this.addEventListener('tap', this._onTap);
 		this.addEventListener('transitionend', this._onTransitionEnd);
@@ -341,21 +355,27 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		this.removeEventListener('tap', this._onTap);
 		this.removeEventListener('transitionend', this._onTransitionEnd);
 
-		this.splice('_elements', 0, this._elements.length, this._createElement())
-			.forEach(element => {
-				if (this.renderItem) {
-					element.removeChild(element.__instance);
-				} else {
-					this._removeInstance(element.__instance);
-				}
-				element.removeChild(element.__incomplete);
-				element.__instance = element.__incomplete = null;
-			});
+		this.splice(
+			'_elements',
+			0,
+			this._elements.length,
+			this._createElement(),
+		).forEach((element) => {
+			if (this.renderItem) {
+				element.removeChild(element.__instance);
+			} else {
+				this._removeInstance(element.__instance);
+			}
+			element.removeChild(element.__incomplete);
+			element.__instance = element.__incomplete = null;
+		});
 	}
 
 	_onTemplatesChange(change) {
 		if (!this._elementTemplate && !this.renderItem) {
-			const templates = change.addedNodes.filter(n => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE'),
+			const templates = change.addedNodes.filter(
+					(n) => n.nodeType === Node.ELEMENT_NODE && n.tagName === 'TEMPLATE',
+				),
 				elementTemplate = templates[0];
 
 			if (!elementTemplate) {
@@ -369,10 +389,16 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		const elements = this._elements,
 			length = elements.length;
 
-		this.splice('_elements', -1, 0, ...Array(this.elementsBuffer - length)
-			.fill().map(this._createElement, this));
+		this.splice(
+			'_elements',
+			-1,
+			0,
+			...Array(this.elementsBuffer - length)
+				.fill()
+				.map(this._createElement, this),
+		);
 
-		elements.forEach(el => this.appendChild(el));
+		elements.forEach((el) => this.appendChild(el));
 	}
 
 	_templatize(elementTemplate) {
@@ -381,20 +407,18 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		const baseProps = {
 			prevDisabled: true,
 			nextDisabled: true,
-			[this.indexAs]: true
+			[this.indexAs]: true,
 		};
 		this._elementCtor = templatize(this._elementTemplate, this, {
 			instanceProps: Object.assign({ [this.as]: true }, baseProps),
 			parentModel: true,
 			forwardHostProp: this._forwardHostProp,
-			notifyInstanceProp: this._notifyInstanceProp
+			notifyInstanceProp: this._notifyInstanceProp,
 		});
 	}
 
 	get _allElementInstances() {
-		return this._elements
-			.map(e => e.__instance)
-			.filter(i => i != null);
+		return this._elements.map((e) => e.__instance).filter((i) => i != null);
 	}
 
 	_forwardHostProp(prop, value) {
@@ -402,13 +426,17 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		if (!instances || !instances.length) {
 			return;
 		}
-		instances.forEach(inst => inst.forwardHostProp(prop, value));
+		instances.forEach((inst) => inst.forwardHostProp(prop, value));
 	}
 
 	_notifyInstanceProp(inst, prop, value) {
 		const index = inst.index,
 			item = this.items[index];
-		if (prop !== this.as || value === item || this._allElementInstances.indexOf(inst) < 0) {
+		if (
+			prop !== this.as ||
+			value === item ||
+			this._allElementInstances.indexOf(inst) < 0
+		) {
 			return;
 		}
 		this.haunted.cache.dropItem(item);
@@ -454,19 +482,39 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 	 */
 	setItemById(id, item) {
 		const items = this.items,
-			matches = items.filter(item => this._getItemId(item) === id);
+			matches = items.filter((item) => this._getItemId(item) === id);
 
 		if (matches.length === 0) {
 			// eslint-disable-next-line no-console
-			console.warn('List item replacement failed, no matching idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
+			console.warn(
+				'List item replacement failed, no matching idPath',
+				this.idPath,
+				'with id',
+				id,
+				'in the item list',
+				items,
+				'to replace with item',
+				item,
+			);
 			return;
 		} else if (matches.length > 1) {
 			// eslint-disable-next-line no-console
-			console.warn('Multiple replaceable items matches idPath', this.idPath, 'with id', id, 'in the item list', items, 'to replace with item', item);
+			console.warn(
+				'Multiple replaceable items matches idPath',
+				this.idPath,
+				'with id',
+				id,
+				'in the item list',
+				items,
+				'to replace with item',
+				item,
+			);
 		}
 
 		this.haunted.cache.set(id, item);
-		matches.forEach(match => this.set(['items', items.indexOf(match)], { ...item }));
+		matches.forEach((match) =>
+			this.set(['items', items.indexOf(match)], { ...item }),
+		);
 
 		this._preload();
 
@@ -484,7 +532,8 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 	 * @param	 {type} items description
 	 * @return {type}				description
 	 */
-	_itemsChanged(items) { // eslint-disable-line max-statements
+	_itemsChanged(items) {
+		 
 		const length = items && items.length;
 
 		// update read-only properties
@@ -510,21 +559,23 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 
 		// reset queue to 0 or maintain selection
 		let index = 0;
-		if (items.length > 0 && this.maintainSelection && this._previouslySelectedItem != null) {
+		if (
+			items.length > 0 &&
+			this.maintainSelection &&
+			this._previouslySelectedItem != null
+		) {
 			// search for previously selected item by reference
 			index = items.indexOf(this._previouslySelectedItem);
 
 			// if not found, search by id
 			if (index < 0) {
 				const prevId = this._getItemId(this._previouslySelectedItem);
-				index = items.findIndex(item => this._getItemId(item) === prevId);
+				index = items.findIndex((item) => this._getItemId(item) === prevId);
 			}
 
 			// if still not found, remain on the selected index
 			if (index < 0) {
-				index = this.selected < items.length
-					? this.selected
-					: items.length - 1;
+				index = this.selected < items.length ? this.selected : items.length - 1;
 			}
 			this._realignElements(index);
 		}
@@ -536,14 +587,18 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		return index;
 	}
 
-	_realignElements(index) { // eslint-disable-line max-statements
+	_realignElements(index) {
 		const elements = this._elements,
 			element = this._getElement(index),
 			item = this.items[index];
 		if (this.isIncompleteFn(item) || element.item === item) {
 			return;
 		}
-		const renderedElement = this._elements.find(el => !this.isIncompleteFn(el.item) && this._getItemId(el.item) === this._getItemId(item));
+		const renderedElement = this._elements.find(
+			(el) =>
+				!this.isIncompleteFn(el.item) &&
+				this._getItemId(el.item) === this._getItemId(item),
+		);
 		if (!renderedElement) {
 			return;
 		}
@@ -556,8 +611,9 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		if (!this.renderItem) {
 			// update instance's data-nav related props
 			const instance = renderedElement.__instance;
-			Object.entries(this._getBaseProps(index))
-				.forEach(([key, value]) => instance._setPendingProperty(key, value));
+			Object.entries(this._getBaseProps(index)).forEach(([key, value]) =>
+				instance._setPendingProperty(key, value),
+			);
 			instance._flushProperties();
 		}
 		this._elements.splice(renderedIndex, 1);
@@ -572,7 +628,8 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 	 * @param	 {Number} previous The previous value of selected property
 	 * @return {void}
 	 */
-	_updateSelected(selected = this.selected, previous) { // eslint-disable-line max-statements
+	_updateSelected(selected = this.selected, previous) {
+		 
 		if (this.items.length === 0) {
 			return;
 		}
@@ -596,7 +653,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			animating = this.animating && previous != null && previous !== position;
 
 		if (!animating) {
-			this._elements.forEach(el => el.classList.remove('selected'));
+			this._elements.forEach((el) => el.classList.remove('selected'));
 		}
 
 		classes.toggle('in', animating);
@@ -634,7 +691,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		}
 
 		this.animating = false;
-		elements.forEach(el => el.classList.remove('in', 'out'));
+		elements.forEach((el) => el.classList.remove('in', 'out'));
 		this._synchronize();
 	}
 
@@ -656,14 +713,16 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		const item = items[index];
 
 		if (this.isIncompleteFn(item)) {
-			this.dispatchEvent(new CustomEvent('need-data', {
-				bubbles: true,
-				composed: true,
-				detail: {
-					id: item,
-					render: true
-				}
-			}));
+			this.dispatchEvent(
+				new CustomEvent('need-data', {
+					bubbles: true,
+					composed: true,
+					detail: {
+						id: item,
+						render: true,
+					},
+				}),
+			);
 			if (!this.parallelDataRequests) {
 				return;
 			}
@@ -681,12 +740,12 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		return {
 			prevDisabled: index < 1,
 			nextDisabled: index + 1 >= this.items.length,
-			[this.indexAs]: Math.max(Math.min(index, this.items.length - 1), 0)
+			[this.indexAs]: Math.max(Math.min(index, this.items.length - 1), 0),
 		};
 	}
 
 	_getElement(index, _elements = this._elements) {
-		const elements = _elements && _elements.base || _elements,
+		const elements = (_elements && _elements.base) || _elements,
 			bufferLength = this.elementsBuffer || elements.length,
 			elementIndex = index % bufferLength;
 
@@ -706,7 +765,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		return arr[index];
 	}
 
-	_resetElement(index) { // eslint-disable-line max-statements
+	_resetElement(index) {
 		const element = this._getElement(index);
 		if (!element) {
 			return;
@@ -741,22 +800,21 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		if (!instance) {
 			return;
 		}
-		instance.children.forEach(child => child.parentNode.removeChild(child));
+		instance.children.forEach((child) => child.parentNode.removeChild(child));
 	}
 
 	/**
-	* Syncronizes the `items` data with the created template instances
-	* depending on the currently selected item.
-	* @return {type}	description
-	*/
+	 * Syncronizes the `items` data with the created template instances
+	 * depending on the currently selected item.
+	 * @return {type}	description
+	 */
 	_synchronize() {
 		const selected = this.selected,
 			buffer = this.elementsBuffer,
-			offset = buffer / 2 >> 0, // eslint-disable-line no-bitwise
+			offset = (buffer / 2) >> 0, // eslint-disable-line no-bitwise
 			max = Math.max,
 			min = Math.min,
 			length = this.items.length,
-
 			start = min(max(selected - offset, 0), length ? length - buffer : 0),
 			end = max(min(selected + offset, length ? length - 1 : 0), buffer - 1),
 			indexes = Array(end + 1)
@@ -765,10 +823,9 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 				.slice(start >= 0 ? start : 0);
 
 		// Reset items
-		indexes.forEach(i => this._resetElement(i));
+		indexes.forEach((i) => this._resetElement(i));
 		this._indexRenderQueue = indexes;
 		_asyncPeriod(this._renderQueue.bind(this));
-
 	}
 
 	/**
@@ -784,13 +841,13 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		}
 		const path = event.composedPath(),
 			attr = this.selectAttribute,
-			selectEl = path.find(e => e && e.hasAttribute && e.hasAttribute(attr));
+			selectEl = path.find((e) => e && e.hasAttribute && e.hasAttribute(attr));
 
 		if (!selectEl) {
 			return;
 		}
 		const inBetween = path.slice(path.indexOf(selectEl)),
-			ancestorNav = inBetween.find(e => e && e.tagName === this.tagName);
+			ancestorNav = inBetween.find((e) => e && e.tagName === this.tagName);
 
 		if (ancestorNav !== this) {
 			return;
@@ -801,18 +858,19 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		if (isNaN(select)) {
 			return;
 		}
-		this._selectDebouncer = Debouncer.debounce(this._selectDebouncer,
+		this._selectDebouncer = Debouncer.debounce(
+			this._selectDebouncer,
 			animationFrame,
 			() => {
 				this.animating = true;
 				this.select(this.selected + select);
-			}
+			},
 		);
 	}
 
 	/**
-	* True if the current element is visible.
-	*/
+	 * True if the current element is visible.
+	 */
 	get _isVisible() {
 		return Boolean(this.offsetWidth || this.offsetHeight);
 	}
@@ -827,7 +885,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 	selectById(id) {
 		for (let index = 0; index < this.items.length; index++) {
 			const item = this.items[index];
-			if (typeof item === 'object' && item.id === id || item === id) {
+			if ((typeof item === 'object' && item.id === id) || item === id) {
 				this.selected = index;
 				return;
 			}
@@ -862,7 +920,6 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		}
 
 		if (this.hiddenRendering || this._isVisible) {
-
 			this._renderRan = this._renderAbort = false;
 
 			this._indexRenderQueue = queue
@@ -876,7 +933,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 					return 0;
 				})
 				.map(this._renderQueueProcess, this)
-				.filter(idx => idx != null);
+				.filter((idx) => idx != null);
 
 			if (this._renderAbort || this._indexRenderQueue.length === 0) {
 				return;
@@ -886,7 +943,8 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		_asyncPeriod(this._renderQueue.bind(this));
 	}
 
-	_renderQueueProcess(idx) { // eslint-disable-line max-statements
+	_renderQueueProcess(idx) {
+		 
 		const element = this._getElement(idx),
 			item = this.items[idx];
 
@@ -904,7 +962,9 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		element.__incomplete.style.display = 'none';
 
 		const isSelected = idx === this.selected,
-			needsRender = element.item !== item || (this.renderItem && element.ilen !== this.items?.length);
+			needsRender =
+				element.item !== item ||
+				(this.renderItem && element.ilen !== this.items?.length);
 
 		this._renderRan = needsRender;
 
@@ -914,7 +974,7 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			if (this.renderItem) {
 				render(this.renderItem(item, idx, this.items), element.__instance);
 				this._toggleInstance(element.__instance, true);
-				element.ilen = this.items?.length
+				element.ilen = this.items?.length;
 				return;
 			}
 			this._forwardItem(element, item, idx);
@@ -982,7 +1042,9 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 			return;
 		}
 
-		const selection = this.items.findIndex(i => this._getItemId(i) === hashValue);
+		const selection = this.items.findIndex(
+			(i) => this._getItemId(i) === hashValue,
+		);
 
 		if (selection < 0 || selection === this.selected) {
 			return;
@@ -991,6 +1053,5 @@ class CosmozDataNav extends hauntedPolymer('haunted', useDataNav)(PolymerElement
 		this.selected = selection;
 		return true;
 	}
-
 }
 customElements.define('cosmoz-data-nav', CosmozDataNav);
