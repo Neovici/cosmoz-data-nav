@@ -26,6 +26,7 @@
   ],
   "scripts": {
     "lint": "eslint --cache --ext .js .",
+    "check:duplicates": "check-duplicate-components",
     "start": "wds",
     "test": "wtr --coverage",
     "test:watch": "wtr --watch",
@@ -63,7 +64,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
-    "@neovici/cfg": "^1.13.0",
+    "@neovici/cfg": "^2.8.0",
     "@open-wc/testing": "^4.0.0",
     "@polymer/iron-icons": "^3.0.1",
     "@polymer/paper-input": "^3.2.1",
@@ -71,6 +72,7 @@
     "@semantic-release/git": "^10.0.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
     "semantic-release": "^24.0.0",
     "sinon": "^17.0.0",
     "web-animations-js": "^2.3.1"
