@@ -1,3 +1,9 @@
+# [7.2.0](https://github.com/Neovici/cosmoz-data-nav/compare/v7.1.1...v7.2.0) (2026-02-20)
+
+### Features
+
+- support cosmoz-bottom-bar v11 ([#198](https://github.com/Neovici/cosmoz-data-nav/issues/198)) ([823428c](https://github.com/Neovici/cosmoz-data-nav/commit/823428c2b2fcaf0fdab2fdb2650b60bd7a9ae714))
+
 ## [7.1.1](https://github.com/Neovici/cosmoz-data-nav/compare/v7.1.0...v7.1.1) (2026-01-29)
 
 ### Bug Fixes
