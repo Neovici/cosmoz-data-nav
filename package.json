@@ -52,7 +52,7 @@
 		]
 	},
 	"dependencies": {
-		"@neovici/cosmoz-bottom-bar": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0",
+		"@neovici/cosmoz-bottom-bar": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0",
 		"@neovici/cosmoz-i18next": "^3.0.0",
 		"@neovici/cosmoz-utils": "^6.0.0",
 		"@pionjs/pion": "^2.0.0",
