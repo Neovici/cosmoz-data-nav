@@ -1,3 +1,9 @@
+## [7.2.1](https://github.com/Neovici/cosmoz-data-nav/compare/v7.2.0...v7.2.1) (2026-03-26)
+
+### Bug Fixes
+
+- handle click instead of tap [FE-441] ([#208](https://github.com/Neovici/cosmoz-data-nav/issues/208)) ([fab66f1](https://github.com/Neovici/cosmoz-data-nav/commit/fab66f119bd03919e4ec9f96c68e0a7c9f7e9231))
+
 # [7.2.0](https://github.com/Neovici/cosmoz-data-nav/compare/v7.1.1...v7.2.0) (2026-02-20)
 
 ### Features
