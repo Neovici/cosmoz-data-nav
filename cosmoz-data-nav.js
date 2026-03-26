@@ -335,7 +335,7 @@ class CosmozDataNav extends hauntedPolymer(
 			this.$.templatesSlot,
 			this._boundOnTemplatesChange,
 		);
-		this.addEventListener('tap', this._onTap);
+		this.addEventListener('click', this._onTap);
 		this.addEventListener('transitionend', this._onTransitionEnd);
 	}
 
@@ -352,7 +352,7 @@ class CosmozDataNav extends hauntedPolymer(
 
 		this._previouslySelectedItem = null;
 		this._indexRenderQueue = [];
-		this.removeEventListener('tap', this._onTap);
+		this.removeEventListener('click', this._onTap);
 		this.removeEventListener('transitionend', this._onTransitionEnd);
 
 		this.splice(
