@@ -1,3 +1,9 @@
+# [7.3.0](https://github.com/Neovici/cosmoz-data-nav/compare/v7.2.1...v7.3.0) (2026-05-11)
+
+### Features
+
+- replace cosmoz-i18next with direct i18next ([#216](https://github.com/Neovici/cosmoz-data-nav/issues/216)) ([0b94c72](https://github.com/Neovici/cosmoz-data-nav/commit/0b94c723ebd821c80d4ef26beb8a6b09d572a760))
+
 ## [7.2.1](https://github.com/Neovici/cosmoz-data-nav/compare/v7.2.0...v7.2.1) (2026-03-26)
 
 ### Bug Fixes
