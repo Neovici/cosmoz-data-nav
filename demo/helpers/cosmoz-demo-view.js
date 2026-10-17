@@ -1,12 +1,11 @@
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@neovici/cosmoz-button';
+import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/iron-icons.js';
 
-import { PolymerElement } from '@polymer/polymer/polymer-element';
 import { html } from '@polymer/polymer/lib/utils/html-tag';
+import { PolymerElement } from '@polymer/polymer/polymer-element';
 
-import {
-	dataNavUserMixin
-} from '../../test/helpers/utils.js';
+import { dataNavUserMixin } from '../../test/helpers/utils.js';
 
 class CosmozDemoView extends dataNavUserMixin(PolymerElement) {
 	static get template() {
@@ -22,10 +21,32 @@ class CosmozDemoView extends dataNavUserMixin(PolymerElement) {
 			</style>
 			<div class="text">[[ item.id ]]</div>
 			<div>
-				<paper-icon-button slot="actions" disabled$="[[ prevDisabled ]]" icon="chevron-left" cosmoz-data-nav-select="-1"></paper-icon-button>
+				<cosmoz-button
+					variant="tertiary"
+					icon-only
+					aria-label="Previous item"
+					slot="actions"
+					disabled$="[[ prevDisabled ]]"
+					cosmoz-data-nav-select="-1"
+					><iron-icon icon="chevron-left"></iron-icon
+				></cosmoz-button>
 				<span>[[ index ]]</span>
-				<paper-icon-button slot="actions" disabled$="[[ nextDisabled ]]" icon="chevron-right" cosmoz-data-nav-select="+1"></paper-icon-button>
-				<paper-icon-button icon="refresh" on-tap="onReplace">Replace</paper-icon-button>
+				<cosmoz-button
+					variant="tertiary"
+					icon-only
+					aria-label="Next item"
+					slot="actions"
+					disabled$="[[ nextDisabled ]]"
+					cosmoz-data-nav-select="+1"
+					><iron-icon icon="chevron-right"></iron-icon
+				></cosmoz-button>
+				<cosmoz-button
+					variant="tertiary"
+					icon-only
+					aria-label="Replace"
+					on-click="onReplace"
+					><iron-icon icon="refresh"></iron-icon
+				></cosmoz-button>
 			</div>
 		`;
 	}
