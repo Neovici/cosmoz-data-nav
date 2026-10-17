@@ -533,6 +533,7 @@ class CosmozDataNav extends hauntedPolymer(
 	 * @return {type}				description
 	 */
 	_itemsChanged(items) {
+		 
 		const length = items && items.length;
 
 		// update read-only properties
@@ -628,6 +629,7 @@ class CosmozDataNav extends hauntedPolymer(
 	 * @return {void}
 	 */
 	_updateSelected(selected = this.selected, previous) {
+		 
 		if (this.items.length === 0) {
 			return;
 		}
@@ -942,6 +944,7 @@ class CosmozDataNav extends hauntedPolymer(
 	}
 
 	_renderQueueProcess(idx) {
+		 
 		const element = this._getElement(idx),
 			item = this.items[idx];
 
